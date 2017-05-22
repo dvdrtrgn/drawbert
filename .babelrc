@@ -1,0 +1,12 @@
+{
+  only: [
+    "*.babel",
+    "*.es6",
+    "*.jsx",
+  ],
+  presets: [
+    "es2015",
+    "react",
+  ],
+  retainLines: true,
+}
