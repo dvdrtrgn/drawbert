@@ -1,0 +1,85 @@
+body,
+html {
+  margin: 0;
+  overflow: hidden;
+}
+
+.absolute {
+  position: fixed;
+}
+
+canvas {
+  // background-color: #999;
+}
+
+.on-top {
+  position: relative;
+  z-index: 10;
+}
+
+.danger-buttons {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+}
+
+.finished-buttons {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  text-align: center;
+}
+
+.overlay {
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.8);
+  -webkit-transition: left 0.5s;
+  transition: left 0.5s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  > * {
+    margin: 1em 0;
+  }
+  &.hidden {
+    left: 100%;
+  }
+}
+
+.option-template {
+  display: flex;
+  max-width: 400px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  button {
+    display: flex;
+    margin: 0.25em;
+  }
+}
+
+.results {
+  color: grey;
+
+  .guess {
+    color: black;
+    font-size: 2em;
+  }
+  .confidence {
+    color: black;
+  }
+  .confidence.high {
+    color: green;
+  }
+  .confidence.low {
+    color: red;
+  }
+  .confidence.medium {
+    color: orange;
+  }
+}

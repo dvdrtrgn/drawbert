@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)http://blog.musicallyut.in/dollar-family/ -->
+<html lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!-- <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes"> -->
+
+    <title>Gesture recognizer</title>
+    <script src="../vendors/jquery.min.js"></script>
+    <script src="./libs/semantic.js"></script>
+
+    <script src="./scripts/pdollar.js"></script>
+    <script src="./scripts/recog_gestures.js"></script>
+    <script src="./scripts/init_alphabet.js"></script>
+    <script src="./scripts/init_gestures.js"></script>
+
+    <link rel="stylesheet" href="./styles/recog.css">
+  </head>
+
+  <body class="dimmable">
+
+    <section class="absolute canvas container">
+      <canvas id="myCanvas" oncontextmenu="return false;"></canvas>
+    </section>
+
+    <div class="danger-buttons on-top">
+      <div class="buttons">
+        <button class="js-init" type="button" data-position="right">
+          Init stock gestures
+        </button>
+        <button class="js-clear-stroke" type="button" data-position="right">
+          Clear strokes
+        </button>
+      </div>
+    </div>
+
+    <div class="finished-buttons on-top">
+      <div class="stats">Total gestures: <span class="js-gesture-count">0</span></div>
+      <button class="js-check" type="button" data-position="left">
+        Check
+      </button>
+    </div>
+
+    <section class="overlay hidden on-top">
+      <span class="results">
+        <h3><em>Guess: </em><span class="guess js-guess"></span></h3>
+        <h4><em>Confidence: </em><span class="confidence js-confidence"></span></h4>
+      </span>
+
+      <button class="js-return" type="button">
+        Cancel
+      </button>
+
+      <div class="option-template">
+        <button class="js-choice" data-name="A">A</button>
+        <button class="js-choice" data-name="B">B</button>
+        <button class="js-choice" data-name="C">C</button>
+        <button class="js-choice" data-name="D">D</button>
+        <button class="js-choice" data-name="E">E</button>
+        <button class="js-choice" data-name="F">F</button>
+        <button class="js-choice" data-name="G">G</button>
+        <button class="js-choice" data-name="H">H</button>
+        <button class="js-choice" data-name="I">I</button>
+        <button class="js-choice" data-name="J">J</button>
+        <button class="js-choice" data-name="K">K</button>
+        <button class="js-choice" data-name="L">L</button>
+        <button class="js-choice" data-name="M">M</button>
+        <button class="js-choice" data-name="N">N</button>
+        <button class="js-choice" data-name="O">O</button>
+        <button class="js-choice" data-name="P">P</button>
+        <button class="js-choice" data-name="Q">Q</button>
+        <button class="js-choice" data-name="R">R</button>
+        <button class="js-choice" data-name="S">S</button>
+        <button class="js-choice" data-name="T">T</button>
+        <button class="js-choice" data-name="U">U</button>
+        <button class="js-choice" data-name="V">V</button>
+        <button class="js-choice" data-name="W">W</button>
+        <button class="js-choice" data-name="X">X</button>
+        <button class="js-choice" data-name="Y">Y</button>
+        <button class="js-choice" data-name="Z">Z</button>
+
+        <button class="js-choice" data-name="exclamation">!</button>
+        <button class="js-choice" data-name="line">—</button>
+        <button class="js-choice" data-name="star">ø</button>
+        <button class="js-choice" data-name="arrowhead">î</button>
+        <button class="js-choice" data-name="asterisk">•</button>
+        <button class="js-choice" data-name="square">=</button>
+      </div>
+
+    </section>
+
+  </body>
+
+</html>
