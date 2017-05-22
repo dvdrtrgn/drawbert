@@ -1,3 +1,4 @@
+// http://depts.washington.edu/madlab/proj/dollar/pdollar.html
 (function () {
   //
   // Point class
