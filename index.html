@@ -31,25 +31,29 @@
         <button class="js-clear-stroke" type="button" data-position="right">
           Clear strokes
         </button>
+        <button class="js-check" type="button" data-position="left">
+          Train
+        </button>
       </div>
     </div>
 
     <div class="finished-buttons on-top">
       <div class="stats">Total gestures: <span class="js-gesture-count">0</span></div>
-      <button class="js-check" type="button" data-position="left">
-        Check
-      </button>
     </div>
 
     <section class="overlay hidden on-top">
       <span class="results">
-        <h3><em>Guess: </em><span class="guess js-guess"></span></h3>
-        <h4><em>Confidence: </em><span class="confidence js-confidence"></span></h4>
+        <h3>
+          Guess:
+          “<span class="guess js-guess"></span>”
+          @
+          <span class="confidence js-confidence"></span>
+          confidence.
+        </h3>
+        <p>
+          Use buttons to add to database.
+        </p>
       </span>
-
-      <button class="js-return" type="button">
-        Cancel
-      </button>
 
       <div class="option-template">
         <button class="js-choice" data-name="A">A</button>
@@ -81,11 +85,16 @@
 
         <button class="js-choice" data-name="exclamation">!</button>
         <button class="js-choice" data-name="line">—</button>
-        <button class="js-choice" data-name="star">ø</button>
-        <button class="js-choice" data-name="arrowhead">î</button>
-        <button class="js-choice" data-name="asterisk">•</button>
-        <button class="js-choice" data-name="square">=</button>
+        <button class="js-choice" data-name="star">✯</button>
+        <button class="js-choice" data-name="arrowhead">></button>
+        <button class="js-choice" data-name="asterisk">*</button>
+        <button class="js-choice" data-name="square">⭐︎</button>
+        <button class="js-choice" data-name="triangle">△</button>
       </div>
+
+      <button class="js-return" type="button">
+        Cancel
+      </button>
 
     </section>
 

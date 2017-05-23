@@ -3,6 +3,7 @@
 const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
 const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
 const undef = (x) => typeof x === 'undefined';
+const percent = (num) => (round(num, 2) * 100)|0;
 
 (function () {
   let dbug = 1;
@@ -115,8 +116,9 @@ const undef = (x) => typeof x === 'undefined';
   // ================ HELPERS ======================
 
   function initAlphabet() {
-    PDollar.initDefaultGestures(rcg);
-    _trainingCount += 6;
+    if (window._initGestures) {
+      _trainingCount += window._initGestures(PDollar.Point, rcg);
+    }
     if (window._initAlphabet) {
       _trainingCount += window._initAlphabet(PDollar.Point, rcg);
     }
@@ -233,7 +235,7 @@ const undef = (x) => typeof x === 'undefined';
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(result.Name);
 
-    $confidence.text(round(result.Score, 2));
+    $confidence.text(percent(result.Score) + '%');
     $confidence.removeClass('high low medium');
 
     if (result.Score > 0.8) {
@@ -250,23 +252,19 @@ const undef = (x) => typeof x === 'undefined';
 
     if (_points.length > 9) {
       result = rcg.Recognize(_points);
-      drawText(`Result: ${result.Name} (${round(result.Score, 2)})`);
+      drawText(`Guess: “${result.Name}” @ ${percent(result.Score)}% confidence.`);
     } else {
       drawText('Not enough data');
     }
+    return result;
   }
 
   function recognizeNow() {
-    var result;
-
-    if (_points.length > 9) {
-      result = rcg.Recognize(_points);
+    var result = quickRecognize();
+    if (result) {
       showOverlay(result);
-      drawText(`Result: ${result.Name} (${round(result.Score, 2)})`);
-    } else {
-      drawText('Not enough data');
+      _strokeID = 0; // signal to begin new gesture on next mouse-down
     }
-    _strokeID = 0; // signal to begin new gesture on next mouse-down
   }
 
   function updateCount() {
