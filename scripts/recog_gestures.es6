@@ -39,8 +39,8 @@ const percent = (num) => (round(num, 2) * 100)|0;
     cxt.fillStyle = color;
   };
   const Df = {
-    font: '14px monospace',
-    fillStyle: 'gray',
+    font: '20px impact',
+    fillStyle: 'silver',
     lineWidth: 3,
     strokeStyle: 'black',
     defaults,
@@ -202,10 +202,12 @@ const percent = (num) => (round(num, 2) * 100)|0;
 
   function drawText(str) {
     if (dbug) {
-      cxt.fillStyle = 'silver';
+      cxt.fillStyle = 'darkgray';
       cxt.fillRect(0, box.height - 20, box.width, box.height);
       cxt.fillStyle = 'black';
-      cxt.fillText(str, 11, box.height - 5);
+      cxt.fillText(str, 10.5, box.height - 2);
+      cxt.fillStyle = 'white';
+      cxt.fillText(str, 11, box.height - 2.5);
     }
   }
 
