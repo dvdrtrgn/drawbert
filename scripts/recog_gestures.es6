@@ -81,7 +81,11 @@ const percent = (num) => (round(num, 2) * 100)|0;
       if (evt.originalEvent.changedTouches) {
         evt = evt.originalEvent.changedTouches[0];
       }
-      mouseDownEvent(evt.clientX, evt.clientY);
+      if (evt.button === 2) {
+        recognizeNow();
+      } else {
+        mouseDownEvent(evt.clientX, evt.clientY);
+      }
     });
     $canvas.on('mousemove.pdollar touchmove.pdollar', function (evt) {
       halt(evt, 'moving');

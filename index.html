@@ -32,8 +32,9 @@
           Clear strokes
         </button>
         <button class="js-check" type="button" data-position="left">
-          Train
+          Open trainer
         </button>
+        (or right-click canvas)
       </div>
     </div>
 
@@ -43,6 +44,7 @@
 
     <section class="overlay hidden on-top">
       <span class="results">
+        <h2>Training Panel</h2>
         <h3>
           Guess:
           “<span class="guess js-guess"></span>”
@@ -50,9 +52,6 @@
           <span class="confidence js-confidence"></span>
           confidence.
         </h3>
-        <p>
-          Use buttons to add to database.
-        </p>
       </span>
 
       <div class="option-template">
@@ -91,7 +90,9 @@
         <button class="js-choice" data-name="square">⭐︎</button>
         <button class="js-choice" data-name="triangle">△</button>
       </div>
-
+      <p>
+        Use above buttons to add to database.
+      </p>
       <button class="js-return" type="button">
         Cancel
       </button>
