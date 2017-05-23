@@ -1,0 +1,2 @@
+atom .
+browser-sync start --server --files "**"
