@@ -1,15 +1,18 @@
 body,
 html {
+  font-family: helvetica;
   margin: 0;
   overflow: hidden;
+}
+button {
+  cursor: pointer;
+  font-family: helvetica;
+  font-size: 1em;
+  margin: 0.25em;
 }
 
 .absolute {
   position: fixed;
-}
-
-canvas {
-  // background-color: #999;
 }
 
 .on-top {
@@ -18,68 +21,77 @@ canvas {
 }
 
 .danger-buttons {
+  bottom: 1em;
+  left: 1em;
   position: fixed;
-  bottom: 12px;
-  left: 12px;
 }
 
 .finished-buttons {
+  bottom: 1em;
   position: fixed;
-  right: 12px;
-  bottom: 12px;
+  right: 1em;
   text-align: center;
 }
 
 .overlay {
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
+  align-items: center;
   background-color: rgba(255, 255, 255, 0.8);
-  -webkit-transition: left 0.5s;
-  transition: left 0.5s;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   justify-content: center;
-  align-items: center;
+  left: 0;
+  top: 0;
+  transition: left 0.5s;
+  width: 100vw;
+}
 
-  > * {
-    margin: 1em 0;
-  }
-  &.hidden {
-    left: 100%;
-  }
+.overlay > * {
+  margin: 1em 0;
+}
+
+.overlay.hidden {
+  left: 100%;
 }
 
 .option-template {
   display: flex;
-  max-width: 400px;
   flex-wrap: wrap;
   justify-content: space-around;
+  max-width: 40em;
+}
 
-  button {
-    display: flex;
-    margin: 0.25em;
+.option-template button {
+  color: gray;
+  padding: 0.5em;
+  width: 3em;
+
+  &:hover {
+    color: black;
   }
 }
 
 .results {
   color: grey;
+  text-align: center;
+}
 
-  .guess {
-    color: black;
-    font-size: 2em;
-  }
-  .confidence {
-    color: black;
-  }
-  .confidence.high {
-    color: green;
-  }
-  .confidence.low {
-    color: red;
-  }
-  .confidence.medium {
-    color: orange;
-  }
+.results .guess {
+  color: black;
+}
+
+.results .confidence {
+  color: black;
+}
+
+.results .confidence.high {
+  color: green;
+}
+
+.results .confidence.low {
+  color: red;
+}
+
+.results .confidence.medium {
+  color: orange;
 }

@@ -38,7 +38,7 @@ const undef = (x) => typeof x === 'undefined';
     cxt.fillStyle = color;
   };
   const Df = {
-    font: '16px monospace',
+    font: '14px monospace',
     fillStyle: 'gray',
     lineWidth: 3,
     strokeStyle: 'black',
