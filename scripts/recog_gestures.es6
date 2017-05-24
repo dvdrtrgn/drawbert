@@ -63,19 +63,25 @@ const percent = (num) => (round(num, 2) * 100)|0;
     var $window = $(window);
     var canvas = $canvas[0];
 
-    canvas.width = $window.width();
-    canvas.height = $window.height() - 50;
-    box = getCanvasRect(canvas); // canvas rect on page
+    function attachCanvas() {
+      canvas.width = $window.width();
+      canvas.height = $window.height() - 50;
+      box = getCanvasRect(canvas); // canvas rect on page
+      cxt = canvas.getContext('2d');
 
-    cxt = canvas.getContext('2d');
-    defaults().clear();
-    window.console.log(cxt, rcg);
+      defaults().clear();
+      window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
+      dbug && window.console.log(cxt, rcg);
+    }
 
     function halt(evt, nom) {
       evt.preventDefault();
       evt.stopPropagation(nom); // hack to delint unused arg
       // console.log(nom, 'clientX = ', evt.clientX, 'clientY = ', evt.clientY);
     }
+
+    $window.on('resize', attachCanvas);
+
     $canvas.on('mousedown.pdollar touchstart.pdollar', function (evt) {
       halt(evt, 'starting');
       if (evt.originalEvent.changedTouches) {
@@ -110,11 +116,11 @@ const percent = (num) => (round(num, 2) * 100)|0;
     $('.js-check').on('click.pdollar', recognizeNow);
     $('.js-choice').on('mousedown.pdollar', addSampleGesture);
 
+    attachCanvas();
     updateCount();
     if (dbug) {
       onClickInit();
     }
-    window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
   });
 
   // ================ HELPERS ======================
