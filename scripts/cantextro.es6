@@ -1,6 +1,7 @@
 /*globals */
 
 define(['jquery', 'util'], function ($, U) {
+  const C = window.console;
 
   function getRect(context) {
     let canvas = context.canvas;
@@ -20,6 +21,12 @@ define(['jquery', 'util'], function ($, U) {
       width: w,
       height: h,
     };
+  }
+
+  function expando(obj, ...args) {
+    var exp = $.extend({}, ...args);
+    U.checkCollision(obj, exp);
+    $.extend(obj, exp);
   }
 
   function Cantextro(canvas, Df) {
@@ -53,7 +60,7 @@ define(['jquery', 'util'], function ($, U) {
       api.fillStyle = color;
     };
 
-    $.extend(api, Df, {
+    expando(api, Df, {
       defaults,
       clear,
       drawCirc,

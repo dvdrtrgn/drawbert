@@ -4,8 +4,21 @@ define(function () {
   const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
   const undef = (x) => typeof x === 'undefined';
   const percent = (num) => (round(num, 2) * 100) | 0;
+  const collisions = (o, a) => a.filter(k => k in o && typeof o[k] === 'function');
+
+  function allkeys(obj) {
+    var i, arr = [];
+    for (i in obj) arr.push(i);
+    return arr;
+  }
+
+  function checkCollision(o1, o2) {
+    var all = collisions(o1, allkeys(o2));
+    if (all.length) throw Error(`collisions: ${all}`);
+  }
 
   return {
+    checkCollision,
     rand,
     round,
     undef,
