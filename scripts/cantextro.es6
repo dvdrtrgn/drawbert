@@ -22,11 +22,12 @@ define(['jquery', 'util'], function ($, U) {
     };
   }
 
-  function Cantextro(api, Df) {
-    api = api.getContext('2d');
-    console.log('Cantextro');
+  function Cantextro(canvas, Df) {
+    let api = canvas.getContext('2d');
+
     const defaults = function () {
       $.extend(api, Df); // reset
+      api.box = getRect(api);
       return api;
     };
     const clear = function () {
@@ -47,15 +48,12 @@ define(['jquery', 'util'], function ($, U) {
       api.fill();
     };
     const newColor = function () {
-      let color = `rgb(${U.rand(0, 200)}, ${U.rand(0, 200)}, ${U.rand(0, 200)})`;
+      let color = `rgb(${U.rand(50, 150)}, ${U.rand(50, 150)}, ${U.rand(50, 150)})`;
       api.strokeStyle = color;
       api.fillStyle = color;
     };
 
     $.extend(api, Df, {
-      get box() {
-        return getRect(api);
-      },
       defaults,
       clear,
       drawCirc,

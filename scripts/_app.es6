@@ -22,15 +22,16 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   // ================ BINDINGS ======================
 
   function init(canvas) {
+    cxt = Cantextro(canvas, Df);
+
     var $window = $(window);
     var $canvas = $(canvas);
 
     function attachCanvas() {
       canvas.width = $window.width();
       canvas.height = $window.height() - 50;
-      cxt = Cantextro(canvas, Df);
 
-      cxt.defaults().clear();
+      cxt.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
       dbug && window.console.log(cxt);
     }
