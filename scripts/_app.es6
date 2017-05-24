@@ -1,6 +1,7 @@
 /*globals */
 
-define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cantextro) {
+define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
+], function ($, _, U, PDollar, Cantextro) {
   let dbug = 1;
 
   var _isDown, _points, _strokeID, rcg, cxt; // global variables
@@ -36,7 +37,7 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
     }
 
     function bindHanders() {
-      $window.on('resize', attachCanvas);
+      $window.on('resize', _.debounce(attachCanvas, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
       $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
