@@ -15,7 +15,12 @@ require.config({
   },
 });
 
-require(['_app'], function (App) {
+require(['jquery', '_app'], function ($, App) {
+
+  $(function () {
+    App.init($('canvas:first')[0]);
+  });
+
   W.drt = {
     App,
   };

@@ -4,8 +4,13 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 ], function ($, _, U, PDollar, Cantextro) {
   let dbug = 1;
 
-  var _isDown, _points, _strokeID, rcg, cxt; // global variables
+  // global variables
+  var cxt;
+  var rcg = new PDollar.Recognizer();
   var _trainingCount = 0;
+  var _points = []; // point array for current stroke
+  var _strokeID = 0;
+  var _isDown = false;
 
   const Df = {
     font: '20px impact',
@@ -16,15 +21,9 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
   // ================ BINDINGS ======================
 
-  $(function () {
-    _points = []; // point array for current stroke
-    _strokeID = 0;
-    _isDown = false;
-    rcg = new PDollar.Recognizer();
-
-    var $canvas = $('canvas').first();
+  function init(canvas) {
     var $window = $(window);
-    var canvas = $canvas[0];
+    var $canvas = $(canvas);
 
     function attachCanvas() {
       canvas.width = $window.width();
@@ -33,7 +32,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
       cxt.defaults().clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && window.console.log(cxt, rcg);
+      dbug && window.console.log(cxt);
     }
 
     function bindHanders() {
@@ -55,7 +54,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     if (dbug) {
       onClickInit();
     }
-  });
+  }
 
   // ================ HELPERS ======================
 
@@ -250,6 +249,9 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     }
   }
 
+  return {
+    init,
+  };
 });
 
 /*
