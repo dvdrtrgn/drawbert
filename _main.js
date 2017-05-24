@@ -15,7 +15,12 @@ require.config({
   },
 });
 
-require(['_app'], function (App) {
+require(['jquery', '_app'], function ($, App) {
+
+  $(function () {
+    App.init($('canvas:first')[0]);
+  });
+
   W.drt = {
     App,
   };
@@ -25,7 +30,23 @@ require(['_app'], function (App) {
 
 /*
 
-  fix first plot color
-  turn compass to nearest point
+TODO PDollar
+  fix where strokes having 0 distance (10 duplicate points) throws error
 
-*/
+
+
+mion wants a draw area
+  make configurable
+  placement
+  size
+
+make adding triggers easy
+
+
+save learned patterns
+  how to export?
+  how to save?
+  how to view?
+
+
+ */

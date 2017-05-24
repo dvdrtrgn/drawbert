@@ -2,11 +2,12 @@
 
 define(['jquery', 'util'], function ($, U) {
 
-  function getCanvasRect(canvas) {
-    var w = canvas.width;
-    var h = canvas.height;
-    var cx = canvas.offsetLeft;
-    var cy = canvas.offsetTop;
+  function getRect(context) {
+    let canvas = context.canvas;
+    let w = canvas.width;
+    let h = canvas.height;
+    let cx = canvas.offsetLeft;
+    let cy = canvas.offsetTop;
 
     while (canvas.offsetParent !== null) {
       canvas = canvas.offsetParent;
@@ -22,41 +23,37 @@ define(['jquery', 'util'], function ($, U) {
   }
 
   function Cantextro(canvas, Df) {
-    var box, cxt; // global variables
-
-    box = getCanvasRect(canvas); // canvas rect on page
-    cxt = canvas.getContext('2d');
+    let api = canvas.getContext('2d');
 
     const defaults = function () {
-      $.extend(cxt, Df);
-      return cxt;
+      $.extend(api, Df); // reset
+      api.box = getRect(api);
+      return api;
     };
     const clear = function () {
       defaults();
       fillAll();
-      // drawText('Canvas cleared');
     };
     const drawCirc = function (x = 100, y = 100, rad = 10) {
-      cxt.beginPath();
-      cxt.arc(x, y, rad, 0, 2 * Math.PI, false);
-      cxt.stroke();
+      api.beginPath();
+      api.arc(x, y, rad, 0, 2 * Math.PI, false);
+      api.stroke();
     };
     const fillAll = function () {
-      cxt.fillRect(0, 0, box.width, box.height);
+      api.fillRect(0, 0, api.box.width, api.box.height);
     };
     const fillCirc = function (x = 100, y = 100, rad = 10) {
-      cxt.beginPath();
-      cxt.arc(x, y, rad, 0, 2 * Math.PI, false);
-      cxt.fill();
+      api.beginPath();
+      api.arc(x, y, rad, 0, 2 * Math.PI, false);
+      api.fill();
     };
     const newColor = function () {
-      var color = `rgb(${U.rand(0, 200)}, ${U.rand(0, 200)}, ${U.rand(0, 200)})`;
-      cxt.strokeStyle = color;
-      cxt.fillStyle = color;
+      let color = `rgb(${U.rand(50, 150)}, ${U.rand(50, 150)}, ${U.rand(50, 150)})`;
+      api.strokeStyle = color;
+      api.fillStyle = color;
     };
 
-    $.extend(cxt, Df, {
-      box,
+    $.extend(api, Df, {
       defaults,
       clear,
       drawCirc,
@@ -65,7 +62,7 @@ define(['jquery', 'util'], function ($, U) {
       newColor,
     });
 
-    return cxt;
+    return api;
   }
 
   return Cantextro;

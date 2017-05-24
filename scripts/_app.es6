@@ -1,10 +1,16 @@
 /*globals */
 
-define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cantextro) {
+define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
+], function ($, _, U, PDollar, Cantextro) {
   let dbug = 1;
 
-  var _isDown, _points, _strokeID, rcg, cxt; // global variables
+  // global variables
+  var cxt;
+  var rcg = new PDollar.Recognizer();
   var _trainingCount = 0;
+  var _points = []; // point array for current stroke
+  var _strokeID = 0;
+  var _isDown = false;
 
   const Df = {
     font: '20px impact',
@@ -15,28 +21,23 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
 
   // ================ BINDINGS ======================
 
-  $(function () {
-    _points = []; // point array for current stroke
-    _strokeID = 0;
-    _isDown = false;
-    rcg = new PDollar.Recognizer();
+  function init(canvas) {
+    cxt = Cantextro(canvas, Df);
 
-    var $canvas = $('canvas').first();
     var $window = $(window);
-    var canvas = $canvas[0];
+    var $canvas = $(canvas);
 
     function attachCanvas() {
       canvas.width = $window.width();
       canvas.height = $window.height() - 50;
-      cxt = Cantextro(canvas, Df);
 
-      cxt.defaults().clear();
+      cxt.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && window.console.log(cxt, rcg);
+      dbug && window.console.log(cxt);
     }
 
     function bindHanders() {
-      $window.on('resize', attachCanvas);
+      $window.on('resize', _.debounce(attachCanvas, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
       $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
@@ -54,9 +55,14 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
     if (dbug) {
       onClickInit();
     }
-  });
+  }
 
   // ================ HELPERS ======================
+
+  function clearCanvas() {
+    cxt.clear();
+    drawText('Canvas cleared');
+  }
 
   function lineStart(evt) {
     evt.preventDefault(evt);
@@ -117,7 +123,7 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
 
     if (_strokeID === 0) { // starting a new gesture
       _points.length = 0;
-      cxt.clear();
+      clearCanvas();
     }
     _points[_points.length] = new PDollar.Point(x, y, ++_strokeID);
     drawText(`Recording stroke #${_strokeID}...`);
@@ -182,7 +188,7 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
   function onClickClearStrokes() {
     _points.length = 0;
     _strokeID = 0;
-    cxt.clear();
+    clearCanvas();
   }
 
   function showOverlay(result) {
@@ -249,6 +255,9 @@ define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cant
     }
   }
 
+  return {
+    init,
+  };
 });
 
 /*
