@@ -63,8 +63,6 @@ const percent = (num) => (round(num, 2) * 100) | 0;
     var $window = $(window);
     var canvas = $canvas[0];
 
-    $window.on('resize', attachCanvas);
-
     function attachCanvas() {
       canvas.width = $window.width();
       canvas.height = $window.height() - 50;
@@ -76,16 +74,20 @@ const percent = (num) => (round(num, 2) * 100) | 0;
       dbug && window.console.log(cxt, rcg);
     }
 
-    $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
-    $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
-    $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
+    function bindHanders() {
+      $window.on('resize', attachCanvas);
+      $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
+      $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
+      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
-    $('.overlay').on('click.pdollar', hideOverlay);
-    $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
-    $('.js-init').on('click.pdollar', onClickInit);
-    $('.js-check').on('click.pdollar', recognizeNow);
-    $('.js-choice').on('mousedown.pdollar', addSampleGesture);
+      $('.overlay').on('click.pdollar', hideOverlay);
+      $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
+      $('.js-init').on('click.pdollar', onClickInit);
+      $('.js-check').on('click.pdollar', recognizeNow);
+      $('.js-choice').on('mousedown.pdollar', addSampleGesture);
+    }
 
+    bindHanders();
     attachCanvas();
     updateCount();
     if (dbug) {
