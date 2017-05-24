@@ -3,7 +3,7 @@
 const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
 const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
 const undef = (x) => typeof x === 'undefined';
-const percent = (num) => (round(num, 2) * 100)|0;
+const percent = (num) => (round(num, 2) * 100) | 0;
 
 (function () {
   let dbug = 1;
@@ -63,6 +63,8 @@ const percent = (num) => (round(num, 2) * 100)|0;
     var $window = $(window);
     var canvas = $canvas[0];
 
+    $window.on('resize', attachCanvas);
+
     function attachCanvas() {
       canvas.width = $window.width();
       canvas.height = $window.height() - 50;
@@ -74,41 +76,9 @@ const percent = (num) => (round(num, 2) * 100)|0;
       dbug && window.console.log(cxt, rcg);
     }
 
-    function halt(evt, nom) {
-      evt.preventDefault();
-      evt.stopPropagation(nom); // hack to delint unused arg
-      // console.log(nom, 'clientX = ', evt.clientX, 'clientY = ', evt.clientY);
-    }
-
-    $window.on('resize', attachCanvas);
-
-    $canvas.on('mousedown.pdollar touchstart.pdollar', function (evt) {
-      halt(evt, 'starting');
-      if (evt.originalEvent.changedTouches) {
-        evt = evt.originalEvent.changedTouches[0];
-      }
-      if (evt.button === 2) {
-        recognizeNow();
-      } else {
-        mouseDownEvent(evt.clientX, evt.clientY);
-      }
-    });
-    $canvas.on('mousemove.pdollar touchmove.pdollar', function (evt) {
-      halt(evt, 'moving');
-      if (evt.originalEvent.changedTouches) {
-        evt = evt.originalEvent.changedTouches[0];
-      }
-      mouseMoveEvent(evt.clientX, evt.clientY);
-    });
-    $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', function (evt) {
-      halt(evt, 'ending');
-      if (evt.originalEvent.changedTouches) {
-        evt = evt.originalEvent.changedTouches[0];
-      }
-      if (_isDown) {
-        mouseUpEvent(evt.clientX, evt.clientY);
-      }
-    });
+    $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
+    $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
+    $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
     $('.overlay').on('click.pdollar', hideOverlay);
     $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
@@ -124,6 +94,36 @@ const percent = (num) => (round(num, 2) * 100)|0;
   });
 
   // ================ HELPERS ======================
+
+  function lineStart(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+    if (evt.button === 2) {
+      recognizeNow();
+    } else {
+      mouseDownEvent(evt.clientX, evt.clientY);
+    }
+  }
+
+  function lineDraw(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+    mouseMoveEvent(evt.clientX, evt.clientY);
+  }
+
+  function lineEnd(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+    if (_isDown) {
+      mouseUpEvent(evt.clientX, evt.clientY);
+    }
+  }
 
   function initAlphabet() {
     if (window._initGestures) {
