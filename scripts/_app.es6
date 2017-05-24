@@ -1,49 +1,16 @@
 /*globals */
 
-define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
+define(['jquery', 'util', 'pdollar', 'cantextro'], function ($, U, PDollar, Cantextro) {
   let dbug = 1;
 
-  var _isDown, _points, _strokeID, rcg, cxt, box; // global variables
+  var _isDown, _points, _strokeID, rcg, cxt; // global variables
   var _trainingCount = 0;
 
-  const defaults = function () {
-    $.extend(cxt, Df);
-    return cxt;
-  };
-  const clear = function () {
-    defaults();
-    fillAll();
-    drawText('Canvas cleared');
-  };
-  const drawCirc = function (x = 100, y = 100, rad = 10) {
-    cxt.beginPath();
-    cxt.arc(x, y, rad, 0, 2 * Math.PI, false);
-    cxt.stroke();
-  };
-  const fillAll = function () {
-    cxt.fillRect(0, 0, box.width, box.height);
-  };
-  const fillCirc = function (x = 100, y = 100, rad = 10) {
-    cxt.beginPath();
-    cxt.arc(x, y, rad, 0, 2 * Math.PI, false);
-    cxt.fill();
-  };
-  const newColor = function () {
-    var color = `rgb(${U.rand(0, 200)}, ${U.rand(0, 200)}, ${U.rand(0, 200)})`;
-    cxt.strokeStyle = color;
-    cxt.fillStyle = color;
-  };
   const Df = {
     font: '20px impact',
     fillStyle: 'silver',
     lineWidth: 3,
     strokeStyle: 'black',
-    defaults,
-    clear,
-    drawCirc,
-    fillAll,
-    fillCirc,
-    newColor,
   };
 
   // ================ BINDINGS ======================
@@ -61,10 +28,9 @@ define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
     function attachCanvas() {
       canvas.width = $window.width();
       canvas.height = $window.height() - 50;
-      box = getCanvasRect(canvas); // canvas rect on page
-      cxt = canvas.getContext('2d');
+      cxt = Cantextro(canvas, Df);
 
-      defaults().clear();
+      cxt.defaults().clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
       dbug && window.console.log(cxt, rcg);
     }
@@ -131,25 +97,6 @@ define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
     }
   }
 
-  function getCanvasRect(canvas) {
-    var w = canvas.width;
-    var h = canvas.height;
-    var cx = canvas.offsetLeft;
-    var cy = canvas.offsetTop;
-
-    while (canvas.offsetParent !== null) {
-      canvas = canvas.offsetParent;
-      cx += canvas.offsetLeft;
-      cy += canvas.offsetTop;
-    }
-    return {
-      x: cx,
-      y: cy,
-      width: w,
-      height: h,
-    };
-  }
-
   function getScrollY() {
     var scrollY = 0;
 
@@ -165,8 +112,8 @@ define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
   //
   function mouseDownEvent(x, y) {
     _isDown = true;
-    x -= box.x;
-    y -= box.y - getScrollY();
+    x -= cxt.box.x;
+    y -= cxt.box.y - getScrollY();
 
     if (_strokeID === 0) { // starting a new gesture
       _points.length = 0;
@@ -181,8 +128,8 @@ define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
 
   function mouseMoveEvent(x, y) {
     if (_isDown) {
-      x -= box.x;
-      y -= box.y - getScrollY();
+      x -= cxt.box.x;
+      y -= cxt.box.y - getScrollY();
       _points[_points.length] = new PDollar.Point(x, y, _strokeID); // append
       drawConnectedPoint(_points.length - 2, _points.length - 1);
     }
@@ -206,11 +153,11 @@ define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
   function drawText(str) {
     if (dbug) {
       cxt.fillStyle = 'darkgray';
-      cxt.fillRect(0, box.height - 20, box.width, box.height);
+      cxt.fillRect(0, cxt.box.height - 20, cxt.box.width, cxt.box.height);
       cxt.fillStyle = 'black';
-      cxt.fillText(str, 10.5, box.height - 2);
+      cxt.fillText(str, 10.5, cxt.box.height - 2);
       cxt.fillStyle = 'white';
-      cxt.fillText(str, 11, box.height - 2.5);
+      cxt.fillText(str, 11, cxt.box.height - 2.5);
     }
   }
 
