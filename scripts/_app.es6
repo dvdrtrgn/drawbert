@@ -58,6 +58,11 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
   // ================ HELPERS ======================
 
+  function clearCanvas() {
+    cxt.clear();
+    drawText('Canvas cleared');
+  }
+
   function lineStart(evt) {
     evt.preventDefault(evt);
     if (evt.originalEvent.changedTouches) {
@@ -117,7 +122,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
     if (_strokeID === 0) { // starting a new gesture
       _points.length = 0;
-      cxt.clear();
+      clearCanvas();
     }
     _points[_points.length] = new PDollar.Point(x, y, ++_strokeID);
     drawText(`Recording stroke #${_strokeID}...`);
@@ -182,7 +187,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   function onClickClearStrokes() {
     _points.length = 0;
     _strokeID = 0;
-    cxt.clear();
+    clearCanvas();
   }
 
   function showOverlay(result) {

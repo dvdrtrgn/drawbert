@@ -34,7 +34,6 @@ define(['jquery', 'util'], function ($, U) {
     const clear = function () {
       defaults();
       fillAll();
-      // drawText('Canvas cleared');
     };
     const drawCirc = function (x = 100, y = 100, rad = 10) {
       cxt.beginPath();
