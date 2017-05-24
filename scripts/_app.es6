@@ -1,11 +1,6 @@
-/*globals $, PDollar, _initAlphabet */
+/*globals */
 
-const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
-const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
-const undef = (x) => typeof x === 'undefined';
-const percent = (num) => (round(num, 2) * 100) | 0;
-
-(function () {
+define(['jquery', 'util', 'pdollar'], function ($, U, PDollar) {
   let dbug = 1;
 
   var _isDown, _points, _strokeID, rcg, cxt, box; // global variables
@@ -34,7 +29,7 @@ const percent = (num) => (round(num, 2) * 100) | 0;
     cxt.fill();
   };
   const newColor = function () {
-    var color = `rgb(${rand(0, 200)}, ${rand(0, 200)}, ${rand(0, 200)})`;
+    var color = `rgb(${U.rand(0, 200)}, ${U.rand(0, 200)}, ${U.rand(0, 200)})`;
     cxt.strokeStyle = color;
     cxt.fillStyle = color;
   };
@@ -158,9 +153,9 @@ const percent = (num) => (round(num, 2) * 100) | 0;
   function getScrollY() {
     var scrollY = 0;
 
-    if (!undef(document.body.parentElement)) {
+    if (!U.undef(document.body.parentElement)) {
       scrollY = document.body.parentElement.scrollTop; // IE
-    } else if (!undef(window.pageYOffset)) {
+    } else if (!U.undef(window.pageYOffset)) {
       scrollY = window.pageYOffset; // FF
     }
     return scrollY;
@@ -249,7 +244,7 @@ const percent = (num) => (round(num, 2) * 100) | 0;
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(result.Name);
 
-    $confidence.text(percent(result.Score) + '%');
+    $confidence.text(U.percent(result.Score) + '%');
     $confidence.removeClass('high low medium');
 
     if (result.Score > 0.8) {
@@ -266,7 +261,7 @@ const percent = (num) => (round(num, 2) * 100) | 0;
 
     if (_points.length > 9) {
       result = rcg.Recognize(_points);
-      drawText(`Guess: “${result.Name}” @ ${percent(result.Score)}% confidence.`);
+      drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
     } else {
       drawText('Not enough data');
     }
@@ -294,12 +289,12 @@ const percent = (num) => (round(num, 2) * 100) | 0;
     var target = evt.target;
     var name = target.dataset.name;
 
-    while (undef(name) && target.parentNode !== null) {
+    while (U.undef(name) && target.parentNode !== null) {
       target = target.parentNode;
       name = target.dataset.name;
     }
 
-    if (!undef(name)) {
+    if (!U.undef(name)) {
       addCustom(name);
       hideOverlay();
     } else {
@@ -307,7 +302,7 @@ const percent = (num) => (round(num, 2) * 100) | 0;
     }
   }
 
-}());
+});
 
 /*
 

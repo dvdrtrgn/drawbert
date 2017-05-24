@@ -235,6 +235,10 @@
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = PDollar;
+  } else if (typeof define === 'function' && define.amd) {
+    define('pdollar', function () {
+      return PDollar;
+    });
   } else {
     window.PDollar = PDollar;
   }
