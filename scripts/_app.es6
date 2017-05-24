@@ -29,7 +29,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
     function attachCanvas() {
       canvas.width = $window.width();
-      canvas.height = $window.height() - 50;
+      canvas.height = $window.height() - 60;
 
       cxt.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
@@ -70,7 +70,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
       evt = evt.originalEvent.changedTouches[0];
     }
     if (evt.button === 2) {
-      recognizeNow();
+      _strokeID = 0;
+      clearCanvas();
     } else {
       mouseDownEvent(evt.clientX, evt.clientY);
     }
