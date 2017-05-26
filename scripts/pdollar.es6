@@ -1,43 +1,36 @@
-// http://depts.washington.edu/madlab/proj/dollar/pdollar.html
 (function () {
-  //
-  // Point class
-  //
+  // globals constants
+  // http://depts.washington.edu/madlab/proj/dollar/pdollar.html
+  var NumPoints = 32;
+  var Origin = new Point(0, 0, 0);
+
+  // ================ CLASSES ====================
+
   function Point(x, y, id) {
     this.X = x;
     this.Y = y;
     this.ID = id; // stroke ID to which this point belongs (1,2,...)
   }
-  //
-  // PointCloud class: a point-cloud template
-  //
-  function PointCloud(name, points) {
+
+  function PointCloud(name, points) { // template
     this.Name = name;
     this.Points = resample(points, NumPoints);
     this.Points = scale(this.Points);
     this.Points = translateTo(this.Points, Origin);
   }
-  //
-  // Result class
-  //
+
   function Result(name, score) {
     this.Name = name;
     this.Score = score;
   }
-  //
-  // Recognizer class constants
-  //
-  var NumPoints = 32;
-  var Origin = new Point(0, 0, 0);
 
-  //
-  // Recognizer class
-  //
+  // The $P Point-Cloud Recognizer API begins here
+
   function Recognizer(_NumPoints, _Origin) {
-    //
-    // The $P Point-Cloud Recognizer API begins here --
-    // 3 methods: recognize(), addGesture(), deleteUserGestures()
-    //
+    // 3 methods:
+    //    recognize()
+    //    addGesture()
+    //    deleteUserGestures()
 
     if (typeof _NumPoints !== 'undefined') {
       NumPoints = _NumPoints;
@@ -56,17 +49,19 @@
 
       var b = +Infinity;
       var u = -1;
-      for (var i = 0; i < this.PointClouds.length; i++) // for each point-cloud template
-      {
+      // for each point-cloud template
+      for (var i = 0; i < this.PointClouds.length; i++) {
         var d = greedyCloudMatch(points, this.PointClouds[i]);
         if (d < b) {
           b = d; // best (least) distance
           u = i; // point-cloud
         }
       }
-      return (u == -1) ? new Result('No match.', 0.0) : new Result(this.PointClouds[u].Name, Math.max((b -
-        2.0) / -2.0, 0.0));
+      return (u == -1) ?
+        new Result('No match.', 0.0) :
+        new Result(this.PointClouds[u].Name, Math.max((b - 2.0) / -2.0, 0.0));
     };
+
     this.addGesture = function (name, points) {
       this.PointClouds[this.PointClouds.length] = new PointCloud(name, points);
       var num = 0;
@@ -76,6 +71,7 @@
       }
       return num;
     };
+
     this.deleteUserGestures = function () {
       this.PointClouds.length = 0; // clear any beyond the original set
       return 0;
@@ -88,13 +84,13 @@
     return null;
   }
 
-  //
-  // Private helper functions from this point down
-  //
+  // ================ PRIVATE ====================
+
   function greedyCloudMatch(points, P) {
     var e = 0.50;
     var step = Math.floor(Math.pow(points.length, 1 - e));
     var min = +Infinity;
+
     for (var i = 0; i < points.length; i += step) {
       var d1 = cloudDistance(points, P.Points, i);
       var d2 = cloudDistance(P.Points, points, i);
@@ -105,13 +101,17 @@
 
   function cloudDistance(pts1, pts2, start) {
     var matched = new Array(pts1.length); // pts1.length == pts2.length
-    for (var k = 0; k < pts1.length; k++)
+
+    for (var k = 0; k < pts1.length; k++) {
       matched[k] = false;
+    }
     var sum = 0;
     var i = start;
+
     do {
       var index = -1;
       var min = +Infinity;
+
       for (var j = 0; j < matched.length; j++) {
         if (!matched[j]) {
           var d = distance(pts1[i], pts2[j]);
@@ -133,22 +133,30 @@
     var I = pathLength(points) / (n - 1); // interval length
     var D = 0.0;
     var newpoints = new Array(points[0]);
+
     for (var i = 1; i < points.length; i++) {
       if (points[i].ID == points[i - 1].ID) {
         var d = distance(points[i - 1], points[i]);
+
         if ((D + d) >= I) {
           var qx = points[i - 1].X + ((I - D) / d) * (points[i].X - points[i - 1].X);
           var qy = points[i - 1].Y + ((I - D) / d) * (points[i].Y - points[i - 1].Y);
           var q = new Point(qx, qy, points[i].ID);
+
           newpoints[newpoints.length] = q; // append new point 'q'
-          points.splice(i, 0, q); // insert 'q' at position i in points s.t. 'q' will be the next i
+          // insert 'q' at position i in points s.t. 'q' will be the next i
+          points.splice(i, 0, q);
           D = 0.0;
         } else D += d;
       }
     }
-    if (newpoints.length == n - 1) // sometimes we fall a rounding-error short of adding the last point, so add it if so
-      newpoints[newpoints.length] = new Point(points[points.length - 1].X, points[points.length - 1].Y,
-      points[points.length - 1].ID);
+    // sometimes we fall a rounding-error short of adding the last point, so add it if so
+    if (newpoints.length == n - 1) {
+      newpoints[newpoints.length] = new Point(
+        points[points.length - 1].X,
+        points[points.length - 1].Y,
+        points[points.length - 1].ID);
+    }
     return newpoints;
   }
 
@@ -174,8 +182,7 @@
     return newpoints;
   }
 
-  function translateTo(points, pt) // translates points' centroid
-  {
+  function translateTo(points, pt) { // translates points' centroid
     var c = centroid(points);
     var newpoints = [];
     for (var i = 0; i < points.length; i++) {
@@ -198,16 +205,7 @@
     return new Point(x, y, 0);
   }
 
-  // average distance between corresponding points in two paths
-  // function PathDistance(pts1, pts2) {
-  //   var d = 0.0;
-  //   for (var i = 0; i < pts1.length; i++) // assumes pts1.length == pts2.length
-  //     d += distance(pts1[i], pts2[i]);
-  //   return d / pts1.length;
-  // }
-
-  function pathLength(points) // length traversed by a point path
-  {
+  function pathLength(points) { // length traversed by a point path
     var d = 0.0;
     for (var i = 1; i < points.length; i++) {
       if (points[i].ID == points[i - 1].ID)
@@ -216,12 +214,13 @@
     return d;
   }
 
-  function distance(p1, p2) // Euclidean distance between two points
-  {
+  function distance(p1, p2) { // Euclidean distance between two points
     var dx = p2.X - p1.X;
     var dy = p2.Y - p1.Y;
     return Math.sqrt(dx * dx + dy * dy);
   }
+
+  // ================ PUBLIC ====================
 
   var PDollar = {
     initDefaultGestures: initDefaultGestures,
@@ -238,4 +237,4 @@
   } else {
     window.PDollar = PDollar;
   }
-})();
+}());
