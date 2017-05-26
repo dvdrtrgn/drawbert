@@ -17,11 +17,23 @@ define(function () {
     if (all.length) throw Error(`collisions: ${all}`);
   }
 
+  function getScrollY() {
+    var scrollY = 0;
+
+    if (!undef(document.body.parentElement)) {
+      scrollY = document.body.parentElement.scrollTop; // IE
+    } else if (!undef(window.pageYOffset)) {
+      scrollY = window.pageYOffset; // FF
+    }
+    return scrollY;
+  }
+
   return {
     checkCollision,
+    getScrollY,
+    percent,
     rand,
     round,
     undef,
-    percent,
   };
 });

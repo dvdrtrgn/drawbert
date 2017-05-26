@@ -104,23 +104,13 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     }
   }
 
-  function getScrollY() {
-    var scrollY = 0;
-
-    if (!U.undef(document.body.parentElement)) {
-      scrollY = document.body.parentElement.scrollTop; // IE
-    } else if (!U.undef(window.pageYOffset)) {
-      scrollY = window.pageYOffset; // FF
-    }
-    return scrollY;
-  }
   //
   // Mouse Events
   //
   function mouseDownEvent(x, y) {
     _isDown = true;
     x -= cxt.box.x;
-    y -= cxt.box.y - getScrollY();
+    y -= cxt.box.y - U.getScrollY();
 
     if (_strokeID === 0) { // starting a new gesture
       _points.length = 0;
@@ -136,7 +126,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   function mouseMoveEvent(x, y) {
     if (_isDown) {
       x -= cxt.box.x;
-      y -= cxt.box.y - getScrollY();
+      y -= cxt.box.y - U.getScrollY();
       _points[_points.length] = new PDollar.Point(x, y, _strokeID); // append
       drawConnectedPoint(_points.length - 2, _points.length - 1);
     }
