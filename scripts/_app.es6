@@ -3,14 +3,15 @@
 define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 ], function ($, _, U, PDollar, Cantextro) {
   let dbug = 1;
-
-  // global variables
-  var Ctx;
-  var Down = false;
-  var Points = []; // point array for current stroke
-  var Recog = new PDollar.Recognizer();
-  var StrokeID = 0;
-  var Trainings = 0;
+  //
+  // GLOBAL VARS
+  //
+  const Points = []; // point array for current stroke
+  const Recog = new PDollar.Recognizer();
+  let Ctx;
+  let Down = false;
+  let StrokeID = 0;
+  let Trainings = 0;
 
   const Df = {
     font: '20px impact',
@@ -56,14 +57,14 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     $('.js-guess').text(result.Name);
 
     $confidence.text(U.percent(result.Score) + '%');
-    $confidence.removeClass('high low medium');
+    $confidence.removeClass('high medium low');
 
     if (result.Score > 0.8) {
       $confidence.addClass('high');
-    } else if (result.Score < 0.2) {
-      $confidence.addClass('low');
-    } else {
+    } else if (result.Score > 0.2) {
       $confidence.addClass('medium');
+    } else {
+      $confidence.addClass('low');
     }
   }
 
@@ -86,7 +87,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
       window.console.log(Points);
       num = Recog.AddGesture(name, Points);
       Trainings += 1;
-      drawText(`'${name}' added. Number of '${name}'s defined: ${num}.`);
+      drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
       StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
   }
