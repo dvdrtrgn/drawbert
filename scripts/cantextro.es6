@@ -41,6 +41,13 @@ define(['jquery', 'util'], function ($, U) {
       defaults();
       fillAll();
     };
+    const connectPoints = function (from, to) {
+      api.beginPath();
+      api.moveTo(from.X, from.Y);
+      api.lineTo(to.X, to.Y);
+      api.closePath();
+      api.stroke();
+    };
     const drawCirc = function (x = 100, y = 100, rad = 10) {
       api.beginPath();
       api.arc(x, y, rad, 0, 2 * Math.PI, false);
@@ -59,8 +66,18 @@ define(['jquery', 'util'], function ($, U) {
       api.strokeStyle = color;
       api.fillStyle = color;
     };
+    const setMessage = function (str, bkgr) {
+      api.fillStyle = bkgr;
+      api.fillRect(0, api.box.height - 20, api.box.width, api.box.height);
+      api.fillStyle = 'black';
+      api.fillText(str, 10.5, api.box.height - 2);
+      api.fillStyle = 'white';
+      api.fillText(str, 11, api.box.height - 2.5);
+    };
 
     expando(api, Df, {
+      connectPoints,
+      setMessage,
       defaults,
       clear,
       drawCirc,

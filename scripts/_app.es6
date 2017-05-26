@@ -150,21 +150,12 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   }
 
   function drawConnectedPoint(from, to) {
-    cxt.beginPath();
-    cxt.moveTo(_points[from].X, _points[from].Y);
-    cxt.lineTo(_points[to].X, _points[to].Y);
-    cxt.closePath();
-    cxt.stroke();
+    cxt.connectPoints(_points[from], _points[to]);
   }
 
   function drawText(str) {
     if (dbug) {
-      cxt.fillStyle = 'darkgray';
-      cxt.fillRect(0, cxt.box.height - 20, cxt.box.width, cxt.box.height);
-      cxt.fillStyle = 'black';
-      cxt.fillText(str, 10.5, cxt.box.height - 2);
-      cxt.fillStyle = 'white';
-      cxt.fillText(str, 11, cxt.box.height - 2.5);
+      cxt.setMessage(str, 'darkgray');
     }
   }
 
