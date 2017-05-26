@@ -10,14 +10,14 @@ window._initGestures = function (Point, recognizer) {
 
   // one predefined point-cloud for each gesture
   //
-  // recognizer.AddGesture('T', fudgeArray([
+  // recognizer.addGesture('T', fudgeArray([
   //   [30, 7, 1], [103, 7, 1], [66, 7, 2], [66, 87, 2],
   // ]));
-  // recognizer.AddGesture('N', fudgeArray([
+  // recognizer.addGesture('N', fudgeArray([
   //   [177, 92, 1], [177, 2, 1], [182, 1, 2], [246, 95, 2],
   //   [247, 87, 3], [247, 1, 3],
   // ]));
-  // recognizer.AddGesture('D', fudgeArray([
+  // recognizer.addGesture('D', fudgeArray([
   //   [345, 9, 1], [345, 87, 1], [351, 8, 2], [363, 8, 2],
   //   [372, 9, 2], [380, 11, 2], [386, 14, 2], [391, 17, 2],
   //   [394, 22, 2], [397, 28, 2], [399, 34, 2], [400, 42, 2],
@@ -26,7 +26,7 @@ window._initGestures = function (Point, recognizer) {
   //   [377, 83, 2], [372, 85, 2], [367, 87, 2], [360, 87, 2],
   //   [355, 88, 2], [349, 87, 2],
   // ]));
-  // recognizer.AddGesture('P', fudgeArray([
+  // recognizer.addGesture('P', fudgeArray([
   //   [507, 8, 1], [507, 87, 1],
   //   [513, 7, 2], [528, 7, 2], [537, 8, 2], [544, 10, 2],
   //   [550, 12, 2], [555, 15, 2], [558, 18, 2], [560, 22, 2],
@@ -35,28 +35,28 @@ window._initGestures = function (Point, recognizer) {
   //   [532, 54, 2], [525, 55, 2], [519, 55, 2], [513, 55, 2],
   //   [510, 55, 2],
   // ]));
-  // recognizer.AddGesture('X', fudgeArray([
+  // recognizer.addGesture('X', fudgeArray([
   //   [30, 146, 1], [106, 222, 1], [30, 225, 2], [106, 146, 2],
   // ]));
-  // recognizer.AddGesture('H', fudgeArray([
+  // recognizer.addGesture('H', fudgeArray([
   //   [188, 137, 1], [188, 225, 1], [188, 180, 2], [241, 180, 2],
   //   [241, 137, 3], [241, 225, 3],
   // ]));
-  // recognizer.AddGesture('I', fudgeArray([
+  // recognizer.addGesture('I', fudgeArray([
   //   [371, 149, 1], [371, 221, 1], [341, 149, 2], [401, 149, 2],
   //   [341, 221, 3], [401, 221, 3],
   // ]));
-  recognizer.AddGesture('exclamation', fudgeArray([
+  recognizer.addGesture('exclamation', fudgeArray([
     [526, 142, 1], [526, 204, 1], [526, 221, 2],
   ]));
-  recognizer.AddGesture('line', fudgeArray([
+  recognizer.addGesture('line', fudgeArray([
     [12, 347, 1], [119, 347, 1],
   ]));
-  recognizer.AddGesture('star', fudgeArray([
+  recognizer.addGesture('star', fudgeArray([
     [177, 396, 1], [223, 299, 1], [262, 396, 1], [168, 332, 1],
     [278, 332, 1], [184, 397, 1],
   ]));
-  // recognizer.AddGesture('null', fudgeArray([
+  // recognizer.addGesture('null', fudgeArray([
   //   [382, 310, 1], [377, 308, 1], [373, 307, 1], [366, 307, 1],
   //   [360, 310, 1], [356, 313, 1], [353, 316, 1], [349, 321, 1],
   //   [347, 326, 1], [344, 331, 1], [342, 337, 1], [341, 343, 1],
@@ -69,11 +69,11 @@ window._initGestures = function (Point, recognizer) {
   //   [404, 320, 1], [400, 317, 1], [393, 313, 1], [392, 312, 1],
   //   [418, 309, 2], [337, 390, 2],
   // ]));
-  recognizer.AddGesture('arrowhead', fudgeArray([
+  recognizer.addGesture('arrowhead', fudgeArray([
     [506, 349, 1], [574, 349, 1], [525, 306, 2], [584, 349, 2],
     [525, 388, 2],
   ]));
-  // recognizer.AddGesture('pitchfork', fudgeArray([
+  // recognizer.addGesture('pitchfork', fudgeArray([
   //   [38, 470, 1], [36, 476, 1], [36, 482, 1], [37, 489, 1],
   //   [39, 496, 1], [42, 500, 1], [46, 503, 1], [50, 507, 1],
   //   [56, 509, 1], [63, 509, 1], [70, 508, 1], [75, 506, 1],
@@ -81,15 +81,15 @@ window._initGestures = function (Point, recognizer) {
   //   [88, 480, 1], [88, 474, 1], [87, 468, 1], [62, 464, 2],
   //   [62, 571, 2],
   // ]));
-  // recognizer.AddGesture('six-point star', fudgeArray([
+  // recognizer.addGesture('six-point star', fudgeArray([
   //   [177, 554, 1], [223, 476, 1], [268, 554, 1], [183, 554, 1],
   //   [177, 490, 2], [223, 568, 2], [268, 490, 2], [183, 490, 2],
   // ]));
-  recognizer.AddGesture('asterisk', fudgeArray([
+  recognizer.addGesture('asterisk', fudgeArray([
     [325, 499, 1], [417, 557, 1], [417, 499, 2], [325, 557, 2],
     [371, 486, 3], [371, 571, 3],
   ]));
-  // recognizer.AddGesture('half-note', fudgeArray([
+  // recognizer.addGesture('half-note', fudgeArray([
   //   [546, 465, 1], [546, 531, 1],
   //   [540, 530, 2], [536, 529, 2], [533, 528, 2], [529, 529, 2],
   //   [524, 530, 2], [520, 532, 2], [515, 535, 2], [511, 539, 2],
@@ -99,11 +99,11 @@ window._initGestures = function (Point, recognizer) {
   //   [544, 544, 2], [546, 540, 2], [546, 536, 2],
   // ]));
 
-  recognizer.AddGesture('square', fudgeArray([
+  recognizer.addGesture('square', fudgeArray([
     [1, 1, 1], [2, 1, 1], [2, 2, 1], [1, 2, 1], [1, 1, 1],
   ]));
 
-  recognizer.AddGesture('triangle', fudgeArray([
+  recognizer.addGesture('triangle', fudgeArray([
     [2, 1, 1], [3, 3, 1], [1, 3, 1], [2, 1, 1],
   ]));
 

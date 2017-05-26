@@ -85,7 +85,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
     if (Points.length >= 10 && name.length > 0) {
       window.console.log(Points);
-      num = Recog.AddGesture(name, Points);
+      num = Recog.addGesture(name, Points);
       Trainings += 1;
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
       StrokeID = 0; // signal to begin new gesture on next mouse-down
@@ -113,7 +113,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     var result;
 
     if (Points.length > 9) {
-      result = Recog.Recognize(Points);
+      result = Recog.recognize(Points);
       drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
     } else {
       drawText('Not enough data');
