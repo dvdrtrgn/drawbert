@@ -19,82 +19,57 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     strokeStyle: 'black',
   };
 
-  // ================ BINDINGS ======================
-
-  function init(canvas) {
-    cxt = Cantextro(canvas, Df);
-
-    var $window = $(window);
-    var $canvas = $(canvas);
-
-    function attachCanvas() {
-      canvas.width = $window.width();
-      canvas.height = $window.height() - 60;
-
-      cxt.clear();
-      window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && window.console.log(cxt);
-    }
-
-    function bindHanders() {
-      $window.on('resize', _.debounce(attachCanvas, 333));
-      $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
-      $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
-      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
-
-      $('.overlay').on('click.pdollar', hideOverlay);
-      $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
-      $('.js-init').on('click.pdollar', onClickInit);
-      $('.js-check').on('click.pdollar', recognizeNow);
-      $('.js-choice').on('mousedown.pdollar', addSampleGesture);
-    }
-
-    bindHanders();
-    attachCanvas();
-    updateCount();
+  //
+  // CONTEXT OPS
+  //
+  function drawText(str) {
     if (dbug) {
-      onClickInit();
+      cxt.setMessage(str, 'darkgray');
     }
   }
-
-  // ================ HELPERS ======================
 
   function clearCanvas() {
     cxt.clear();
     drawText('Canvas cleared');
   }
 
-  function lineStart(evt) {
-    evt.preventDefault(evt);
-    if (evt.originalEvent.changedTouches) {
-      evt = evt.originalEvent.changedTouches[0];
-    }
-    if (evt.button === 2) {
-      _strokeID = 0;
-      clearCanvas();
+  function drawConnectedPoint(from, to) {
+    cxt.connectPoints(_points[from], _points[to]);
+  }
+
+  //
+  // DOM OPS
+  //
+  function updateCount() {
+    $('.js-gesture-count').text(_trainingCount);
+  }
+
+  function hideOverlay() {
+    $('.overlay').addClass('hidden');
+    updateCount();
+  }
+
+  function showOverlay(result) {
+    var $confidence = $('.js-confidence');
+
+    $('.overlay').removeClass('hidden');
+    $('.js-guess').text(result.Name);
+
+    $confidence.text(U.percent(result.Score) + '%');
+    $confidence.removeClass('high low medium');
+
+    if (result.Score > 0.8) {
+      $confidence.addClass('high');
+    } else if (result.Score < 0.2) {
+      $confidence.addClass('low');
     } else {
-      mouseDownEvent(evt.clientX, evt.clientY);
+      $confidence.addClass('medium');
     }
   }
 
-  function lineDraw(evt) {
-    evt.preventDefault(evt);
-    if (evt.originalEvent.changedTouches) {
-      evt = evt.originalEvent.changedTouches[0];
-    }
-    mouseMoveEvent(evt.clientX, evt.clientY);
-  }
-
-  function lineEnd(evt) {
-    evt.preventDefault(evt);
-    if (evt.originalEvent.changedTouches) {
-      evt = evt.originalEvent.changedTouches[0];
-    }
-    if (_isDown) {
-      mouseUpEvent(evt.clientX, evt.clientY);
-    }
-  }
-
+  //
+  // RECOG OPS
+  //
   function initAlphabet() {
     if (window._initGestures) {
       _trainingCount += window._initGestures(PDollar.Point, rcg);
@@ -104,8 +79,57 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     }
   }
 
+  function addCustom(name) {
+    var num;
+
+    if (_points.length >= 10 && name.length > 0) {
+      window.console.log(_points);
+      num = rcg.AddGesture(name, _points);
+      _trainingCount += 1;
+      drawText(`'${name}' added. Number of '${name}'s defined: ${num}.`);
+      _strokeID = 0; // signal to begin new gesture on next mouse-down
+    }
+  }
+
+  function addSampleGesture(evt) {
+    var target = evt.target;
+    var name = target.dataset.name;
+
+    while (U.undef(name) && target.parentNode !== null) {
+      target = target.parentNode;
+      name = target.dataset.name;
+    }
+
+    if (!U.undef(name)) {
+      addCustom(name);
+      hideOverlay();
+    } else {
+      alert('Unknown gesture chosen.');
+    }
+  }
+
+  function quickRecognize() {
+    var result;
+
+    if (_points.length > 9) {
+      result = rcg.Recognize(_points);
+      drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
+    } else {
+      drawText('Not enough data');
+    }
+    return result;
+  }
+
+  function recognizeNow() {
+    var result = quickRecognize();
+    if (result) {
+      showOverlay(result);
+      _strokeID = 0; // signal to begin new gesture on next mouse-down
+    }
+  }
+
   //
-  // Mouse Events
+  // Mouse Handlers
   //
   function mouseDownEvent(x, y) {
     _isDown = true;
@@ -139,28 +163,9 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     quickRecognize();
   }
 
-  function drawConnectedPoint(from, to) {
-    cxt.connectPoints(_points[from], _points[to]);
-  }
-
-  function drawText(str) {
-    if (dbug) {
-      cxt.setMessage(str, 'darkgray');
-    }
-  }
-
-  function addCustom(name) {
-    var num;
-
-    if (_points.length >= 10 && name.length > 0) {
-      window.console.log(_points);
-      num = rcg.AddGesture(name, _points);
-      _trainingCount += 1;
-      drawText(`'${name}' added. Number of '${name}'s defined: ${num}.`);
-      _strokeID = 0; // signal to begin new gesture on next mouse-down
-    }
-  }
-
+  //
+  // Click Events
+  //
   function onClickInit() {
     $('.js-init').hide();
     initAlphabet();
@@ -173,67 +178,73 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     clearCanvas();
   }
 
-  function showOverlay(result) {
-    var $confidence = $('.js-confidence');
-
-    $('.overlay').removeClass('hidden');
-    $('.js-guess').text(result.Name);
-
-    $confidence.text(U.percent(result.Score) + '%');
-    $confidence.removeClass('high low medium');
-
-    if (result.Score > 0.8) {
-      $confidence.addClass('high');
-    } else if (result.Score < 0.2) {
-      $confidence.addClass('low');
+  function lineStart(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+    if (evt.button === 2) {
+      _strokeID = 0;
+      clearCanvas();
     } else {
-      $confidence.addClass('medium');
+      mouseDownEvent(evt.clientX, evt.clientY);
     }
   }
 
-  function quickRecognize() {
-    var result;
-
-    if (_points.length > 9) {
-      result = rcg.Recognize(_points);
-      drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
-    } else {
-      drawText('Not enough data');
+  function lineDraw(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
     }
-    return result;
+    mouseMoveEvent(evt.clientX, evt.clientY);
   }
 
-  function recognizeNow() {
-    var result = quickRecognize();
-    if (result) {
-      showOverlay(result);
-      _strokeID = 0; // signal to begin new gesture on next mouse-down
+  function lineEnd(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+    if (_isDown) {
+      mouseUpEvent(evt.clientX, evt.clientY);
     }
   }
 
-  function updateCount() {
-    $('.js-gesture-count').text(_trainingCount);
-  }
+  // ================ BINDINGS ======================
 
-  function hideOverlay() {
-    $('.overlay').addClass('hidden');
+  function init(canvas) {
+    cxt = Cantextro(canvas, Df);
+
+    var $window = $(window);
+    var $canvas = $(canvas);
+
+    function attachCanvas() {
+      canvas.width = $window.width();
+      canvas.height = $window.height() - 60;
+
+      cxt.clear();
+      window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
+      dbug && window.console.log(cxt);
+    }
+
+    function bindHanders() {
+      $window.on('resize', _.debounce(attachCanvas, 333));
+      $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
+      $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
+      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
+
+      $('.overlay').on('click.pdollar', hideOverlay);
+      $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
+      $('.js-init').on('click.pdollar', onClickInit);
+      $('.js-check').on('click.pdollar', recognizeNow);
+      $('.js-choice').on('mousedown.pdollar', addSampleGesture);
+    }
+
+    bindHanders();
+    attachCanvas();
     updateCount();
-  }
 
-  function addSampleGesture(evt) {
-    var target = evt.target;
-    var name = target.dataset.name;
-
-    while (U.undef(name) && target.parentNode !== null) {
-      target = target.parentNode;
-      name = target.dataset.name;
-    }
-
-    if (!U.undef(name)) {
-      addCustom(name);
-      hideOverlay();
-    } else {
-      alert('Unknown gesture chosen.');
+    if (dbug) {
+      onClickInit();
     }
   }
 
