@@ -5,12 +5,12 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   let dbug = 1;
 
   // global variables
-  var cxt;
-  var rcg = new PDollar.Recognizer();
-  var _trainingCount = 0;
-  var _points = []; // point array for current stroke
-  var _strokeID = 0;
-  var _isDown = false;
+  var Ctx;
+  var Down = false;
+  var Points = []; // point array for current stroke
+  var Recog = new PDollar.Recognizer();
+  var StrokeID = 0;
+  var Trainings = 0;
 
   const Df = {
     font: '20px impact',
@@ -24,24 +24,24 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   //
   function drawText(str) {
     if (dbug) {
-      cxt.setMessage(str, 'darkgray');
+      Ctx.setMessage(str, 'darkgray');
     }
   }
 
   function clearCanvas() {
-    cxt.clear();
+    Ctx.clear();
     drawText('Canvas cleared');
   }
 
   function drawConnectedPoint(from, to) {
-    cxt.connectPoints(_points[from], _points[to]);
+    Ctx.connectPoints(Points[from], Points[to]);
   }
 
   //
   // DOM OPS
   //
   function updateCount() {
-    $('.js-gesture-count').text(_trainingCount);
+    $('.js-gesture-count').text(Trainings);
   }
 
   function hideOverlay() {
@@ -72,22 +72,22 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   //
   function initAlphabet() {
     if (window._initGestures) {
-      _trainingCount += window._initGestures(PDollar.Point, rcg);
+      Trainings += window._initGestures(PDollar.Point, Recog);
     }
     if (window._initAlphabet) {
-      _trainingCount += window._initAlphabet(PDollar.Point, rcg);
+      Trainings += window._initAlphabet(PDollar.Point, Recog);
     }
   }
 
   function addCustom(name) {
     var num;
 
-    if (_points.length >= 10 && name.length > 0) {
-      window.console.log(_points);
-      num = rcg.AddGesture(name, _points);
-      _trainingCount += 1;
+    if (Points.length >= 10 && name.length > 0) {
+      window.console.log(Points);
+      num = Recog.AddGesture(name, Points);
+      Trainings += 1;
       drawText(`'${name}' added. Number of '${name}'s defined: ${num}.`);
-      _strokeID = 0; // signal to begin new gesture on next mouse-down
+      StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
   }
 
@@ -111,8 +111,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   function quickRecognize() {
     var result;
 
-    if (_points.length > 9) {
-      result = rcg.Recognize(_points);
+    if (Points.length > 9) {
+      result = Recog.Recognize(Points);
       drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
     } else {
       drawText('Not enough data');
@@ -124,7 +124,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     var result = quickRecognize();
     if (result) {
       showOverlay(result);
-      _strokeID = 0; // signal to begin new gesture on next mouse-down
+      StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
   }
 
@@ -132,34 +132,34 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   // Mouse Handlers
   //
   function mouseDownEvent(x, y) {
-    _isDown = true;
-    x -= cxt.box.x;
-    y -= cxt.box.y - U.getScrollY();
+    Down = true;
+    x -= Ctx.box.x;
+    y -= Ctx.box.y - U.getScrollY();
 
-    if (_strokeID === 0) { // starting a new gesture
-      _points.length = 0;
+    if (StrokeID === 0) { // starting a new gesture
+      Points.length = 0;
       clearCanvas();
     }
-    _points[_points.length] = new PDollar.Point(x, y, ++_strokeID);
-    drawText(`Recording stroke #${_strokeID}...`);
+    Points[Points.length] = new PDollar.Point(x, y, ++StrokeID);
+    drawText(`Recording stroke #${StrokeID}...`);
 
-    cxt.newColor();
-    cxt.drawCirc(x, y, 8);
+    Ctx.newColor();
+    Ctx.drawCirc(x, y, 8);
   }
 
   function mouseMoveEvent(x, y) {
-    if (_isDown) {
-      x -= cxt.box.x;
-      y -= cxt.box.y - U.getScrollY();
-      _points[_points.length] = new PDollar.Point(x, y, _strokeID); // append
-      drawConnectedPoint(_points.length - 2, _points.length - 1);
+    if (Down) {
+      x -= Ctx.box.x;
+      y -= Ctx.box.y - U.getScrollY();
+      Points[Points.length] = new PDollar.Point(x, y, StrokeID); // append
+      drawConnectedPoint(Points.length - 2, Points.length - 1);
     }
   }
 
   function mouseUpEvent(x, y) {
-    cxt.fillRect(x - 4, y - 4, 8, 8);
-    _isDown = false;
-    drawText(`Stroke #${_strokeID} recorded`);
+    Ctx.fillRect(x - 4, y - 4, 8, 8);
+    Down = false;
+    drawText(`Stroke #${StrokeID} recorded`);
     quickRecognize();
   }
 
@@ -173,8 +173,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   }
 
   function onClickClearStrokes() {
-    _points.length = 0;
-    _strokeID = 0;
+    Points.length = 0;
+    StrokeID = 0;
     clearCanvas();
   }
 
@@ -184,7 +184,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
       evt = evt.originalEvent.changedTouches[0];
     }
     if (evt.button === 2) {
-      _strokeID = 0;
+      StrokeID = 0;
       clearCanvas();
     } else {
       mouseDownEvent(evt.clientX, evt.clientY);
@@ -204,7 +204,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     if (evt.originalEvent.changedTouches) {
       evt = evt.originalEvent.changedTouches[0];
     }
-    if (_isDown) {
+    if (Down) {
       mouseUpEvent(evt.clientX, evt.clientY);
     }
   }
@@ -212,7 +212,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   // ================ BINDINGS ======================
 
   function init(canvas) {
-    cxt = Cantextro(canvas, Df);
+    Ctx = Cantextro(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
@@ -221,9 +221,9 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
       canvas.width = $window.width();
       canvas.height = $window.height() - 60;
 
-      cxt.clear();
+      Ctx.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && window.console.log(cxt);
+      dbug && window.console.log(Ctx);
     }
 
     function bindHanders() {
