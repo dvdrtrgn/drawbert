@@ -1,17 +1,17 @@
 /*globals */
 
-define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
-], function ($, _, U, PDollar, Cantextro) {
+define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
+], function ($, _, U, PDollar, Cantextro, Dom) {
   let dbug = 1;
   //
   // GLOBAL VARS
   //
+  const C = window.console;
   const Points = []; // point array for current stroke
   const Recog = new PDollar.Recognizer();
   let Ctx;
   let Down = false;
   let StrokeID = 0;
-  let Trainings = 0;
 
   const Df = {
     font: '20px impact',
@@ -41,42 +41,24 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   //
   // DOM OPS
   //
-  function updateCount() {
-    $('.js-gesture-count').text(Trainings);
-  }
-
   function hideOverlay() {
-    $('.overlay').addClass('hidden');
-    updateCount();
-  }
-
-  function showOverlay(result) {
-    var $confidence = $('.js-confidence');
-
-    $('.overlay').removeClass('hidden');
-    $('.js-guess').text(result.name);
-
-    $confidence.text(U.percent(result.score) + '%');
-    $confidence.removeClass('high medium low');
-
-    if (result.score > 0.8) {
-      $confidence.addClass('high');
-    } else if (result.score > 0.2) {
-      $confidence.addClass('medium');
-    } else {
-      $confidence.addClass('low');
-    }
+    Dom.hideOverlay();
+    Dom.updateCount(trainingTotal());
   }
 
   //
   // RECOG OPS
   //
+  function trainingTotal() {
+    return Recog.clouds.length;
+  }
+
   function initAlphabet() {
     if (window._initGestures) {
-      Trainings += window._initGestures(PDollar.Point, Recog);
+      window._initGestures(PDollar.Point, Recog);
     }
     if (window._initAlphabet) {
-      Trainings += window._initAlphabet(PDollar.Point, Recog);
+      window._initAlphabet(PDollar.Point, Recog);
     }
   }
 
@@ -84,9 +66,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     var num;
 
     if (Points.length >= 10 && name.length > 0) {
-      window.console.log(Points);
+      dbug && C.log(Points);
       num = Recog.addGesture(name, Points);
-      Trainings += 1;
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
       StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
@@ -124,7 +105,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   function recognizeNow() {
     var result = quickRecognize();
     if (result) {
-      showOverlay(result);
+      Dom.showOverlay(result);
       StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
   }
@@ -170,7 +151,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
   function onClickInit() {
     $('.js-init').hide();
     initAlphabet();
-    updateCount();
+    Dom.updateCount(trainingTotal());
   }
 
   function onClickClearStrokes() {
@@ -224,7 +205,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
       Ctx.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && window.console.log(Ctx);
+      dbug && C.log(Ctx);
     }
 
     function bindHanders() {
@@ -242,7 +223,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
     bindHanders();
     attachCanvas();
-    updateCount();
+    Dom.updateCount(trainingTotal());
 
     if (dbug) {
       onClickInit();
