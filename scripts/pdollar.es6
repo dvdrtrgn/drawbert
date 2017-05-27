@@ -83,12 +83,6 @@
     };
   }
 
-  function initDefaultGestures(recognizer) {
-    window._initGestures && window._initGestures(Point, recognizer);
-    // This is to indicate that the operation was destructive.
-    return null;
-  }
-
   // ================ PRIVATE ====================
 
   function greedyCloudMatch(points, P) {
@@ -234,7 +228,6 @@
   // ================ PUBLIC ====================
 
   const PDollar = Object.freeze({
-    initDefaultGestures: initDefaultGestures,
     Point: Point,
     Recognizer: Recognizer,
   });
