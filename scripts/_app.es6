@@ -54,14 +54,14 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
     var $confidence = $('.js-confidence');
 
     $('.overlay').removeClass('hidden');
-    $('.js-guess').text(result.Name);
+    $('.js-guess').text(result.name);
 
-    $confidence.text(U.percent(result.Score) + '%');
+    $confidence.text(U.percent(result.score) + '%');
     $confidence.removeClass('high medium low');
 
-    if (result.Score > 0.8) {
+    if (result.score > 0.8) {
       $confidence.addClass('high');
-    } else if (result.Score > 0.2) {
+    } else if (result.score > 0.2) {
       $confidence.addClass('medium');
     } else {
       $confidence.addClass('low');
@@ -114,7 +114,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro',
 
     if (Points.length > 9) {
       result = Recog.recognize(Points);
-      drawText(`Guess: “${result.Name}” @ ${U.percent(result.Score)}% confidence.`);
+      drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
     } else {
       drawText('Not enough data');
     }

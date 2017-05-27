@@ -13,15 +13,15 @@
   }
 
   function PointCloud(name, points) { // template
-    this.Name = name;
-    this.Points = resample(points, NumPoints);
-    this.Points = scale(this.Points);
-    this.Points = translateTo(this.Points, Origin);
+    this.name = name;
+    this.points = resample(points, NumPoints);
+    this.points = scale(this.points);
+    this.points = translateTo(this.points, Origin);
   }
 
   function Result(name, score) {
-    this.Name = name;
-    this.Score = score;
+    this.name = name;
+    this.score = score;
   }
 
   // The $P Point-Cloud Recognizer API begins here
@@ -59,7 +59,7 @@
       }
       return (u == -1) ?
         new Result('No match.', 0.0) :
-        new Result(this.PointClouds[u].Name, Math.max((b - 2.0) / -2.0, 0.0));
+        new Result(this.PointClouds[u].name, Math.max((b - 2.0) / -2.0, 0.0));
     };
 
     this.addGesture = function (name, points) {
@@ -67,7 +67,7 @@
       this.PointClouds[this.PointClouds.length] = new PointCloud(name, points);
 
       for (let i = 0; i < this.PointClouds.length; i++) {
-        if (this.PointClouds[i].Name == name) {
+        if (this.PointClouds[i].name == name) {
           num++;
         }
       }
@@ -94,8 +94,8 @@
     let min = +Infinity;
 
     for (let i = 0; i < points.length; i += step) {
-      const d1 = cloudDistance(points, P.Points, i);
-      const d2 = cloudDistance(P.Points, points, i);
+      const d1 = cloudDistance(points, P.points, i);
+      const d2 = cloudDistance(P.points, points, i);
       min = Math.min(min, Math.min(d1, d2)); // min3
     }
     return min;
