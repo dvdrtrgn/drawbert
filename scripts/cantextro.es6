@@ -1,6 +1,7 @@
 /*globals */
 
 define(['jquery', 'util'], function ($, U) {
+  const C = window.console;
 
   function getRect(context) {
     let canvas = context.canvas;
@@ -22,6 +23,12 @@ define(['jquery', 'util'], function ($, U) {
     };
   }
 
+  function expando(obj, ...args) {
+    var exp = $.extend({}, ...args);
+    U.checkCollision(obj, exp);
+    $.extend(obj, exp);
+  }
+
   function Cantextro(canvas, Df) {
     let api = canvas.getContext('2d');
 
@@ -33,6 +40,13 @@ define(['jquery', 'util'], function ($, U) {
     const clear = function () {
       defaults();
       fillAll();
+    };
+    const connectPoints = function (from, to) {
+      api.beginPath();
+      api.moveTo(from.X, from.Y);
+      api.lineTo(to.X, to.Y);
+      api.closePath();
+      api.stroke();
     };
     const drawCirc = function (x = 100, y = 100, rad = 10) {
       api.beginPath();
@@ -52,8 +66,18 @@ define(['jquery', 'util'], function ($, U) {
       api.strokeStyle = color;
       api.fillStyle = color;
     };
+    const setMessage = function (str, bkgr) {
+      api.fillStyle = bkgr;
+      api.fillRect(0, api.box.height - 20, api.box.width, api.box.height);
+      api.fillStyle = 'black';
+      api.fillText(str, 10.5, api.box.height - 2);
+      api.fillStyle = 'white';
+      api.fillText(str, 11, api.box.height - 2.5);
+    };
 
-    $.extend(api, Df, {
+    expando(api, Df, {
+      connectPoints,
+      setMessage,
       defaults,
       clear,
       drawCirc,
