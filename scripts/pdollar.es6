@@ -1,8 +1,11 @@
 // http://depts.washington.edu/madlab/proj/dollar/pdollar.html
 (function () {
-  // globals (constants?)
-  let NumPoints = 32;
-  let Origin = new Point(0, 0, 0);
+
+  // defaults (globals/constants)
+  const DEF = {
+    numPoints: 32, // lower...fewer
+    origin: new Point(0, 0, 0),
+  };
 
   // ================ CLASSES ====================
 
@@ -14,9 +17,9 @@
 
   function PointCloud(name, points) { // template
     this.name = name;
-    this.points = resample(points, NumPoints);
+    this.points = resample(points, DEF.numPoints);
     this.points = scale(this.points);
-    this.points = translateTo(this.points, Origin);
+    this.points = translateTo(this.points, DEF.origin);
   }
 
   function Result(name, score) {
@@ -26,26 +29,26 @@
 
   // The $P Point-Cloud Recognizer API begins here
 
-  function Recognizer(_NumPoints, _Origin) {
+  function Recognizer(numPoints, origin) {
     // 3 methods:
     //    recognize()
     //    addGesture()
     //    deleteUserGestures()
 
-    if (typeof _NumPoints !== 'undefined') {
-      NumPoints = _NumPoints;
+    if (typeof numPoints !== 'undefined') {
+      DEF.numPoints = numPoints;
     }
 
-    if (typeof _Origin !== 'undefined') {
-      Origin = _Origin;
+    if (typeof origin !== 'undefined') {
+      DEF.origin = origin;
     }
 
     this.PointClouds = [];
 
     this.recognize = function (points) {
-      points = resample(points, NumPoints);
+      points = resample(points, DEF.numPoints);
       points = scale(points);
-      points = translateTo(points, Origin);
+      points = translateTo(points, DEF.origin);
 
       let b = +Infinity;
       let u = -1;
