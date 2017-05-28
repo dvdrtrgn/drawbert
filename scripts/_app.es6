@@ -1,17 +1,16 @@
 /*globals */
 
-define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
-], function ($, _, U, PDollar, Cantextro, Dom) {
+define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
+], function ($, _, U, PDollar, Cantextro, Dom, Gesture) {
   let dbug = 1;
   //
   // GLOBAL VARS
   //
   const C = window.console;
-  const Points = []; // point array for current stroke
+  const Gest = Gesture.make(); // point array for current stroke(s)
   const Recog = new PDollar.Recognizer();
   let Ctx;
   let Down = false;
-  let StrokeID = 0;
 
   const Df = {
     font: '20px impact',
@@ -34,8 +33,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     drawText('Canvas cleared');
   }
 
-  function drawConnectedPoint(from, to) {
-    Ctx.connectPoints(Points[from], Points[to]);
+  function drawConnectedPoint() {
+    Ctx.connectPoints(Gest.from, Gest.to);
   }
 
   //
@@ -62,18 +61,18 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     }
   }
 
-  function addCustom(name) {
+  function nameGesture(name) {
     var num;
 
-    if (Points.length >= 10 && name.length > 0) {
-      dbug && C.log(Points);
-      num = Recog.addGesture(name, Points);
+    if (Gest.enough && name.length > 0) {
+      dbug && C.log(Gest);
+      num = Recog.addGesture(name, Gest);
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
-      StrokeID = 0; // signal to begin new gesture on next mouse-down
+      Gest.clear();
     }
   }
 
-  function addSampleGesture(evt) {
+  function assignGesture(evt) {
     var target = evt.target;
     var name = target.dataset.name;
 
@@ -83,18 +82,18 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     }
 
     if (!U.undef(name)) {
-      addCustom(name);
+      nameGesture(name);
       hideOverlay();
     } else {
       alert('Unknown gesture chosen.');
     }
   }
 
-  function quickRecognize() {
+  function tryRecognize() {
     var result;
 
-    if (Points.length > 9) {
-      result = Recog.recognize(Points);
+    if (Gest.enough) {
+      result = Recog.recognize(Gest);
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
     } else {
       drawText('Not enough data');
@@ -102,11 +101,10 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     return result;
   }
 
-  function recognizeNow() {
-    var result = quickRecognize();
+  function openTrainer() {
+    var result = tryRecognize();
     if (result) {
       Dom.showOverlay(result);
-      StrokeID = 0; // signal to begin new gesture on next mouse-down
     }
   }
 
@@ -118,12 +116,12 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     x -= Ctx.box.x;
     y -= Ctx.box.y - U.getScrollY();
 
-    if (StrokeID === 0) { // starting a new gesture
-      Points.length = 0;
+    if (Gest.stroke === 0) { // starting a new gesture
+      Gest.clear();
       clearCanvas();
     }
-    Points[Points.length] = new PDollar.Point(x, y, ++StrokeID);
-    drawText(`Recording stroke #${StrokeID}...`);
+    Gest.nextStroke().addPoint(x, y);
+    drawText(`Recording stroke #${Gest.stroke}...`);
 
     Ctx.newColor();
     Ctx.drawCirc(x, y, 8);
@@ -133,16 +131,16 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
     if (Down) {
       x -= Ctx.box.x;
       y -= Ctx.box.y - U.getScrollY();
-      Points[Points.length] = new PDollar.Point(x, y, StrokeID); // append
-      drawConnectedPoint(Points.length - 2, Points.length - 1);
+      Gest.addPoint(x, y);
+      drawConnectedPoint();
     }
   }
 
   function mouseUpEvent(x, y) {
     Ctx.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    drawText(`Stroke #${StrokeID} recorded`);
-    quickRecognize();
+    drawText(`Stroke #${Gest.stroke} recorded`);
+    tryRecognize();
   }
 
   //
@@ -155,8 +153,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
   }
 
   function onClickClearStrokes() {
-    Points.length = 0;
-    StrokeID = 0;
+    Gest.clear();
     clearCanvas();
   }
 
@@ -166,8 +163,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
       evt = evt.originalEvent.changedTouches[0];
     }
     if (evt.button === 2) {
-      StrokeID = 0;
-      clearCanvas();
+      onClickClearStrokes();
     } else {
       mouseDownEvent(evt.clientX, evt.clientY);
     }
@@ -217,8 +213,8 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom',
       $('.overlay').on('click.pdollar', hideOverlay);
       $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
       $('.js-init').on('click.pdollar', onClickInit);
-      $('.js-check').on('click.pdollar', recognizeNow);
-      $('.js-choice').on('mousedown.pdollar', addSampleGesture);
+      $('.js-check').on('click.pdollar', openTrainer);
+      $('.js-choice').on('mousedown.pdollar', assignGesture);
     }
 
     bindHanders();
