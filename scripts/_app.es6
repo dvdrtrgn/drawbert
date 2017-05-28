@@ -30,6 +30,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
 
   function clearCanvas() {
     Ctx.clear();
+    Gest.clear();
     drawText('Canvas cleared');
   }
 
@@ -72,23 +73,6 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
     }
   }
 
-  function assignGesture(evt) {
-    var target = evt.target;
-    var name = target.dataset.name;
-
-    while (U.undef(name) && target.parentNode !== null) {
-      target = target.parentNode;
-      name = target.dataset.name;
-    }
-
-    if (!U.undef(name)) {
-      nameGesture(name);
-      hideOverlay();
-    } else {
-      alert('Unknown gesture chosen.');
-    }
-  }
-
   function tryRecognize() {
     var result;
 
@@ -116,10 +100,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
     x -= Ctx.box.x;
     y -= Ctx.box.y - U.getScrollY();
 
-    if (Gest.stroke === 0) { // starting a new gesture
-      Gest.clear();
-      clearCanvas();
-    }
+    Gest.stroke || clearCanvas(); // starting a new gesture
     Gest.nextStroke().addPoint(x, y);
     drawText(`Recording stroke #${Gest.stroke}...`);
 
@@ -152,9 +133,15 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
     Dom.updateCount(trainingTotal());
   }
 
-  function onClickClearStrokes() {
-    Gest.clear();
-    clearCanvas();
+  function assignGesture(evt) {
+    var name = $(evt.target).data('name');
+
+    if (U.undef(name)) {
+      alert('Unknown gesture chosen.');
+    } else {
+      nameGesture(name);
+      hideOverlay();
+    }
   }
 
   function lineStart(evt) {
@@ -163,7 +150,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
       evt = evt.originalEvent.changedTouches[0];
     }
     if (evt.button === 2) {
-      onClickClearStrokes();
+      clearCanvas();
     } else {
       mouseDownEvent(evt.clientX, evt.clientY);
     }
@@ -211,7 +198,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
       $('.overlay').on('click.pdollar', hideOverlay);
-      $('.js-clear-stroke').on('click.pdollar', onClickClearStrokes);
+      $('.js-clear-stroke').on('click.pdollar', clearCanvas);
       $('.js-init').on('click.pdollar', onClickInit);
       $('.js-check').on('click.pdollar', openTrainer);
       $('.js-choice').on('mousedown.pdollar', assignGesture);
