@@ -15,15 +15,15 @@ require.config({
   },
 });
 
-require(['jquery', '_app'], function ($, App) {
+require(['jquery', '_app', 'data'], function ($, App, Data) {
+  W.drt = {
+    App,
+    data: Data.make(),
+  };
 
   $(function () {
     App.init($('canvas:first')[0]);
   });
-
-  W.drt = {
-    App,
-  };
 
   C.log('_main', W.drt);
 });

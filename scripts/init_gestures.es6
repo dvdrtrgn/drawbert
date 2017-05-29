@@ -7,6 +7,8 @@ window._initGestures = function (Point, recognizer) {
   }
 
   function fudgeRead(nom, arr) {
+    // window.drt.data.readOld(nom, arr).save();
+
     recognizer.addGesture(nom, makePoints(arr));
   }
 

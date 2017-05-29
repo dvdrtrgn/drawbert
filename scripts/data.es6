@@ -1,13 +1,20 @@
 /*globals */
 
 define(['jquery', 'util'], function () {
-  const C = window.console;
   var History = [];
+  const C = window.console;
+  const Name = 'Data';
+  const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
 
   function Construct() {
     var _name;
     var _orig;
     var _read;
+
+    function readNew(arg) {
+      arg = arg || ['asterisk', '325,499,417,557', '417,499,325,557', '371,486,371,571'];
+      return arg;
+    }
 
     function readOld(name, orig) {
       _name = name;
@@ -22,20 +29,40 @@ define(['jquery', 'util'], function () {
       return this;
     }
 
+    function toCode() {
+      return `drt.data.ondeck = [
+  ${toString()},
+];`; // note addedd trailing comma!
+    }
+
     function toString() {
-      var arr = _read.map(String);
-      return arr.join('|');
+      var arr = toStrings();
+      return reQuo(arr.join(',\n  '));
+    }
+
+    function toStrings() {
+      return _read.map(makeJSON);
+    }
+
+    function makeJSON(x) {
+      let str = JSON.stringify(x || _read);
+      return reQuo(str);
     }
 
     function save() {
+      C.log(Name, 'saving', _name); // toCode()
       History.push(_read);
     }
 
     var api = {
+      ondeck: 0,
       History,
       readOld,
+      makeJSON,
       save,
+      toCode,
       toString,
+      toStrings,
     };
 
     Object.defineProperties(api, {
@@ -47,6 +74,9 @@ define(['jquery', 'util'], function () {
       },
       read: {
         get: () => _read,
+      },
+      ondeck: {
+        set: readNew,
       },
     });
 
