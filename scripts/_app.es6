@@ -9,7 +9,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   const C = window.console;
   const Gest = Gesture.make(); // point array for current stroke(s)
   const Recog = new PDollar.Recognizer();
-  let Ctx;
+  let Render;
   let Down = false;
 
   const Df = {
@@ -24,18 +24,18 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   //
   function drawText(str) {
     if (dbug) {
-      Ctx.setMessage(str, 'darkgray');
+      Render.setMessage(str, 'darkgray');
     }
   }
 
   function clearCanvas() {
-    Ctx.clear();
+    Render.clear();
     Gest.clear();
     drawText('Canvas cleared');
   }
 
   function drawConnectedPoint() {
-    Ctx.connectPoints(Gest.from, Gest.to);
+    Render.connectPoints(Gest.from, Gest.to);
   }
 
   //
@@ -97,28 +97,28 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   //
   function mouseDownEvent(x, y) {
     Down = true;
-    x -= Ctx.box.x;
-    y -= Ctx.box.y - U.getScrollY();
+    x -= Render.box.x;
+    y -= Render.box.y - U.getScrollY();
 
     Gest.stroke || clearCanvas(); // starting a new gesture
     Gest.nextStroke().addPoint(x, y);
     drawText(`Recording stroke #${Gest.stroke}...`);
 
-    Ctx.newColor();
-    Ctx.drawCirc(x, y, 8);
+    Render.newColor();
+    Render.drawCirc(x, y, 8);
   }
 
   function mouseMoveEvent(x, y) {
     if (Down) {
-      x -= Ctx.box.x;
-      y -= Ctx.box.y - U.getScrollY();
+      x -= Render.box.x;
+      y -= Render.box.y - U.getScrollY();
       Gest.addPoint(x, y);
       drawConnectedPoint();
     }
   }
 
   function mouseUpEvent(x, y) {
-    Ctx.fillRect(x - 4, y - 4, 8, 8);
+    Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
     drawText(`Stroke #${Gest.stroke} recorded`);
     tryRecognize();
@@ -177,7 +177,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   // ================ BINDINGS ======================
 
   function init(canvas) {
-    Ctx = Cantextro(canvas, Df);
+    Render = Cantextro(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
@@ -186,9 +186,9 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
       canvas.width = $window.width();
       canvas.height = $window.height() - 60;
 
-      Ctx.clear();
+      Render.clear();
       window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && C.log(Ctx);
+      dbug && C.log(Render);
     }
 
     function bindHanders() {
