@@ -1,15 +1,15 @@
 /*exported _initGestures, */
 
-window._initGestures = function (Point, recognizer) {
+window._initGestures = function (reader) {
 
   function makePoints(arrs) {
-    return arrs.map(arr => new Point(...arr));
+    return arrs.map(arr => reader.makePoint(arr));
   }
 
   function fudgeRead(nom, arr) {
     // window.drt.data.readOld(nom, arr).save();
 
-    recognizer.addGesture(nom, makePoints(arr));
+    reader.addGesture(nom, makePoints(arr));
   }
 
   // one predefined point-cloud for each gesture

@@ -1,15 +1,15 @@
 /*exported _initAlphabet, */
 
-window._initAlphabet = function (Point, recognizer) {
+window._initAlphabet = function (reader) {
 
   function makePoints(arrs) {
-    return arrs.map(arr => new Point(...arr));
+    return arrs.map(arr => reader.makePoint(arr));
   }
 
   function fudgeRead(nom, arr) {
     // window.drt.data.readOld(nom, arr).save();
 
-    recognizer.addGesture(nom, makePoints(arr));
+    reader.addGesture(nom, makePoints(arr));
   }
 
   fudgeRead('A', [

@@ -1,14 +1,14 @@
 /*globals */
 
-define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
-], function ($, _, U, PDollar, Cantextro, Dom, Gesture) {
-  let dbug = 0;
+define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
+], function ($, _, U, Cantextro, Dom, Gesture, Reader) {
+  let dbug = 1;
   //
   // GLOBAL VARS
   //
   const C = window.console;
   const Gest = Gesture.make(); // point array for current stroke(s)
-  const Recog = new PDollar.Recognizer();
+  const Recog = Reader.make(); // wrapper for pdollar recognizer
   let Render;
   let Down = false;
   let Api = {};
@@ -51,15 +51,15 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   // RECOG OPS
   //
   function trainingTotal() {
-    return Recog.clouds.length;
+    return Recog.count;
   }
 
   function initAlphabet() {
     if (window._initGestures) {
-      window._initGestures(PDollar.Point, Recog);
+      window._initGestures(Recog);
     }
     if (window._initAlphabet) {
-      window._initAlphabet(PDollar.Point, Recog);
+      window._initAlphabet(Recog);
     }
   }
 

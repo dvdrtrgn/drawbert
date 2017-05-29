@@ -1,7 +1,7 @@
 /*globals */
 
-define(['jquery', 'util', 'pdollar',
-], function ($, U, PDollar) {
+define(['pdollar',
+], function (PDollar) {
   let dbug = 0;
   const C = window.console;
 
