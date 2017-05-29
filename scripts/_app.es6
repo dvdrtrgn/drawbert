@@ -177,23 +177,24 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
 
   // ================ BINDINGS ======================
 
+  function resizeCanvas() {
+    var $win = $(Render.canvas.ownerDocument.defaultView);
+
+    $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
+    Render.size($win.width(), $win.height() - 60);
+    Render.clear();
+
+    dbug && C.log(Render);
+  }
+
   function init(canvas) {
     Api.Render = Render = Cantextro(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
 
-    function attachCanvas() {
-      canvas.width = $window.width();
-      canvas.height = $window.height() - 60;
-
-      Render.clear();
-      window.scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-      dbug && C.log(Render);
-    }
-
     function bindHanders() {
-      $window.on('resize', _.debounce(attachCanvas, 333));
+      $window.on('resize', _.debounce(resizeCanvas, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
       $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
@@ -206,7 +207,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
     }
 
     bindHanders();
-    attachCanvas();
+    resizeCanvas();
     Dom.updateCount(trainingTotal());
 
     if (dbug) {

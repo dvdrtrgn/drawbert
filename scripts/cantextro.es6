@@ -74,16 +74,21 @@ define(['jquery', 'util'], function ($, U) {
       api.fillStyle = 'white';
       api.fillText(str, 11, api.box.height - 2.5);
     };
+    const size = function (w, h) {
+      api.canvas.width = w;
+      api.canvas.height = h;
+    };
 
     expando(api, Df, {
-      connectPoints,
-      setMessage,
-      defaults,
       clear,
+      connectPoints,
+      defaults,
       drawCirc,
       fillAll,
       fillCirc,
       newColor,
+      setMessage,
+      size,
     });
 
     return api;
