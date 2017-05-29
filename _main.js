@@ -49,4 +49,16 @@ save learned patterns
   how to view?
 
 
+------
+mion ideas
+
+  SQUARE is placeholder of bounding box for drawn (unsplash.com or placehold.it)
+  M is a menu
+  Z is a bulleted list (based on how large it is drawn)
+  HORZLINE is a heading the length of the line (of lorem ipsum characters)
+  VERTLINE is a paragraph
+
+  square with lines makes table
+  undo?
+
  */

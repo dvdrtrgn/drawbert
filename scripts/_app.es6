@@ -2,7 +2,7 @@
 
 define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
 ], function ($, _, U, PDollar, Cantextro, Dom, Gesture) {
-  let dbug = 1;
+  let dbug = 0;
   //
   // GLOBAL VARS
   //

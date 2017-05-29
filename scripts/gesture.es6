@@ -2,7 +2,7 @@
 
 define(['jquery', 'util', 'pdollar',
 ], function ($, U, PDollar) {
-  let dbug = 1;
+  let dbug = 0;
   const C = window.console;
 
   function extend(obj) {
