@@ -30,7 +30,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   }
 
   function clearCanvas() {
-    Render.clear();
+    Render.defaults().fillAll();
     Gest.clear();
     drawText('Canvas cleared');
   }
@@ -182,7 +182,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
     Render.size($win.width(), $win.height() - 60);
-    Render.clear();
+    clearCanvas();
 
     dbug && C.log(Render);
   }

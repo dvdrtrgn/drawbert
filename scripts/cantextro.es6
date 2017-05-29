@@ -36,9 +36,6 @@ define(['jquery', 'util'], function ($, U) {
       api.box = getRect(api.canvas);
       return api;
     };
-    const clear = function () {
-      return defaults().fillAll();
-    };
     const connectPoints = function (from, to) {
       api.beginPath();
       api.moveTo(from.X, from.Y);
@@ -85,7 +82,6 @@ define(['jquery', 'util'], function ($, U) {
     };
 
     expando(api, Df, {
-      clear,
       connectPoints,
       defaults,
       drawCirc,
