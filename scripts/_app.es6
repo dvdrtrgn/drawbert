@@ -11,6 +11,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   const Recog = new PDollar.Recognizer();
   let Render;
   let Down = false;
+  let Api = {};
 
   const Df = {
     font: '20px impact',
@@ -177,7 +178,7 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
   // ================ BINDINGS ======================
 
   function init(canvas) {
-    Render = Cantextro(canvas, Df);
+    Api.Render = Render = Cantextro(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
@@ -209,13 +210,19 @@ define(['jquery', 'lodash', 'util', 'pdollar', 'cantextro', 'dom', 'gesture',
     Dom.updateCount(trainingTotal());
 
     if (dbug) {
-      onClickInit();
+      onClickInit(); // load gestures
     }
+    Api.init = () => true; // only used once
   }
 
-  return {
+  Api = {
     init,
+    Df,
+    Gest,
+    Recog,
   };
+
+  return Api;
 });
 
 /*
