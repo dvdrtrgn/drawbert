@@ -1,28 +1,23 @@
 /*globals */
 
-define(['jquery', 'util'], function () {
-  var History = [];
+define(['reader'], function () {
+  const History = [];
   const C = window.console;
   const Name = 'Data';
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
 
   function Construct() {
-    var _name;
-    var _orig;
-    var _read;
+    let _name;
+    let _orig;
+    let _read;
 
-    function readNew(arg) {
-      arg = arg || ['asterisk', '325,499,417,557', '417,499,325,557', '371,486,371,571'];
-      return arg;
-    }
-
-    function readOld(name, orig) {
+    function load(name, orig) {
       _name = name;
       _orig = orig;
       _read = [name];
 
       orig.forEach(function (e) {
-        var [x, y, i] = [...e];
+        const [x, y, i] = [...e];
         _read[i] = _read[i] || [];
         _read[i].push(x, y);
       });
@@ -30,13 +25,13 @@ define(['jquery', 'util'], function () {
     }
 
     function toCode() {
-      return `drt.data.ondeck = [
+      return `reader.readGesture = [
   ${toString()},
-];`; // note addedd trailing comma!
+];`; // note added trailing comma!
     }
 
     function toString() {
-      var arr = toStrings();
+      const arr = toStrings();
       return reQuo(arr.join(',\n  '));
     }
 
@@ -45,7 +40,7 @@ define(['jquery', 'util'], function () {
     }
 
     function makeJSON(x) {
-      let str = JSON.stringify(x || _read);
+      const str = JSON.stringify(x || _read);
       return reQuo(str);
     }
 
@@ -55,9 +50,8 @@ define(['jquery', 'util'], function () {
     }
 
     var api = {
-      ondeck: 0,
       History,
-      readOld,
+      load,
       makeJSON,
       save,
       toCode,
@@ -74,9 +68,6 @@ define(['jquery', 'util'], function () {
       },
       read: {
         get: () => _read,
-      },
-      ondeck: {
-        set: readNew,
       },
     });
 

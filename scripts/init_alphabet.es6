@@ -2,14 +2,9 @@
 
 window._initAlphabet = function (reader) {
 
-  function makePoints(arrs) {
-    return arrs.map(arr => reader.makePoint(arr));
-  }
-
   function fudgeRead(nom, arr) {
-    // window.drt.data.readOld(nom, arr).save();
-
-    reader.addGesture(nom, makePoints(arr));
+    // window.drt.data.load(nom, arr).save();
+    reader.addGesture(nom, arr.map(reader.makePoint));
   }
 
   fudgeRead('A', [
