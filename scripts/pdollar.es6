@@ -17,7 +17,8 @@
 
   function PointCloud(name, points) { // template
     this.name = name;
-    this.points = resample(points, DEF.numPoints);
+    this.points = points.concat(); // protect passed array
+    this.points = resample(this.points, DEF.numPoints);
     this.points = scale(this.points);
     this.points = translateTo(this.points, DEF.origin);
   }
