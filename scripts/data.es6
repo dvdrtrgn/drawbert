@@ -8,15 +8,15 @@ define(['reader'], function () {
 
   function Construct() {
     let _name;
-    let _orig;
+    let _data;
     let _read;
 
-    function load(name, orig) {
+    function load(name, data) {
       _name = name;
-      _orig = orig;
+      _data = data;
       _read = [name];
 
-      orig.forEach(function (e) {
+      data.forEach(function (e) {
         const [x, y, i] = [...e];
         _read[i] = _read[i] || [];
         _read[i].push(x, y);
@@ -25,14 +25,11 @@ define(['reader'], function () {
     }
 
     function toCode() {
-      return `reader.readGesture = [
-  ${toString()},
-];`; // note added trailing comma!
+      return `.readGesture [ ${toString()} ]`;
     }
 
     function toString() {
-      const arr = toStrings();
-      return reQuo(arr.join(',\n  '));
+      return reQuo(toStrings().join(', '));
     }
 
     function toStrings() {
@@ -45,13 +42,17 @@ define(['reader'], function () {
     }
 
     function save() {
-      C.log(Name, 'saving', _name); // toCode()
       History.push(_read);
+    }
+
+    function log() {
+      C.log(Name, 'saving', toCode());
     }
 
     var api = {
       History,
       load,
+      log,
       makeJSON,
       save,
       toCode,
@@ -63,11 +64,14 @@ define(['reader'], function () {
       name: {
         get: () => _name,
       },
-      orig: {
-        get: () => _orig,
+      data: {
+        get: () => _data,
       },
       read: {
         get: () => _read,
+      },
+      code: {
+        get: toCode,
       },
     });
 

@@ -12,14 +12,13 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
   }
 
   function strokePoints(str, idx) {
-    const all = joinTwos(str.split(','));
+    const all = joinTwos(str.split(/\s*,?\s*/g).map(Number));
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
   function readNew(arg) {
-    const name = arg.shift();
     let arr = arg.map(strokePoints); // flatten
-    return [name, _.flatten(arr)];
+    return _.flatten(arr);
   }
 
   function extend(obj) {
@@ -31,14 +30,18 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
       count: {
         get: () => obj.clouds.length,
       },
+      lastCloud: {
+        get: () => obj.clouds[obj.count - 1],
+      },
       makePoint: {
         value: makePoint,
       },
       readGesture: {
         value: (arg) => {
-          const gest = readNew(arg);
+          const name = arg.shift();
+          const gest = [name, readNew(arg)];
           obj.addGesture(...gest);
-          return gest;
+          return [gest, obj.lastCloud];
         },
       },
       recognize: {
