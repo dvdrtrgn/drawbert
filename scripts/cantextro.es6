@@ -3,8 +3,7 @@
 define(['jquery', 'util'], function ($, U) {
   const C = window.console;
 
-  function getRect(context) {
-    let canvas = context.canvas;
+  function getRect(canvas) {
     let w = canvas.width;
     let h = canvas.height;
     let cx = canvas.offsetLeft;
@@ -34,12 +33,8 @@ define(['jquery', 'util'], function ($, U) {
 
     const defaults = function () {
       $.extend(api, Df); // reset
-      api.box = getRect(api);
+      api.box = getRect(api.canvas);
       return api;
-    };
-    const clear = function () {
-      defaults();
-      fillAll();
     };
     const connectPoints = function (from, to) {
       api.beginPath();
@@ -47,24 +42,29 @@ define(['jquery', 'util'], function ($, U) {
       api.lineTo(to.X, to.Y);
       api.closePath();
       api.stroke();
+      return api;
     };
     const drawCirc = function (x = 100, y = 100, rad = 10) {
       api.beginPath();
       api.arc(x, y, rad, 0, 2 * Math.PI, false);
       api.stroke();
+      return api;
     };
     const fillAll = function () {
       api.fillRect(0, 0, api.box.width, api.box.height);
+      return api;
     };
     const fillCirc = function (x = 100, y = 100, rad = 10) {
       api.beginPath();
       api.arc(x, y, rad, 0, 2 * Math.PI, false);
       api.fill();
+      return api;
     };
     const newColor = function () {
       let color = `rgb(${U.rand(50, 150)}, ${U.rand(50, 150)}, ${U.rand(50, 150)})`;
       api.strokeStyle = color;
       api.fillStyle = color;
+      return api;
     };
     const setMessage = function (str, bkgr) {
       api.fillStyle = bkgr;
@@ -73,17 +73,23 @@ define(['jquery', 'util'], function ($, U) {
       api.fillText(str, 10.5, api.box.height - 2);
       api.fillStyle = 'white';
       api.fillText(str, 11, api.box.height - 2.5);
+      return api;
+    };
+    const size = function (w, h) {
+      api.canvas.width = w;
+      api.canvas.height = h;
+      return api;
     };
 
     expando(api, Df, {
       connectPoints,
-      setMessage,
       defaults,
-      clear,
       drawCirc,
       fillAll,
       fillCirc,
       newColor,
+      setMessage,
+      size,
     });
 
     return api;
