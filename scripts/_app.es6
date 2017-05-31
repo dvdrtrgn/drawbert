@@ -21,6 +21,18 @@ define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
   };
 
   //
+  // DOM OPS
+  //
+  function updateCount() {
+    Dom.updateCount(trainingTotal());
+  }
+
+  function hideOverlay() {
+    Dom.hideOverlay();
+    updateCount();
+  }
+
+  //
   // CONTEXT OPS
   //
   function drawText(str) {
@@ -33,18 +45,11 @@ define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
     Render.defaults().fillAll();
     Gest.clear();
     drawText('Canvas cleared');
+    updateCount();
   }
 
   function drawConnectedPoint() {
     Render.connectPoints(Gest.from, Gest.to);
-  }
-
-  //
-  // DOM OPS
-  //
-  function hideOverlay() {
-    Dom.hideOverlay();
-    Dom.updateCount(trainingTotal());
   }
 
   //
@@ -131,7 +136,7 @@ define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
   function onClickInit() {
     $('.js-init').hide();
     initAlphabet();
-    Dom.updateCount(trainingTotal());
+    updateCount();
   }
 
   function assignGesture(evt) {
@@ -208,7 +213,7 @@ define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
 
     bindHanders();
     resizeCanvas();
-    Dom.updateCount(trainingTotal());
+    updateCount();
 
     if (dbug) {
       onClickInit(); // load gestures
