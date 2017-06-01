@@ -28,7 +28,7 @@ define(['jquery', 'util'], function ($, U) {
     $.extend(obj, exp);
   }
 
-  function Cantextro(canvas, Df) {
+  function Renderer(canvas, Df) {
     let api = canvas.getContext('2d');
 
     const defaults = function () {
@@ -95,7 +95,7 @@ define(['jquery', 'util'], function ($, U) {
     return api;
   }
 
-  return Cantextro;
+  return Renderer;
 });
 
 /*

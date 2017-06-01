@@ -1,7 +1,7 @@
 /*globals */
 
-define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
-], function ($, _, U, Cantextro, Dom, Gesture, Reader) {
+define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
+], function ($, _, U, Dom, Gesture, Reader, Renderer) {
   let dbug = 1;
   //
   // GLOBAL VARS
@@ -193,7 +193,7 @@ define(['jquery', 'lodash', 'util', 'cantextro', 'dom', 'gesture', 'reader',
   }
 
   function init(canvas) {
-    Api.Render = Render = Cantextro(canvas, Df);
+    Api.Render = Render = Renderer(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
