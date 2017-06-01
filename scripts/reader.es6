@@ -4,6 +4,7 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
   let dbug = 0;
   const C = window.console;
   const makePoint = (arr) => new PDollar.Point(...arr);
+  const readArrayString = (str) => str.split(/\s*,\s*/g).map(Number);
 
   function joinTwos(all) {
     let arr = [];
@@ -12,7 +13,7 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
   }
 
   function strokePoints(str, idx) {
-    const all = joinTwos(str.split(/\s*,?\s*/g).map(Number));
+    const all = joinTwos(readArrayString(str));
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
@@ -21,17 +22,17 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
     return _.flatten(arr);
   }
 
-  function extend(obj) {
+  function extend(api) {
 
-    Object.defineProperties(obj, {
+    Object.defineProperties(api, {
       addGesture: {
-        value: obj.addGesture,
+        value: api.addGesture,
       },
       count: {
-        get: () => obj.clouds.length,
+        get: () => api.clouds.length,
       },
       lastCloud: {
-        get: () => obj.clouds[obj.count - 1],
+        get: () => api.clouds[api.count - 1],
       },
       makePoint: {
         value: makePoint,
@@ -40,12 +41,18 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
         value: (arg) => {
           const name = arg.shift();
           const gest = [name, readNew(arg)];
-          obj.addGesture(...gest);
-          return [gest, obj.lastCloud];
+          api.addGesture(...gest);
+          return [gest, api.lastCloud];
+        },
+      },
+      readLegacy: {
+        value: function (nom, arr) {
+          dbug && window.drt.data.convert(nom, arr).log();
+          api.addGesture(nom, arr.map(api.makePoint));
         },
       },
       recognize: {
-        value: obj.recognize,
+        value: api.recognize,
       },
     });
   }

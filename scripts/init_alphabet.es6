@@ -3,8 +3,7 @@
 window._initAlphabet = function (reader) {
 
   function fudgeRead(nom, arr) {
-    // window.drt.data.load(nom, arr).save();
-    reader.addGesture(nom, arr.map(reader.makePoint));
+    reader.readLegacy(nom, arr);
   }
 
   fudgeRead('A', [

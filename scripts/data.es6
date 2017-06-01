@@ -11,7 +11,7 @@ define(['reader'], function () {
     let _data;
     let _read;
 
-    function load(name, data) {
+    function convert(name, data) {
       _name = name;
       _data = data;
       _read = [name];
@@ -25,11 +25,14 @@ define(['reader'], function () {
     }
 
     function toCode() {
-      return `.readGesture [ ${toString()} ]`;
+      return `
+.readGesture([
+  ${toString()},
+]);`;
     }
 
     function toString() {
-      return reQuo(toStrings().join(', '));
+      return reQuo(toStrings().join(',\n  '));
     }
 
     function toStrings() {
@@ -46,12 +49,12 @@ define(['reader'], function () {
     }
 
     function log() {
-      C.log(Name, 'saving', toCode());
+      C.log(Name, 'saving */', toCode(), '/*');
     }
 
     var api = {
       History,
-      load,
+      convert,
       log,
       makeJSON,
       save,

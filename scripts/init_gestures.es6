@@ -3,11 +3,8 @@
 window._initGestures = function (reader) {
 
   function fudgeRead(nom, arr) {
-    // window.drt.data.load(nom, arr).save();
-    reader.addGesture(nom, arr.map(reader.makePoint));
+    reader.readLegacy(nom, arr);
   }
-
-  // one predefined point-cloud for each gesture
 
   fudgeRead('T', [
     [30, 7, 1], [103, 7, 1], [66, 7, 2], [66, 87, 2],
