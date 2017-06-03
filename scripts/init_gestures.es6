@@ -2,10 +2,6 @@
 
 window._initGestures = function (reader) {
 
-  function process(arr) {
-    arr.map(x => reader.readGesture(x));
-  }
-
   const data = [[
     'T',
     '30,7,103,7',
@@ -63,7 +59,7 @@ window._initGestures = function (reader) {
     'triangle',
     '2,1,3,3,1,3,2,1',
   ]];
-  
-  process(data);
+
+  reader.processData(data);
 
 };

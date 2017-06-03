@@ -34,6 +34,9 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
       lastCloud: {
         get: () => api.clouds[api.count - 1],
       },
+      processData: {
+        value: (data) => data.map(arr => api.readGesture(arr)),
+      },
       makePoint: {
         value: makePoint,
       },
