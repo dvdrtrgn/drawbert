@@ -5,38 +5,43 @@ define(['pdollar',
   let dbug = 0;
   const C = window.console;
 
-  function extend(obj) {
-    let stroke = 0;
+  function extend(api) {
+    let strokeNum = 0;
+    let strokeArr = [];
 
-    Object.defineProperties(obj, {
+    Object.defineProperties(api, {
       addPoint: {
         value: function (x, y) {
-          obj[obj.length] = new PDollar.Point(x, y, stroke);
+          api[api.length] = new PDollar.Point(x, y, strokeNum);
+          strokeArr.push([x, y].join());
         },
       },
       clear: {
         value: function () {
-          obj.length = 0;
-          stroke = 0;
+          api.length = 0;
+          strokeArr = [];
+          strokeNum = 0;
+        },
+      },
+      endStroke: {
+        value: function () {
+          let arr = strokeArr.join();
+          strokeArr = [];
+          strokeNum++;
+          return arr;
         },
       },
       enough: {
-        get: () => obj.length > 9,
+        get: () => api.length > 5,
       },
       from: {
-        get: () => obj[obj.length - 2],
-      },
-      to: {
-        get: () => obj[obj.length - 1],
+        get: () => api[api.length - 2],
       },
       stroke: {
-        get: () => stroke,
+        get: () => strokeNum,
       },
-      nextStroke: {
-        value: function () {
-          stroke++;
-          return obj;
-        },
+      to: {
+        get: () => api[api.length - 1],
       },
     });
   }

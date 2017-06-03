@@ -28,7 +28,7 @@ define(['jquery', 'util'], function ($, U) {
     $.extend(obj, exp);
   }
 
-  function Cantextro(canvas, Df) {
+  function Renderer(canvas, Df) {
     let api = canvas.getContext('2d');
 
     const defaults = function () {
@@ -81,10 +81,27 @@ define(['jquery', 'util'], function ($, U) {
       return api;
     };
 
+    function drawCloud(arr) {
+      const normdot = (n, m) => (n + 1) * m / 2;
+      const normpoint = o => ({
+        X: normdot(o.X, api.box.width),
+        Y: normdot(o.Y, api.box.height),
+      });
+      arr.points.reduce(function (last, next) {
+        if (last.ID === next.ID) { // do not connect strokes
+          newColor();
+          connectPoints(normpoint(last), normpoint(next));
+        }
+        return next;
+      });
+      C.log('drawCloud', arr);
+    }
+
     expando(api, Df, {
       connectPoints,
       defaults,
       drawCirc,
+      drawCloud,
       fillAll,
       fillCirc,
       newColor,
@@ -95,7 +112,7 @@ define(['jquery', 'util'], function ($, U) {
     return api;
   }
 
-  return Cantextro;
+  return Renderer;
 });
 
 /*
