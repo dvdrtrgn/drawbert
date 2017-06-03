@@ -2,73 +2,77 @@
 
 window._initGestures = function (reader) {
 
-  reader.readGesture([
+  function input(arr) {
+    reader.readGesture(arr);
+  }
+
+  input([
     'T',
     '30,7,103,7',
     '66,7,66,87',
   ]);
-  reader.readGesture([
+  input([
     'N',
     '177,92,177,2',
     '182,1,246,95',
     '247,87,247,1',
   ]);
-  reader.readGesture([
+  input([
     'D',
     '345,9,345,87',
     '351,8,363,8,372,9,380,11,386,14,391,17,394,22,397,28,399,34,400,42,400,50,400,56,399,61,397,66,394,70,391,74,386,78,382,81,377,83,372,85,367,87,360,87,355,88,349,87',
   ]);
-  reader.readGesture([
+  input([
     'P',
     '507,8,507,87',
     '513,7,528,7,537,8,544,10,550,12,555,15,558,18,560,22,561,27,562,33,561,37,559,42,556,45,550,48,544,51,538,53,532,54,525,55,519,55,513,55,510,55',
   ]);
-  reader.readGesture([
+  input([
     'X',
     '30,146,106,222',
     '30,225,106,146',
   ]);
-  reader.readGesture([
+  input([
     'H',
     '188,137,188,225',
     '188,180,241,180',
     '241,137,241,225',
   ]);
-  reader.readGesture([
+  input([
     'I',
     '371,149,371,221',
     '341,149,401,149',
     '341,221,401,221',
   ]);
-  reader.readGesture([
+  input([
     'exclamation',
     '526,142,526,204',
     '526,221',
   ]);
-  reader.readGesture([
+  input([
     'line',
     '12,347,119,347',
   ]);
-  reader.readGesture([
+  input([
     'star',
     '177,396,223,299,262,396,168,332,278,332,184,397',
   ]);
-  reader.readGesture([
+  input([
     'arrowhead',
     '506,349,574,349',
     '525,306,584,349,525,388',
   ]);
-  reader.readGesture([
+  input([
     'asterisk',
     '325,499,417,557',
     '417,499,325,557',
     '371,486,371,571',
   ]);
-  reader.readGesture([
+  input([
     'square',
     '1,1,2,1,2,2,1,2,1,1',
   ]);
-  reader.readGesture([
+  input([
     'triangle',
     '2,1,3,3,1,3,2,1',
   ]);
