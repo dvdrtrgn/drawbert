@@ -47,7 +47,11 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
       },
       readLegacy: {
         value: function (nom, arr) {
-          dbug && window.drt.data.convert(nom, arr).log();
+          // read old point arrays, [log name with stroke arrays]
+          if (dbug) require(['data'], function (Data) {
+            const data = Data.make();
+            data.convert(nom, arr).log();
+          });
           api.addGesture(nom, arr.map(api.makePoint));
         },
       },
