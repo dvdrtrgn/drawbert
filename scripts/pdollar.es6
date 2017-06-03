@@ -43,10 +43,10 @@
     this.clouds = [];
 
     this.recognize = function (points) {
+      let [best, idx] = [+Infinity, -1];
       points = resample(points, DEF.numPoints);
       points = scale(points);
       points = translateTo(points, DEF.origin);
-      let [best, idx] = [+Infinity, -1];
 
       for (let i = 0; i < this.clouds.length; i++) { // for each point-cloud template
         const dist = greedyCloudMatch(points, this.clouds[i]);
