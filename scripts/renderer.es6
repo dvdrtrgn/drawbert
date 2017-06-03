@@ -81,20 +81,20 @@ define(['jquery', 'util'], function ($, U) {
       return api;
     };
 
-    function drawCloud(gest) {
+    function drawCloud(arr) {
       const normdot = (n, m) => (n + 1) * m / 2;
       const normpoint = o => ({
         X: normdot(o.X, api.box.width),
         Y: normdot(o.Y, api.box.height),
       });
-      gest.points.reduce(function (last, next) {
+      arr.points.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
           newColor();
           connectPoints(normpoint(last), normpoint(next));
         }
         return next;
       });
-      C.log('drawCloud', gest);
+      C.log('drawCloud', arr);
     }
 
     expando(api, Df, {
