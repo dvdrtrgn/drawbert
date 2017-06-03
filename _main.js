@@ -15,10 +15,17 @@ require.config({
   },
 });
 
-require(['jquery', '_app', 'data'], function ($, App, Data) {
+require(['jquery', 'util', '_app', 'data'], function ($, U, App, Data) {
   W.drt = {
     App,
     data: Data.make(),
+    testdraw: function (idx) {
+      if (U.undef(idx)) {
+        App.Recog.clouds.map(App.Render.drawCloud);
+      } else {
+        App.Render.drawCloud(App.Recog.clouds[idx]);
+      }
+    },
   };
 
   $(function () {

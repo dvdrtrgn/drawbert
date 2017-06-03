@@ -3,7 +3,7 @@
 
   // defaults (globals/constants)
   const DEF = {
-    numPoints: 32, // lower...fewer
+    numPoints: 33, // lower...fewer
     origin: new Point(0, 0, 0),
   };
 
