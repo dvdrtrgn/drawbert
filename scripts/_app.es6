@@ -43,7 +43,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
   function clearCanvas() {
     Render.defaults().fillAll();
-    Gest.clear();
     drawText('Canvas cleared');
     updateCount();
   }
@@ -68,6 +67,10 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
+  function resetGesture() {
+    Gest.clear();
+  }
+
   function nameGesture(name) {
     var num;
 
@@ -75,7 +78,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
       dbug && C.log(Gest);
       num = Recog.addGesture(name, Gest);
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
-      Gest.clear();
+      resetGesture();
     }
   }
 
@@ -106,9 +109,12 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     x -= Render.box.x;
     y -= Render.box.y - U.getScrollY();
 
-    Gest.stroke || clearCanvas(); // starting a new gesture
-    Gest.nextStroke().addPoint(x, y);
-    drawText(`Recording stroke #${Gest.stroke}...`);
+    if (!Gest.stroke) {
+      clearCanvas(); // starting a new gesture
+      resetGesture();
+    }
+    Gest.addPoint(x, y);
+    drawText(`Recording stroke #${Gest.stroke + 1}...`);
 
     Render.newColor();
     Render.drawCirc(x, y, 8);
@@ -124,9 +130,10 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function mouseUpEvent(x, y) {
+    let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    drawText(`Stroke #${Gest.stroke} recorded`);
+    dbug && C.log(`Stroke #${Gest.stroke} recorded`, pointString);
     tryRecognize();
   }
 
@@ -161,6 +168,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
+      resetGesture();
     } else {
       mouseDownEvent(evt.clientX, evt.clientY);
     }
@@ -180,11 +188,12 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
   // ================ BINDINGS ======================
 
-  function resizeCanvas() {
+  function initTool() {
     var $win = $(Render.canvas.ownerDocument.defaultView);
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
     Render.size($win.width(), $win.height() - 60);
+    resetGesture();
     clearCanvas();
 
     dbug && C.log(Render);
@@ -197,20 +206,20 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     var $canvas = $(canvas);
 
     function bindHanders() {
-      $window.on('resize', _.debounce(resizeCanvas, 333));
+      $window.on('resize', _.debounce(initTool, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
       $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
       $('.overlay').on('click.pdollar', hideOverlay);
-      $('.js-clear-stroke').on('click.pdollar', clearCanvas);
+      $('.js-clear-stroke').on('click.pdollar', initTool);
       $('.js-init').on('click.pdollar', onClickInit);
       $('.js-check').on('click.pdollar', openTrainer);
       $('.js-choice').on('mousedown.pdollar', assignGesture);
     }
 
     bindHanders();
-    resizeCanvas();
+    initTool();
     updateCount();
 
     if (dbug) {
