@@ -137,6 +137,15 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     tryRecognize();
   }
 
+  function playStroke(str) {
+    let arr = reader.strokePoints(str);
+    let [first, last] = [arr[0], arr[arr.length - 1]];
+
+    mouseDownEvent(first.X, first.Y);
+    arr.forEach(point => mouseMoveEvent(point.X, point.Y));
+    mouseUpEvent(last.X, last.Y);
+  }
+
   //
   // Click Events
   //
@@ -237,6 +246,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     gest: null,
     reads: null,
     render: null,
+    playStroke,
   };
 
   return Api;

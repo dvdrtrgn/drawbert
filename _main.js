@@ -19,11 +19,13 @@ require(['jquery', 'util', '_app', 'data'], function ($, U, App, Data) {
   W.drt = {
     App,
     data: Data.make(),
-    testdraw: function (idx) {
-      if (U.undef(idx)) {
-        App.Recog.clouds.map(App.Render.drawCloud);
-      } else {
-        App.Render.drawCloud(App.Recog.clouds[idx]);
+    testdraw: function (x) {
+      if (U.undef(x)) {
+        App.reads.clouds.map(App.render.drawCloud);
+      } else if (typeof x === 'string') {
+        App.playStroke(x);
+      } else if (typeof x === 'number') {
+        App.render.drawCloud(App.reads.clouds[x]);
       }
     },
   };
