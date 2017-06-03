@@ -17,7 +17,7 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
-  function readStroke(arg) {
+  function readStrokes(arg) {
     let arr = arg.map(strokePoints);
     return _.flatten(arr);
   }
@@ -40,7 +40,7 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
       readGesture: {
         value: (arg) => {
           const name = arg.shift();
-          const gest = [name, readStroke(arg)];
+          const gest = [name, readStrokes(arg)];
           api.addGesture(...gest);
           return [gest, api.lastCloud];
         },
@@ -72,6 +72,7 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
 
   return {
     make: Construct,
+    strokePoints,
   };
 });
 

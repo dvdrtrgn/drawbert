@@ -1,15 +1,15 @@
 /*globals */
 
 define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
-], function ($, _, U, Dom, Gesture, Reader, Renderer) {
+], function ($, _, U, Dom, gesture, reader, renderer) {
   let dbug = 1;
   //
   // GLOBAL VARS
   //
   const C = window.console;
-  const Gest = Gesture.make(); // point array for current stroke(s)
-  const Recog = Reader.make(); // wrapper for pdollar recognizer
-  let Render;
+  let Gest; // point array for current stroke(s)
+  let Reads; // wrapper for pdollar recognizer
+  let Render; // canvas toolkit
   let Down = false;
   let Api = {};
 
@@ -55,15 +55,15 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   // RECOG OPS
   //
   function trainingTotal() {
-    return Recog.count;
+    return Reads.count;
   }
 
   function initAlphabet() {
     if (window._initGestures) {
-      window._initGestures(Recog);
+      window._initGestures(Reads);
     }
     if (window._initAlphabet) {
-      window._initAlphabet(Recog);
+      window._initAlphabet(Reads);
     }
   }
 
@@ -76,7 +76,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
     if (Gest.enough && name.length > 0) {
       dbug && C.log(Gest);
-      num = Recog.addGesture(name, Gest);
+      num = Reads.addGesture(name, Gest);
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
       resetGesture();
     }
@@ -86,7 +86,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     var result;
 
     if (Gest.enough) {
-      result = Recog.recognize(Gest);
+      result = Reads.recognize(Gest);
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
     } else {
       drawText('Not enough data');
@@ -200,7 +200,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function init(canvas) {
-    Api.Render = Render = Renderer(canvas, Df);
+    Api.gest = Gest = gesture.make();
+    Api.reads = Reads = reader.make();
+    Api.render = Render = renderer(canvas, Df);
 
     var $window = $(window);
     var $canvas = $(canvas);
@@ -231,8 +233,10 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   Api = {
     init,
     Df,
-    Gest,
-    Recog,
+    Reader: reader,
+    gest: null,
+    reads: null,
+    render: null,
   };
 
   return Api;
