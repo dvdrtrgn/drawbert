@@ -17,6 +17,17 @@ define(function () {
     if (all.length) throw Error(`collisions: ${all}`);
   }
 
+  function fastarrclone(arr) {
+    let [i, o] = [arr.length, new Array(arr.length)];
+    while (i--) o[i] = arr[i];
+    return o;
+  }
+
+  function flattarr(arr) {
+    let flat = (acc, x) => Array.isArray(x) ? x.reduce(flat, acc) : acc.push(x) && acc;
+    return arr.reduce(flat, []);
+  }
+
   function getScrollY() {
     var scrollY = 0;
 
@@ -30,6 +41,8 @@ define(function () {
 
   return {
     checkCollision,
+    fastarrclone,
+    flattarr,
     getScrollY,
     percent,
     rand,
