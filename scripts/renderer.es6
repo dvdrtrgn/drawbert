@@ -2,6 +2,7 @@
 
 define(['jquery', 'util',
 ], function ($, U) {
+  let dbug = 1;
   const C = window.console;
 
   function getRect(canvas) {
@@ -31,6 +32,11 @@ define(['jquery', 'util',
 
   function Renderer(canvas, Df) {
     let api = canvas.getContext('2d');
+    const normdot = (n, m) => (n + 1) * m / 2;
+    const normpoint = o => ({
+      X: normdot(o.X, api.box.width),
+      Y: normdot(o.Y, api.box.height),
+    });
 
     const defaults = function () {
       $.extend(api, Df); // reset
@@ -62,7 +68,7 @@ define(['jquery', 'util',
       return api;
     };
     const newColor = function () {
-      let color = `rgb(${U.rand(50, 150)}, ${U.rand(50, 150)}, ${U.rand(50, 150)})`;
+      let color = `rgb(${U.rand(50, 250)}, ${U.rand(50, 250)}, ${U.rand(50, 250)})`;
       api.strokeStyle = color;
       api.fillStyle = color;
       return api;
@@ -83,26 +89,32 @@ define(['jquery', 'util',
     };
 
     function drawCloud(arr) {
-      const normdot = (n, m) => (n + 1) * m / 2;
-      const normpoint = o => ({
-        X: normdot(o.X, api.box.width),
-        Y: normdot(o.Y, api.box.height),
-      });
-      arr.points.reduce(function (last, next) {
+      arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
           newColor();
           connectPoints(normpoint(last), normpoint(next));
         }
         return next;
       });
-      C.log('drawCloud', arr);
+    }
+
+    function drawGest(arr) {
+      arr.reduce(function (last, next) {
+        if (last.ID === next.ID) { // points from same stroke
+          newColor();
+          connectPoints(last, next);
+        }
+        return next;
+      });
     }
 
     expando(api, Df, {
+      dbug,
       connectPoints,
       defaults,
       drawCirc,
       drawCloud,
+      drawGest,
       fillAll,
       fillCirc,
       newColor,

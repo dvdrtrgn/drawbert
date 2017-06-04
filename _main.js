@@ -23,11 +23,11 @@ require(['jquery', 'util', '_app', 'data', 'pdollar',
     data: Data.make(),
     testdraw: function (x) {
       if (U.undef(x)) {
-        App.reads.clouds.map(App.render.drawCloud);
+        App.reads.clouds.map(o => App.render.drawCloud(o.points));
       } else if (typeof x === 'string') {
         App.playStroke(x);
       } else if (typeof x === 'number') {
-        App.render.drawCloud(App.reads.clouds[x]);
+        App.render.drawCloud(App.reads.clouds[x].points);
       }
     },
   };
