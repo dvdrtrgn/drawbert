@@ -17,10 +17,7 @@
 
   function PointCloud(name, points) { // template
     this.name = name;
-    this.points = points.concat(); // protect passed array
-    this.points = resample(this.points, DEF.numPoints);
-    this.points = scale(this.points);
-    this.points = translateTo(this.points, DEF.origin);
+    this.points = normalizePoints(points);
   }
 
   function Result(name, score) {
@@ -34,22 +31,21 @@
   //    addGesture()
   //    deleteUserGestures()
   function Recognizer(numPoints, origin) {
+    const Tpls = this.clouds = [];
+
     if (typeof numPoints !== 'undefined') {
       DEF.numPoints = numPoints;
     }
     if (typeof origin !== 'undefined') {
       DEF.origin = origin;
     }
-    this.clouds = [];
 
     this.recognize = function (points) {
       let [best, idx] = [+Infinity, -1];
-      points = resample(points, DEF.numPoints);
-      points = scale(points);
-      points = translateTo(points, DEF.origin);
+      points = normalizePoints(points);
 
-      for (let i = 0; i < this.clouds.length; i++) { // for each point-cloud template
-        const dist = greedyCloudMatch(points, this.clouds[i]);
+      for (let i = 0; i < Tpls.length; i++) { // for each point-cloud template
+        const dist = greedyCloudMatch(points, Tpls[i].points);
         if (dist < best) {
           best = dist; // best (least) distance
           idx = i; // point-cloud
@@ -57,16 +53,16 @@
       }
       return (idx === -1) ?
         new Result('No match.', 0) :
-        new Result(this.clouds[idx].name, Math.max((best - 2) / -2, 0));
+        new Result(Tpls[idx].name, Math.max((best - 2) / -2, 0));
     };
 
     this.addGesture = function (name, points) {
       let num = 0;
 
-      this.clouds[this.clouds.length] = new PointCloud(name, points);
+      Tpls[Tpls.length] = new PointCloud(name, points);
 
-      for (let i = 0; i < this.clouds.length; i++) {
-        if (this.clouds[i].name === name) {
+      for (let i = 0; i < Tpls.length; i++) {
+        if (Tpls[i].name === name) {
           num++;
         }
       }
@@ -74,20 +70,20 @@
     };
 
     this.deleteUserGestures = function () {
-      return this.clouds.length = 0; // clear any beyond the original set
+      return Tpls.length = 0; // clear any beyond the original set
     };
   }
 
   // ================ PRIVATE ====================
 
-  function greedyCloudMatch(points, P) {
+  function greedyCloudMatch(pts1, pts2) {
     const e = 0.5;
-    const step = Math.floor(Math.pow(points.length, 1 - e));
+    const step = Math.floor(Math.pow(pts1.length, 1 - e));
     let min = +Infinity;
 
-    for (let i = 0; i < points.length; i += step) {
-      const d1 = cloudDistance(points, P.points, i);
-      const d2 = cloudDistance(P.points, points, i);
+    for (let i = 0; i < pts1.length; i += step) {
+      const d1 = cloudDistance(pts1, pts2, i);
+      const d2 = cloudDistance(pts2, pts1, i);
       min = Math.min(min, Math.min(d1, d2)); // min3
     }
     return min;
@@ -184,6 +180,14 @@
     return newpoints;
   }
 
+  function normalizePoints(points) {
+    let pts = points.concat(); // protect passed array
+    pts = resample(pts, DEF.numPoints);
+    pts = scale(pts);
+    pts = translateTo(pts, DEF.origin);
+    return pts;
+  }
+
   function centroid(points) {
     let [x, y] = [0, 0];
 
@@ -215,8 +219,9 @@
   // ================ PUBLIC ====================
 
   const PDollar = Object.freeze({
-    Point: Point,
-    Recognizer: Recognizer,
+    Point,
+    Recognizer,
+    normalizePoints,
   });
 
   if (typeof define === 'function' && define.amd) {
