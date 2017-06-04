@@ -152,6 +152,16 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     mouseUpEvent(last.X, last.Y);
   }
 
+  function testdraw(arg) {
+    if (U.undef(arg)) {
+      Reads.clouds.map(obj => Render.drawCloud(obj.points));
+    } else if (typeof arg === 'number') {
+      Render.drawCloud(Reads.clouds[arg].points);
+    } else if (typeof arg === 'string') {
+      playStroke(arg);
+    }
+  }
+
   //
   // Click Events
   //
@@ -245,11 +255,12 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   Api = {
     init,
     Df,
+    U,
     Reader: reader,
     gest: null,
     reads: null,
     render: null,
-    playStroke,
+    testdraw,
   };
 
   return Api;
