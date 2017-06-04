@@ -128,6 +128,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function mouseUpEvent(x, y) {
+    Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
@@ -214,7 +215,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     function bindHanders() {
       $window.on('resize', _.debounce(initTool, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
-      $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
+      $canvas.on('mousemove.pdollar touchmove.pdollar', _.throttle(lineDraw, 28));
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
       $('.overlay').on('click.pdollar', hideOverlay);
