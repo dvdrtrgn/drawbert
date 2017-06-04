@@ -1,8 +1,5 @@
-/*exported _initGestures, */
-
-window._initGestures = function (reader) {
-
-  const data = [[
+define(function () {
+  return [[
     'T',
     '30,7,103,7',
     '66,7,66,87',
@@ -59,7 +56,4 @@ window._initGestures = function (reader) {
     'triangle',
     '2,1,3,3,1,3,2,1',
   ]];
-
-  reader.processData(data);
-
-};
+});

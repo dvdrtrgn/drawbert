@@ -58,13 +58,11 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     return Reads.count;
   }
 
-  function initAlphabet() {
-    if (window._initGestures) {
-      window._initGestures(Reads);
-    }
-    if (window._initAlphabet) {
-      window._initAlphabet(Reads);
-    }
+  function initData(cb) {
+    require(['init_alphabet', 'init_gestures'], function (...arr) {
+      arr.map(Reads.processData);
+      cb && cb();
+    });
   }
 
   function resetGesture() {
@@ -149,10 +147,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   //
   // Click Events
   //
-  function onClickInit() {
+  function loadData() {
     $('.js-init').hide();
-    initAlphabet();
-    updateCount();
+    initData(updateCount);
   }
 
   function normTouch(evt) {
@@ -204,8 +201,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     Render.size($win.width(), $win.height() - 60);
     resetGesture();
     clearCanvas();
-
-    dbug && C.log(Render);
   }
 
   function init(canvas) {
@@ -224,18 +219,18 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
       $('.overlay').on('click.pdollar', hideOverlay);
       $('.js-clear-stroke').on('click.pdollar', initTool);
-      $('.js-init').on('click.pdollar', onClickInit);
+      $('.js-init').on('click.pdollar', loadData);
       $('.js-check').on('click.pdollar', openTrainer);
       $('.js-choice').on('mousedown.pdollar', assignGesture);
     }
 
+    if (dbug) {
+      loadData(); // load gestures
+    }
     bindHanders();
     initTool();
     updateCount();
 
-    if (dbug) {
-      onClickInit(); // load gestures
-    }
     Api.init = () => true; // only used once
   }
 
