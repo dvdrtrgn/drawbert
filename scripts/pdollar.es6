@@ -7,86 +7,24 @@
     origin: new Point(0, 0, 0),
   };
 
-  // ================ CLASSES ====================
-
-  function Point(x, y, id) {
-    this.X = x;
-    this.Y = y;
-    this.ID = id; // stroke ID to which this point belongs (1,2,...)
-  }
-
-  function PointCloud(name, points) { // template
-    this.name = name;
-    this.points = normalizePoints(points);
-  }
-
-  function Result(name, score) {
-    this.name = name;
-    this.score = score;
-  }
-
-  // The $P Point-Cloud Recognizer API begins here
-  // 3 methods:
-  //    recognize()
-  //    addGesture()
-  //    deleteUserGestures()
-  function Recognizer(numPoints, origin) {
-    const Tpls = this.clouds = [];
-
-    if (typeof numPoints !== 'undefined') {
-      DEF.numPoints = numPoints;
-    }
-    if (typeof origin !== 'undefined') {
-      DEF.origin = origin;
-    }
-
-    this.recognize = function (points) {
-      let [best, idx] = [+Infinity, -1];
-      points = normalizePoints(points);
-
-      for (let i = 0; i < Tpls.length; i++) { // for each point-cloud template
-        const dist = greedyCloudMatch(points, Tpls[i].points);
-        if (dist < best) {
-          best = dist; // best (least) distance
-          idx = i; // point-cloud
-        }
-      }
-      return (idx === -1) ?
-        new Result('No match.', 0) :
-        new Result(Tpls[idx].name, Math.max((best - 2) / -2, 0));
-    };
-
-    this.addGesture = function (name, points) {
-      let num = 0;
-
-      Tpls[Tpls.length] = new PointCloud(name, points);
-
-      for (let i = 0; i < Tpls.length; i++) {
-        if (Tpls[i].name === name) {
-          num++;
-        }
-      }
-      return num;
-    };
-
-    this.deleteUserGestures = function () {
-      return Tpls.length = 0; // clear any beyond the original set
-    };
-  }
-
   // ================ PRIVATE ====================
 
-  function greedyCloudMatch(pts1, pts2) {
-    const e = 0.5;
-    const step = Math.floor(Math.pow(pts1.length, 1 - e));
-    let min = +Infinity;
+  function centroid(points) {
+    let [x, y] = [0, 0];
 
-    for (let i = 0; i < pts1.length; i += step) {
-      const d1 = cloudDistance(pts1, pts2, i);
-      const d2 = cloudDistance(pts2, pts1, i);
-      min = Math.min(min, Math.min(d1, d2)); // min3
+    for (let i = 0; i < points.length; i++) {
+      x += points[i].X;
+      y += points[i].Y;
     }
-    return min;
+    x /= points.length;
+    y /= points.length;
+
+    return new Point(x, y, 0);
+  }
+
+  function distance(p1, p2) { // Euclidean distance between two points
+    const [dx, dy] = [p2.X - p1.X, p2.Y - p1.Y];
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   function cloudDistance(pts1, pts2, start) {
@@ -115,6 +53,29 @@
     } while (idx != start);
 
     return sum;
+  }
+
+  function greedyCloudMatch(pts1, pts2) {
+    const e = 0.5;
+    const step = Math.floor(Math.pow(pts1.length, 1 - e));
+    let min = +Infinity;
+
+    for (let i = 0; i < pts1.length; i += step) {
+      const d1 = cloudDistance(pts1, pts2, i);
+      const d2 = cloudDistance(pts2, pts1, i);
+      min = Math.min(min, Math.min(d1, d2)); // min3
+    }
+    return min;
+  }
+
+  function pathLength(points) { // length traversed by a point path
+    let d = 0;
+    for (let i = 1; i < points.length; i++) {
+      if (points[i].ID === points[i - 1].ID) {
+        d += distance(points[i - 1], points[i]);
+      }
+    }
+    return d;
   }
 
   function resample(points, n) {
@@ -188,32 +149,72 @@
     return pts;
   }
 
-  function centroid(points) {
-    let [x, y] = [0, 0];
+  // ================ CLASSES ====================
 
-    for (let i = 0; i < points.length; i++) {
-      x += points[i].X;
-      y += points[i].Y;
-    }
-    x /= points.length;
-    y /= points.length;
-
-    return new Point(x, y, 0);
+  function Point(x, y, id) {
+    this.X = x;
+    this.Y = y;
+    this.ID = id; // stroke ID to which this point belongs (1,2,...)
   }
 
-  function pathLength(points) { // length traversed by a point path
-    let d = 0;
-    for (let i = 1; i < points.length; i++) {
-      if (points[i].ID === points[i - 1].ID) {
-        d += distance(points[i - 1], points[i]);
+  function PointCloud(name, points) { // template
+    this.name = name;
+    this.points = normalizePoints(points);
+  }
+
+  function Result(name, score) {
+    this.name = name;
+    this.score = score;
+  }
+
+  // The $P Point-Cloud Recognizer API begins here
+  // 3 methods:
+  // .recognize()
+  // .addGesture()
+  // .deleteUserGestures()
+
+  function Recognizer(numPoints, origin) {
+    const Tpls = this.clouds = [];
+
+    if (typeof numPoints !== 'undefined') {
+      DEF.numPoints = numPoints;
+    }
+    if (typeof origin !== 'undefined') {
+      DEF.origin = origin;
+    }
+
+    this.recognize = function (points) {
+      let [best, idx] = [+Infinity, -1];
+      points = normalizePoints(points);
+
+      for (let i = 0; i < Tpls.length; i++) { // for each point-cloud template
+        const dist = greedyCloudMatch(points, Tpls[i].points);
+        if (dist < best) {
+          best = dist; // best (least) distance
+          idx = i; // point-cloud
+        }
       }
-    }
-    return d;
-  }
+      return (idx === -1) ?
+        new Result('No match.', 0) :
+        new Result(Tpls[idx].name, Math.max((best - 2) / -2, 0));
+    };
 
-  function distance(p1, p2) { // Euclidean distance between two points
-    const [dx, dy] = [p2.X - p1.X, p2.Y - p1.Y];
-    return Math.sqrt(dx * dx + dy * dy);
+    this.addGesture = function (name, points) {
+      let num = 0;
+
+      Tpls[Tpls.length] = new PointCloud(name, points);
+
+      for (let i = 0; i < Tpls.length; i++) {
+        if (Tpls[i].name === name) {
+          num++;
+        }
+      }
+      return num;
+    };
+
+    this.deleteUserGestures = function () {
+      return Tpls.length = 0; // clear any beyond the original set
+    };
   }
 
   // ================ PUBLIC ====================
