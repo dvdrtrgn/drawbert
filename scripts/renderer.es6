@@ -1,6 +1,7 @@
 /*globals */
 
-define(['jquery', 'util'], function ($, U) {
+define(['jquery', 'util',
+], function ($, U) {
   const C = window.console;
 
   function getRect(canvas) {

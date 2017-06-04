@@ -1,6 +1,7 @@
 /*globals */
 
-define(['lodash', 'pdollar'], function (_, PDollar) {
+define(['lodash', 'pdollar',
+], function (_, PDollar) {
   let dbug = 0;
   const C = window.console;
   const makePoint = (arr) => new PDollar.Point(...arr);

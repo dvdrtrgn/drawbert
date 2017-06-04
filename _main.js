@@ -10,14 +10,16 @@ require.config({
   },
   shim: {
     _app: {
-      deps: ['init_alphabet', 'init_gestures'],
+      // deps: ['init_alphabet', 'init_gestures'],
     },
   },
 });
 
-require(['jquery', 'util', '_app', 'data'], function ($, U, App, Data) {
+require(['jquery', 'util', '_app', 'data', 'pdollar',
+], function ($, U, App, Data, PDollar) {
   W.drt = {
     App,
+    PDollar,
     data: Data.make(),
     testdraw: function (x) {
       if (U.undef(x)) {
