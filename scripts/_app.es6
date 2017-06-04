@@ -80,12 +80,19 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
+  function previewData() {
+    Render.drawGest(Gest);
+    Render.drawCloud(Gest.normal);
+    C.log(['draw Gesture/PointCloud', Gest, Gest.normal]);
+  }
+
   function tryRecognize() {
     var result;
 
     if (Gest.enough) {
       result = Reads.recognize(Gest);
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
+      dbug && previewData();
     } else {
       drawText('Not enough data');
     }
@@ -132,7 +139,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    dbug && C.log(`Stroke #${Gest.stroke} recorded`, pointString);
+    dbug && C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
   }
 
