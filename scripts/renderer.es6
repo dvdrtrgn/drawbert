@@ -32,6 +32,13 @@ define(['jquery', 'util',
 
   function Renderer(canvas, Df) {
     let api = canvas.getContext('2d');
+    let colors = {
+      index: 0,
+      limit: 4,
+      array: ['red', 'green', 'blue', 'yellow'],
+      next: () => colors.array[colors.index++ % colors.limit],
+    };
+
     const normdot = (n, m) => (n + 1) * m / 2;
     const normpoint = o => ({
       X: normdot(o.X, api.box.width),
@@ -67,8 +74,8 @@ define(['jquery', 'util',
       api.fill();
       return api;
     };
-    const newColor = function () {
-      let color = `rgb(${U.rand(50, 250)}, ${U.rand(50, 250)}, ${U.rand(50, 250)})`;
+    const newColor = function (rot) {
+      let color = rot ? colors.next() : `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
       api.strokeStyle = color;
       api.fillStyle = color;
       return api;
@@ -91,7 +98,7 @@ define(['jquery', 'util',
     function drawCloud(arr) {
       arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
-          newColor();
+          newColor(1);
           connectPoints(normpoint(last), normpoint(next));
         }
         return next;
