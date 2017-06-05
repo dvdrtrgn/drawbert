@@ -81,10 +81,15 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function previewData(result) {
-    Render.drawGest(Gest);
+    // overlay segment colors
+    Render.drawGest(Gest, {
+      rotate: 1,
+      opacity: 0.5,
+    });
 
     let guess = Reads.findCloud(result.name).points;
     Render.drawCloud(guess, {
+      color: 'gray',
       opacity: 0.2,
     });
 
@@ -127,9 +132,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     x -= Render.box.x;
     y -= Render.box.y - U.getScrollY();
 
-    if (!Gest.stroke) {
-      clearCanvas(); // starting a new gesture
-      resetGesture();
+    clearCanvas();
+    if (Gest.stroke) {
+      Render.drawGest(Gest); // redraw current strokes
     }
     Gest.addPoint(x, y);
     drawText(`Recording stroke #${Gest.stroke + 1}...`);
