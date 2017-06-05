@@ -1,5 +1,3 @@
-const [C, U, W] = [console, undefined, window];
-
 require.config({
   baseUrl: 'scripts',
   paths: {
@@ -10,28 +8,27 @@ require.config({
   },
   shim: {
     _app: {
-      deps: ['init_alphabet', 'init_gestures'],
+      // deps: ['init_alphabet', 'init_gestures'],
     },
   },
 });
 
-require(['jquery', 'util', '_app', 'data'], function ($, U, App, Data) {
+require(['jquery', 'util', '_app', 'data', 'pdollar',
+], function ($, U, App, Data, PDollar) {
+  const [C, W] = [console, window];
+
   W.drt = {
     App,
+    PDollar,
     data: Data.make(),
-    testdraw: function (idx) {
-      if (U.undef(idx)) {
-        App.Recog.clouds.map(App.Render.drawCloud);
-      } else {
-        App.Render.drawCloud(App.Recog.clouds[idx]);
-      }
-    },
   };
 
   $(function () {
     App.init($('canvas:first')[0]);
   });
 
+  // expose for testing
+  U.expando(W, W.drt, App);
   C.log('_main', W.drt);
 });
 

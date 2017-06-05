@@ -17,7 +17,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     font: '20px impact',
     fillStyle: 'silver',
     lineWidth: 3,
-    strokeStyle: 'black',
+    strokeStyle: 'gray',
   };
 
   //
@@ -58,13 +58,11 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     return Reads.count;
   }
 
-  function initAlphabet() {
-    if (window._initGestures) {
-      window._initGestures(Reads);
-    }
-    if (window._initAlphabet) {
-      window._initAlphabet(Reads);
-    }
+  function initData(cb) {
+    require(['init_alphabet', 'init_gestures'], function (...arr) {
+      arr.map(Reads.processData);
+      cb && cb();
+    });
   }
 
   function resetGesture() {
@@ -82,12 +80,37 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
+  function previewData(result) {
+    // overlay segment colors
+    Render.drawGest(Gest, {
+      rotate: 1,
+      opacity: 0.5,
+    });
+
+    let guess = Reads.findCloud(result.name).points;
+    Render.drawCloud(guess, {
+      color: 'gray',
+      opacity: 0.2,
+    });
+
+    if (result.score > 0.5) {
+      // redraw normalized
+      Render.drawCloud(Gest.normal, {
+        rotate: 1,
+        opacity: 1,
+      });
+    }
+
+    C.log(['draw Gesture/PointCloud', Gest, Gest.normal]);
+  }
+
   function tryRecognize() {
     var result;
 
     if (Gest.enough) {
       result = Reads.recognize(Gest);
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
+      dbug && previewData(result);
     } else {
       drawText('Not enough data');
     }
@@ -109,9 +132,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     x -= Render.box.x;
     y -= Render.box.y - U.getScrollY();
 
-    if (!Gest.stroke) {
-      clearCanvas(); // starting a new gesture
-      resetGesture();
+    clearCanvas();
+    if (Gest.stroke) {
+      Render.drawGest(Gest); // redraw current strokes
     }
     Gest.addPoint(x, y);
     drawText(`Recording stroke #${Gest.stroke + 1}...`);
@@ -130,20 +153,39 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function mouseUpEvent(x, y) {
+    Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    dbug && C.log(`Stroke #${Gest.stroke} recorded`, pointString);
+    dbug && C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
+  }
+
+  function playStroke(str) {
+    let arr = reader.strokePoints(str);
+    let [first, last] = [arr[0], arr[arr.length - 1]];
+
+    mouseDownEvent(first.X, first.Y);
+    arr.forEach(point => mouseMoveEvent(point.X, point.Y));
+    mouseUpEvent(last.X, last.Y);
+  }
+
+  function testdraw(arg) {
+    if (U.undef(arg)) {
+      Reads.clouds.map(obj => Render.drawCloud(obj.points));
+    } else if (typeof arg === 'number') {
+      Render.drawCloud(Reads.clouds[arg].points);
+    } else if (typeof arg === 'string') {
+      playStroke(arg);
+    }
   }
 
   //
   // Click Events
   //
-  function onClickInit() {
+  function loadData() {
     $('.js-init').hide();
-    initAlphabet();
-    updateCount();
+    initData(updateCount);
   }
 
   function normTouch(evt) {
@@ -195,8 +237,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     Render.size($win.width(), $win.height() - 60);
     resetGesture();
     clearCanvas();
-
-    dbug && C.log(Render);
   }
 
   function init(canvas) {
@@ -210,33 +250,35 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     function bindHanders() {
       $window.on('resize', _.debounce(initTool, 333));
       $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
-      $canvas.on('mousemove.pdollar touchmove.pdollar', lineDraw);
+      $canvas.on('mousemove.pdollar touchmove.pdollar', _.throttle(lineDraw, 28));
       $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
 
       $('.overlay').on('click.pdollar', hideOverlay);
       $('.js-clear-stroke').on('click.pdollar', initTool);
-      $('.js-init').on('click.pdollar', onClickInit);
+      $('.js-init').on('click.pdollar', loadData);
       $('.js-check').on('click.pdollar', openTrainer);
       $('.js-choice').on('mousedown.pdollar', assignGesture);
     }
 
+    if (dbug) {
+      loadData(); // load gestures
+    }
     bindHanders();
     initTool();
     updateCount();
 
-    if (dbug) {
-      onClickInit(); // load gestures
-    }
     Api.init = () => true; // only used once
   }
 
   Api = {
     init,
     Df,
+    U,
     Reader: reader,
     gest: null,
     reads: null,
     render: null,
+    testdraw,
   };
 
   return Api;

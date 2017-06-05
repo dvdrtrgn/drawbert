@@ -9,7 +9,7 @@ define(['pdollar',
     let strokeNum = 0;
     let strokeArr = [];
 
-    Object.defineProperties(api, {
+    Object.defineProperties(api.__proto__, {
       addPoint: {
         value: function (x, y) {
           api[api.length] = new PDollar.Point(x, y, strokeNum);
@@ -36,6 +36,9 @@ define(['pdollar',
       },
       from: {
         get: () => api[api.length - 2],
+      },
+      normal: {
+        get: () => PDollar.normalizePoints(api),
       },
       stroke: {
         get: () => strokeNum,

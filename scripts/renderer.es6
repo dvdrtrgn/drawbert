@@ -1,7 +1,12 @@
 /*globals */
 
-define(['jquery', 'util'], function ($, U) {
+define(['jquery', 'util',
+], function ($, U) {
+  let dbug = 1;
   const C = window.console;
+
+  const normo = (n, m) => (n + 1) * m / 2;
+  const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
 
   function getRect(canvas) {
     let w = canvas.width;
@@ -22,17 +27,22 @@ define(['jquery', 'util'], function ($, U) {
     };
   }
 
-  function expando(obj, ...args) {
-    var exp = $.extend({}, ...args);
-    U.checkCollision(obj, exp);
-    $.extend(obj, exp);
-  }
-
-  function Renderer(canvas, Df) {
+  function Renderer(canvas, cfg) {
     let api = canvas.getContext('2d');
+    let colors = {
+      index: 0,
+      limit: 4,
+      array: ['red', 'green', 'blue', 'yellow'],
+      next: () => colors.array[colors.index++ % colors.limit],
+    };
+
+    const normpoint = o => ({
+      X: normo(o.X, api.box.width),
+      Y: normo(o.Y, api.box.height),
+    });
 
     const defaults = function () {
-      $.extend(api, Df); // reset
+      $.extend(api, cfg); // reset
       api.box = getRect(api.canvas);
       return api;
     };
@@ -60,8 +70,13 @@ define(['jquery', 'util'], function ($, U) {
       api.fill();
       return api;
     };
-    const newColor = function () {
-      let color = `rgb(${U.rand(50, 150)}, ${U.rand(50, 150)}, ${U.rand(50, 150)})`;
+    const newColor = function (cfg = {}) {
+      let color;
+      cfg.color && (color = cfg.color);
+      cfg.opacity && goGhost(cfg.opacity);
+      cfg.random && (color = rando());
+      cfg.rotate && (color = colors.next());
+
       api.strokeStyle = color;
       api.fillStyle = color;
       return api;
@@ -80,28 +95,38 @@ define(['jquery', 'util'], function ($, U) {
       api.canvas.height = h;
       return api;
     };
+    const goGhost = function (num) {
+      api.globalAlpha = num;
+      window.setTimeout(() => api.globalAlpha = 1, 0);
+    };
 
-    function drawCloud(arr) {
-      const normdot = (n, m) => (n + 1) * m / 2;
-      const normpoint = o => ({
-        X: normdot(o.X, api.box.width),
-        Y: normdot(o.Y, api.box.height),
-      });
-      arr.points.reduce(function (last, next) {
+    function drawCloud(arr, cfg) {
+      arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
-          newColor();
+          newColor(cfg);
           connectPoints(normpoint(last), normpoint(next));
         }
         return next;
       });
-      C.log('drawCloud', arr);
     }
 
-    expando(api, Df, {
+    function drawGest(arr, cfg) {
+      arr.reduce(function (last, next) {
+        if (last.ID === next.ID) { // points from same stroke
+          newColor(cfg);
+          connectPoints(last, next);
+        }
+        return next;
+      });
+    }
+
+    U.expando(api, cfg, {
+      dbug,
       connectPoints,
       defaults,
       drawCirc,
       drawCloud,
+      drawGest,
       fillAll,
       fillCirc,
       newColor,

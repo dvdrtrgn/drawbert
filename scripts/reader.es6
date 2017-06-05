@@ -1,6 +1,7 @@
 /*globals */
 
-define(['lodash', 'pdollar'], function (_, PDollar) {
+define(['lodash', 'pdollar',
+], function (_, PDollar) {
   let dbug = 0;
   const C = window.console;
   const makePoint = (arr) => new PDollar.Point(...arr);
@@ -31,8 +32,16 @@ define(['lodash', 'pdollar'], function (_, PDollar) {
       count: {
         get: () => api.clouds.length,
       },
+      findCloud: {
+        value: str => _.find(api.clouds, {
+          name: str,
+        }),
+      },
       lastCloud: {
         get: () => api.clouds[api.count - 1],
+      },
+      processData: {
+        value: (data) => data.map(arr => api.readGesture(arr)),
       },
       makePoint: {
         value: makePoint,
