@@ -17,7 +17,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     font: '20px impact',
     fillStyle: 'silver',
     lineWidth: 3,
-    strokeStyle: 'black',
+    strokeStyle: 'gray',
   };
 
   //
