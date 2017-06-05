@@ -32,6 +32,11 @@ define(['lodash', 'pdollar',
       count: {
         get: () => api.clouds.length,
       },
+      findCloud: {
+        value: str => _.find(api.clouds, {
+          name: str,
+        }),
+      },
       lastCloud: {
         get: () => api.clouds[api.count - 1],
       },

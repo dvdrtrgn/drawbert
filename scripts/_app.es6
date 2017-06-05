@@ -80,9 +80,22 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
-  function previewData() {
+  function previewData(result) {
     Render.drawGest(Gest);
-    Render.drawCloud(Gest.normal);
+
+    let guess = Reads.findCloud(result.name).points;
+    Render.drawCloud(guess, {
+      opacity: 0.2,
+    });
+
+    if (result.score > 0.5) {
+      // redraw normalized
+      Render.drawCloud(Gest.normal, {
+        rotate: 1,
+        opacity: 1,
+      });
+    }
+
     C.log(['draw Gesture/PointCloud', Gest, Gest.normal]);
   }
 
@@ -92,7 +105,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     if (Gest.enough) {
       result = Reads.recognize(Gest);
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
-      dbug && previewData();
+      dbug && previewData(result);
     } else {
       drawText('Not enough data');
     }
