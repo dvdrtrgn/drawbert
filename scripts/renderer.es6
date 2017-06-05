@@ -24,12 +24,6 @@ define(['jquery', 'util',
     };
   }
 
-  function expando(obj, ...args) {
-    var exp = $.extend({}, ...args);
-    U.checkCollision(obj, exp);
-    $.extend(obj, exp);
-  }
-
   function Renderer(canvas, Df) {
     let api = canvas.getContext('2d');
     let colors = {
@@ -115,7 +109,7 @@ define(['jquery', 'util',
       });
     }
 
-    expando(api, Df, {
+    U.expando(api, Df, {
       dbug,
       connectPoints,
       defaults,

@@ -1,5 +1,5 @@
 /*globals */
-define(function () {
+define(['jquery'], function ($) {
   const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
   const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
   const undef = (x) => typeof x === 'undefined';
@@ -15,6 +15,12 @@ define(function () {
   function checkCollision(o1, o2) {
     var all = collisions(o1, allkeys(o2));
     if (all.length) throw Error(`collisions: ${all}`);
+  }
+
+  function expando(obj, ...args) {
+    var exp = $.extend({}, ...args);
+    checkCollision(obj, exp);
+    $.extend(obj, exp);
   }
 
   function fastarrclone(arr) {
@@ -40,7 +46,9 @@ define(function () {
   }
 
   return {
+    allkeys,
     checkCollision,
+    expando,
     fastarrclone,
     flattarr,
     getScrollY,
