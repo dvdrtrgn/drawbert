@@ -1,5 +1,3 @@
-const [C, U, W] = [console, undefined, window];
-
 require.config({
   baseUrl: 'scripts',
   paths: {
@@ -17,6 +15,8 @@ require.config({
 
 require(['jquery', 'util', '_app', 'data', 'pdollar',
 ], function ($, U, App, Data, PDollar) {
+  const [C, W] = [console, window];
+
   W.drt = {
     App,
     PDollar,
@@ -27,6 +27,8 @@ require(['jquery', 'util', '_app', 'data', 'pdollar',
     App.init($('canvas:first')[0]);
   });
 
+  // expose for testing
+  U.expando(W, W.drt, App);
   C.log('_main', W.drt);
 });
 
