@@ -1,11 +1,29 @@
-/*globals */
+// READER.ES6
+/*
+
+CLASS
+  make:         Construct
+  strokePoints: parse stroke string
+
+INSTANCE
+  addGesture:   defer to pdollar.Recognizer method
+  count:        how many clouds?
+  findCloud:    search for name string
+  lastCloud:    what was last loaded?
+  processData:  take an array of arrays
+  makePoint:    defer to pdollar.Point constructor
+  readGesture:  parse array of strings [name, stroke, stroke,...]
+  readLegacy:   parse array of arrays
+  recognize:    defer to pdollar.Recognizer method
+
+*/
 
 define(['lodash', 'pdollar',
 ], function (_, PDollar) {
   let dbug = 0;
   const C = window.console;
   const makePoint = (arr) => new PDollar.Point(...arr);
-  const readArrayString = (str) => str.split(/\s*,\s*/g).map(Number);
+  const readStrokes = (arg) => _.flatten(arg.map(strokePoints));
 
   function joinTwos(all) {
     let arr = [];
@@ -14,13 +32,25 @@ define(['lodash', 'pdollar',
   }
 
   function strokePoints(str, idx) {
-    const all = joinTwos(readArrayString(str));
+    const splitstr = (str) => str.split(/\s*,\s*/g).map(Number);
+    const all = joinTwos(splitstr(str));
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
-  function readStrokes(arg) {
-    let arr = arg.map(strokePoints);
-    return _.flatten(arr);
+  function _readArrayForm(api, nom, arr) {
+    // read old point arrays, [log name with stroke arrays]
+    if (dbug) require(['data'], function (Data) {
+      const data = Data.make();
+      data.convert(nom, arr).log();
+    });
+    api.addGesture(nom, arr.map(api.makePoint));
+  }
+
+  function _readStringForm(api, arg) {
+    const name = arg.shift();
+    const gest = [name, readStrokes(arg)];
+    api.addGesture(...gest);
+    // return [gest, api.lastCloud];
   }
 
   function extend(api) {
@@ -47,22 +77,10 @@ define(['lodash', 'pdollar',
         value: makePoint,
       },
       readGesture: {
-        value: (arg) => {
-          const name = arg.shift();
-          const gest = [name, readStrokes(arg)];
-          api.addGesture(...gest);
-          return [gest, api.lastCloud];
-        },
+        value: (arg) => _readStringForm(api, arg),
       },
       readLegacy: {
-        value: function (nom, arr) {
-          // read old point arrays, [log name with stroke arrays]
-          if (dbug) require(['data'], function (Data) {
-            const data = Data.make();
-            data.convert(nom, arr).log();
-          });
-          api.addGesture(nom, arr.map(api.makePoint));
-        },
+        value: (nom, arr) => _readArrayForm(api, nom, arr),
       },
       recognize: {
         value: api.recognize,
