@@ -87,11 +87,13 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
       opacity: 0.5,
     });
 
-    let guess = Reads.findCloud(result.name).points;
-    Render.drawCloud(guess, {
-      color: 'gray',
-      opacity: 0.2,
-    });
+    let guess = Reads.findCloud(result.name);
+    guess.map(
+      obj => Render.drawCloud(obj.points, {
+        color: 'gray',
+        opacity: 0.2,
+      })
+    );
 
     if (result.score > 0.5) {
       // redraw normalized

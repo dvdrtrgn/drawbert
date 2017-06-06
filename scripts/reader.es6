@@ -63,7 +63,7 @@ define(['lodash', 'pdollar',
         get: () => api.clouds.length,
       },
       findCloud: {
-        value: str => _.find(api.clouds, {
+        value: str => _.filter(api.clouds, {
           name: str,
         }),
       },
