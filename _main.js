@@ -13,14 +13,15 @@ require.config({
   },
 });
 
-require(['jquery', 'util', '_app', 'data', 'pdollar',
-], function ($, U, App, Data, PDollar) {
+require(['jquery', 'util', '_app', 'data', 'pdollar', 'utils-fn',
+], function ($, U, App, Data, PDollar, Ufn) {
   const [C, W] = [console, window];
 
   W.drt = {
     App,
     PDollar,
     data: Data.make(),
+    Ufn,
   };
 
   $(function () {
