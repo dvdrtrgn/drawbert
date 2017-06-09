@@ -103,7 +103,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
       });
     }
 
-    C.log(['draw Gesture/PointCloud', Gest, Gest.normal]);
+    C.log(['draw Gesture/PointCloud', Gest.exportDrawn, Gest.exportPercent]);
   }
 
   function tryRecognize() {
@@ -159,7 +159,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    dbug && C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
+    dbug > 1 && C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
   }
 
