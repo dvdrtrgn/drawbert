@@ -119,13 +119,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     return result;
   }
 
-  function openTrainer() {
-    var result = tryRecognize();
-    if (result) {
-      Dom.showOverlay(result);
-    }
-  }
-
   //
   // Mouse Handlers
   //
@@ -182,15 +175,21 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
-  //
-  // Click Events
-  //
-  function loadData() {
+  // ================ BINDINGS ======================
+
+  function clickTrainer() {
+    var result = tryRecognize();
+    if (result) {
+      Dom.showOverlay(result);
+    }
+  }
+
+  function clickLoad() {
     $('.js-init').hide();
     initData(updateCount);
   }
 
-  function assignGesture(evt) {
+  function clickAssign(evt) {
     var name = $(evt.target).data('name');
 
     if (U.undef(name)) {
@@ -200,8 +199,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
       hideOverlay();
     }
   }
-
-  // ================ BINDINGS ======================
 
   function downEvent(evt) {
     Dom.normTouch(evt);
@@ -225,7 +222,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
-  function initTool() {
+  function clickInit() {
     var $win = $(Render.canvas.ownerDocument.defaultView);
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
@@ -243,23 +240,23 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     var $canvas = $(canvas);
 
     function bindHanders() {
-      $window.on('resize', _.debounce(initTool, 333));
-      $canvas.on('mousedown.pdollar touchstart.pdollar', downEvent);
-      $canvas.on('mousemove.pdollar touchmove.pdollar', _.throttle(moveEvent, 33));
-      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', upEvent);
+      $window.on('resize', _.debounce(clickInit, 333));
+      $canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
+      $canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 33));
+      $canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
 
-      $('.overlay').on('click.pdollar', hideOverlay);
-      $('.js-clear-stroke').on('click.pdollar', initTool);
-      $('.js-init').on('click.pdollar', loadData);
-      $('.js-check').on('click.pdollar', openTrainer);
-      $('.js-choice').on('mousedown.pdollar', assignGesture);
+      $('.overlay').on('click.drwbrt', hideOverlay);
+      $('.js-clear-stroke').on('click.drwbrt', clickInit);
+      $('.js-init').on('click.drwbrt', clickLoad);
+      $('.js-check').on('click.drwbrt', clickTrainer);
+      $('.js-choice').on('mousedown.drwbrt', clickAssign);
     }
 
     if (dbug) {
-      loadData(); // load gestures
+      clickLoad(); // load gestures
     }
     bindHanders();
-    initTool();
+    clickInit();
     updateCount();
 
     Api.init = () => true; // only used once
