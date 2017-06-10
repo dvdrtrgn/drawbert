@@ -129,7 +129,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   //
   // Mouse Handlers
   //
-  function mouseDownEvent(x, y) {
+  function downEvent(x, y) {
     Down = true;
     x -= Render.box.x;
     y -= Render.box.y - U.getScrollY();
@@ -145,7 +145,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     Render.drawCirc(x, y, 8);
   }
 
-  function mouseMoveEvent(x, y) {
+  function moveEvent(x, y) {
     if (Down) {
       x -= Render.box.x;
       y -= Render.box.y - U.getScrollY();
@@ -154,7 +154,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
-  function mouseUpEvent(x, y) {
+  function upEvent(x, y) {
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
@@ -167,9 +167,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     let arr = reader.strokePoints(str);
     let [first, last] = [arr[0], arr[arr.length - 1]];
 
-    mouseDownEvent(first.X, first.Y);
-    arr.forEach(point => mouseMoveEvent(point.X, point.Y));
-    mouseUpEvent(last.X, last.Y);
+    downEvent(first.X, first.Y);
+    arr.forEach(point => moveEvent(point.X, point.Y));
+    upEvent(last.X, last.Y);
   }
 
   function testdraw(arg) {
@@ -201,29 +201,29 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
+  // ================ BINDINGS ======================
+
   function lineStart(evt) {
     Dom.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
     } else {
-      mouseDownEvent(evt.clientX, evt.clientY);
+      downEvent(evt.clientX, evt.clientY);
     }
   }
 
   function lineDraw(evt) {
     Dom.normTouch(evt);
-    mouseMoveEvent(evt.clientX, evt.clientY);
+    moveEvent(evt.clientX, evt.clientY);
   }
 
   function lineEnd(evt) {
     Dom.normTouch(evt);
     if (Down) {
-      mouseUpEvent(evt.clientX, evt.clientY);
+      upEvent(evt.clientX, evt.clientY);
     }
   }
-
-  // ================ BINDINGS ======================
 
   function initTool() {
     var $win = $(Render.canvas.ownerDocument.defaultView);
