@@ -84,14 +84,14 @@ define(['lodash', 'pdollar',
     });
   }
 
-  const Construct = function () {
-    var api = new PDollar.Recognizer();
+  function Construct() {
+    const api = new PDollar.Recognizer();
 
     extend(api);
-
     dbug && C.log('invoke reader util', api);
+
     return api;
-  };
+  }
 
   return {
     make: Construct,

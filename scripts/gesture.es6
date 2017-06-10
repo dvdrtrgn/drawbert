@@ -89,14 +89,14 @@ define(['pdollar',
     });
   }
 
-  const Construct = function () {
-    var api = [];
+  function Construct() {
+    const api = [];
 
     extend(api);
     dbug && C.log(Name, 'invoke util', api);
 
     return api;
-  };
+  }
 
   return {
     make: Construct,
