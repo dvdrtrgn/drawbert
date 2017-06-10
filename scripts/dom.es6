@@ -18,7 +18,7 @@ define(['jquery', 'util'], function ($, U) {
   }
 
   function showOverlay(data) {
-    var $confidence = $('.js-confidence');
+    const $confidence = $('.js-confidence');
 
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(data.name);

@@ -70,11 +70,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function nameGesture(name) {
-    var num;
-
     if (Gest.enough && name.length > 0) {
       dbug && C.log(Gest);
-      num = Reads.addGesture(name, Gest);
+      let num = Reads.addGesture(name, Gest);
       drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
       resetGesture();
     }
@@ -107,7 +105,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function tryRecognize() {
-    var result;
+    let result;
 
     if (Gest.enough) {
       result = Reads.recognize(Gest);
@@ -178,7 +176,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   // ================ BINDINGS ======================
 
   function clickTrainer() {
-    var result = tryRecognize();
+    const result = tryRecognize();
     if (result) {
       Dom.showOverlay(result);
     }
@@ -190,7 +188,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function clickAssign(evt) {
-    var name = $(evt.target).data('name');
+    const name = $(evt.target).data('name');
 
     if (U.undef(name)) {
       alert('Unknown gesture chosen.');
@@ -223,7 +221,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function clickInit() {
-    var $win = $(Render.canvas.ownerDocument.defaultView);
+    const $win = $(Render.canvas.ownerDocument.defaultView);
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
     Render.size($win.width(), $win.height() - 60);
@@ -236,8 +234,8 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     Api.reads = Reads = reader.make();
     Api.render = Render = renderer(canvas, Df);
 
-    var $window = $(window);
-    var $canvas = $(canvas);
+    const $window = $(window);
+    const $canvas = $(canvas);
 
     function bindHanders() {
       $window.on('resize', _.debounce(clickInit, 333));
