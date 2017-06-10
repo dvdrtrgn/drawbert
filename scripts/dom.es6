@@ -6,12 +6,15 @@ define(['jquery', 'util'], function ($, U) {
   //
   // DOM OPS
   //
-  function updateCount(str) {
-    $('.js-gesture-count').text(str);
-  }
-
   function hideOverlay() {
     $('.overlay').addClass('hidden');
+  }
+
+  function normTouch(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
   }
 
   function showOverlay(data) {
@@ -32,10 +35,15 @@ define(['jquery', 'util'], function ($, U) {
     }
   }
 
+  function updateCount(str) {
+    $('.js-gesture-count').text(str);
+  }
+
   return {
-    updateCount,
     hideOverlay,
+    normTouch,
     showOverlay,
+    updateCount,
   };
 });
 

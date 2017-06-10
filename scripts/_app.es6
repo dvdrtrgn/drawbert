@@ -190,13 +190,6 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     initData(updateCount);
   }
 
-  function normTouch(evt) {
-    evt.preventDefault(evt);
-    if (evt.originalEvent.changedTouches) {
-      evt = evt.originalEvent.changedTouches[0];
-    }
-  }
-
   function assignGesture(evt) {
     var name = $(evt.target).data('name');
 
@@ -209,7 +202,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function lineStart(evt) {
-    normTouch(evt);
+    Dom.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
@@ -219,12 +212,12 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   }
 
   function lineDraw(evt) {
-    normTouch(evt);
+    Dom.normTouch(evt);
     mouseMoveEvent(evt.clientX, evt.clientY);
   }
 
   function lineEnd(evt) {
-    normTouch(evt);
+    Dom.normTouch(evt);
     if (Down) {
       mouseUpEvent(evt.clientX, evt.clientY);
     }
