@@ -39,10 +39,6 @@ define(['lodash', 'pdollar',
 
   function _readArrayForm(api, nom, arr) {
     // read old point arrays, [log name with stroke arrays]
-    if (dbug) require(['data'], function (Data) {
-      const data = Data.make();
-      data.convert(nom, arr).log();
-    });
     api.addGesture(nom, arr.map(api.makePoint));
   }
 
