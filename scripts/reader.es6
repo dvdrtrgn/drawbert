@@ -1,8 +1,11 @@
 // READER.ES6
 /*
 
+decorates a PDollar Recognizer instance
+
 CLASS
   make:         Construct
+  joinTwos:     break array into pairs
   strokePoints: parse stroke string
 
 INSTANCE
@@ -10,14 +13,13 @@ INSTANCE
   count:        how many clouds?
   findCloud:    search for name string
   lastCloud:    what was last loaded?
-  processData:  take an array of arrays
   makePoint:    defer to pdollar.Point constructor
+  processData:  take an array of arrays
   readGesture:  parse array of strings [name, stroke, stroke,...]
   readLegacy:   parse array of arrays
   recognize:    defer to pdollar.Recognizer method
 
 */
-
 define(['lodash', 'pdollar',
 ], function (_, PDollar) {
   let dbug = 0;
@@ -37,15 +39,13 @@ define(['lodash', 'pdollar',
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
-  function _readArrayForm(api, nom, arr) {
+  function _readPointsArray(api, nom, arr) {
     // read old point arrays, [log name with stroke arrays]
     api.addGesture(nom, arr.map(api.makePoint));
   }
 
-  function _readStringForm(api, arg) {
-    const name = arg.shift();
-    const gest = [name, readStrokes(arg)];
-    api.addGesture(...gest);
+  function _readStrokesArray(api, arg) {
+    api.addGesture(arg.shift(), readStrokes(arg));
     // return [gest, api.lastCloud];
   }
 
@@ -66,17 +66,17 @@ define(['lodash', 'pdollar',
       lastCloud: {
         get: () => api.clouds[api.count - 1],
       },
-      processData: {
-        value: (data) => data.map(arr => api.readGesture(arr)),
-      },
       makePoint: {
         value: makePoint,
       },
+      processData: {
+        value: (data) => data.map(arr => api.readGesture(arr)),
+      },
       readGesture: {
-        value: (arg) => _readStringForm(api, arg),
+        value: (arg) => _readStrokesArray(api, arg),
       },
       readLegacy: {
-        value: (nom, arr) => _readArrayForm(api, nom, arr),
+        value: (nom, arr) => _readPointsArray(api, nom, arr),
       },
       recognize: {
         value: api.recognize,
@@ -95,6 +95,7 @@ define(['lodash', 'pdollar',
 
   return {
     make: Construct,
+    joinTwos,
     strokePoints,
   };
 });
