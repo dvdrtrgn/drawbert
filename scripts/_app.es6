@@ -129,7 +129,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
   //
   // Mouse Handlers
   //
-  function downEvent(x, y) {
+  function lineStart(x, y) {
     Down = true;
     x -= Render.box.x;
     y -= Render.box.y - U.getScrollY();
@@ -145,7 +145,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     Render.drawCirc(x, y, 8);
   }
 
-  function moveEvent(x, y) {
+  function lineDraw(x, y) {
     if (Down) {
       x -= Render.box.x;
       y -= Render.box.y - U.getScrollY();
@@ -154,7 +154,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     }
   }
 
-  function upEvent(x, y) {
+  function lineEnd(x, y) {
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Render.fillRect(x - 4, y - 4, 8, 8);
@@ -167,9 +167,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
     let arr = reader.strokePoints(str);
     let [first, last] = [arr[0], arr[arr.length - 1]];
 
-    downEvent(first.X, first.Y);
-    arr.forEach(point => moveEvent(point.X, point.Y));
-    upEvent(last.X, last.Y);
+    lineDraw(first.X, first.Y);
+    arr.forEach(point => lineDraw(point.X, point.Y));
+    lineEnd(last.X, last.Y);
   }
 
   function testdraw(arg) {
@@ -203,25 +203,25 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
   // ================ BINDINGS ======================
 
-  function lineStart(evt) {
+  function downEvent(evt) {
     Dom.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
     } else {
-      downEvent(evt.clientX, evt.clientY);
+      lineStart(evt.clientX, evt.clientY);
     }
   }
 
-  function lineDraw(evt) {
+  function moveEvent(evt) {
     Dom.normTouch(evt);
-    moveEvent(evt.clientX, evt.clientY);
+    lineDraw(evt.clientX, evt.clientY);
   }
 
-  function lineEnd(evt) {
+  function upEvent(evt) {
     Dom.normTouch(evt);
     if (Down) {
-      upEvent(evt.clientX, evt.clientY);
+      lineEnd(evt.clientX, evt.clientY);
     }
   }
 
@@ -244,9 +244,9 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'reader', 'renderer',
 
     function bindHanders() {
       $window.on('resize', _.debounce(initTool, 333));
-      $canvas.on('mousedown.pdollar touchstart.pdollar', lineStart);
-      $canvas.on('mousemove.pdollar touchmove.pdollar', _.throttle(lineDraw, 28));
-      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', lineEnd);
+      $canvas.on('mousedown.pdollar touchstart.pdollar', downEvent);
+      $canvas.on('mousemove.pdollar touchmove.pdollar', _.throttle(moveEvent, 33));
+      $canvas.on('mouseup.pdollar mouseout.pdollar touchend.pdollar', upEvent);
 
       $('.overlay').on('click.pdollar', hideOverlay);
       $('.js-clear-stroke').on('click.pdollar', initTool);
