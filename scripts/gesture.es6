@@ -1,7 +1,7 @@
 /*globals */
 
-define(['pdollar',
-], function (PDollar) {
+define(['pdollar', 'reader',
+], function (PDollar, Reader) {
   let dbug = 0;
 
   const Name = 'Gesture';
@@ -30,6 +30,7 @@ define(['pdollar',
   function extend(api) {
     let strokeNum = 0;
     let strokeArr = [];
+    let reader = Reader.make();
 
     Object.defineProperties(api.__proto__, {
       addPoint: {
@@ -52,6 +53,9 @@ define(['pdollar',
           strokeNum += 1;
           return arr;
         },
+      },
+      bank: {
+        get: () => reader,
       },
       enough: {
         get: () => api.length > 5,
