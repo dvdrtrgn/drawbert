@@ -20,7 +20,7 @@ INSTANCE
   recognize:    defer to pdollar.Recognizer method
 
 */
-define(['lodash', 'pdollar',
+define(['lodash', 'lib/pdollar',
 ], function (_, PDollar) {
   let dbug = 0;
   const C = window.console;

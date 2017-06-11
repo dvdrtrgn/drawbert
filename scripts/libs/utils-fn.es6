@@ -1,5 +1,5 @@
 /*globals */
-define(['jquery'], function () {
+define(['lib/util'], function (U) {
   const double = (x) => x + x;
   const hasval = (x) => x != null;
   const summer = (...az) => az.reduce((a, b) => a + b);
@@ -21,9 +21,9 @@ define(['jquery'], function () {
 
   let maybe = provided(hasval);
 
-  return {
+  return U.expando(U, {
     double, hasval, curry, decorate, provided, maybe, summer,
     sum3: curry(summer, 3),
     maydub: maybe(double),
-  };
+  });
 });

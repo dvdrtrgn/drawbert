@@ -4,7 +4,7 @@ require.config({
     jquery: '/vendors/jquery.min', //'https://goo.gl/1NXWa8?',
     lodash: '/vendors/lodash.min', //'https://goo.gl/uxQpja?',
     reqyr: '/vendors/require.min', //'https://goo.gl/8jmmsx?',
-    lib: '/libs',
+    lib: 'libs',
   },
   shim: {
     _app: {
@@ -13,14 +13,13 @@ require.config({
   },
 });
 
-require(['jquery', 'util', '_app', 'pdollar', 'utils-fn',
-], function ($, U, App, PDollar, Ufn) {
+require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app',
+], function ($, U, PDollar, App) {
   const [C, W] = [console, window];
 
   W.drt = {
     App,
     PDollar,
-    Ufn,
   };
 
   $(function () {

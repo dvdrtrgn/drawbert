@@ -1,6 +1,6 @@
 /*globals */
 
-define(['pdollar', 'reader',
+define(['lib/pdollar', 'reader',
 ], function (PDollar, Reader) {
   let dbug = 0;
 

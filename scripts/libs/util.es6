@@ -21,6 +21,7 @@ define(['jquery'], function ($) {
     const exp = $.extend({}, ...args);
     checkCollision(obj, exp);
     $.extend(obj, exp);
+    return obj;
   }
 
   function fastarrclone(arr) {

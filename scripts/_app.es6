@@ -1,6 +1,6 @@
 /*globals */
 
-define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'renderer',
+define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 ], function ($, _, U, Dom, gesture, renderer) {
   let dbug = 1;
   //
@@ -54,7 +54,7 @@ define(['jquery', 'lodash', 'util', 'dom', 'gesture', 'renderer',
   }
 
   function initData(cb) {
-    require(['init_alphabet', 'init_gestures'], function (...arr) {
+    require(['data/alphabet', 'data/gestures'], function (...arr) {
       arr.map(Gest.bank.processData);
       cb && cb();
     });
