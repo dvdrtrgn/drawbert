@@ -120,7 +120,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   function lineStart(x, y) {
     Down = true;
     x -= Render.box.x;
-    y -= Render.box.y - U.getScrollY();
+    y -= Render.box.y - Dom.getScrollY();
 
     clearCanvas();
     if (Gest.stroke) {
@@ -137,6 +137,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     if (Down) {
       x -= Render.box.x;
       y -= Render.box.y - U.getScrollY();
+      y -= Render.box.y - Dom.getScrollY();
       Gest.addPoint(x, y);
       Render.connectPoints(Gest.from, Gest.to);
     }

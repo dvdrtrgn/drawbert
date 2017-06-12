@@ -35,24 +35,12 @@ define(['jquery'], function ($) {
     return arr.reduce(flat, []);
   }
 
-  function getScrollY() {
-    let scrollY = 0;
-
-    if (!undef(document.body.parentElement)) {
-      scrollY = document.body.parentElement.scrollTop; // IE
-    } else if (!undef(window.pageYOffset)) {
-      scrollY = window.pageYOffset; // FF
-    }
-    return scrollY;
-  }
-
   return {
     allkeys,
     checkCollision,
     expando,
     fastarrclone,
     flattarr,
-    getScrollY,
     percent,
     rand,
     round,
