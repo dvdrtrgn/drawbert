@@ -160,16 +160,6 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     lineEnd(last.X, last.Y);
   }
 
-  function testdraw(arg) {
-    if (U.undef(arg)) {
-      Gest.bank.clouds.map(obj => Render.drawCloud(obj.points));
-    } else if (typeof arg === 'number') {
-      Render.drawCloud(Gest.bank.clouds[arg].points);
-    } else if (typeof arg === 'string') {
-      playStroke(arg);
-    }
-  }
-
   // ================ BINDINGS ======================
 
   function clickTrainer() {
@@ -257,12 +247,18 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   Api = {
-    init,
-    Df,
-    U,
+    init, Df, U,
     gest: null,
     render: null,
-    testdraw,
+    testdraw: function (arg) {
+      if (U.undef(arg)) {
+        Gest.bank.clouds.map(obj => Render.drawCloud(obj.points));
+      } else if (typeof arg === 'number') {
+        Render.drawCloud(Gest.bank.clouds[arg].points);
+      } else if (typeof arg === 'string') {
+        playStroke(arg);
+      }
+    },
   };
 
   return Api;
