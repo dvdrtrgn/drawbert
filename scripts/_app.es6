@@ -155,7 +155,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let arr = Gest.bank.strokePoints(str);
     let [first, last] = [arr[0], arr[arr.length - 1]];
 
-    lineDraw(first.X, first.Y);
+    lineStart(first.X, first.Y);
     arr.forEach(point => lineDraw(point.X, point.Y));
     lineEnd(last.X, last.Y);
   }
