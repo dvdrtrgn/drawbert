@@ -1,9 +1,23 @@
-/*globals */
+// RENDERER.ES6
+/*
 
+decorates a Canvas context instance
+
+
+INSTANCE
+  recognize:    defer to pdollar.Recognizer method
+
+*/
 define(['jquery', 'lib/util',
 ], function ($, U) {
   let dbug = 1;
   const C = window.console;
+  const D = {
+    font: '20px impact',
+    fillStyle: 'silver',
+    lineWidth: 3,
+    strokeStyle: 'gray',
+  };
 
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
@@ -27,7 +41,7 @@ define(['jquery', 'lib/util',
     };
   }
 
-  function Renderer(canvas, cfg) {
+  function Renderer(canvas, cfg = D) {
     let api = canvas.getContext('2d');
     let colors = {
       index: 0,
@@ -137,7 +151,9 @@ define(['jquery', 'lib/util',
     return api;
   }
 
-  return Renderer;
+  return {
+    make: Renderer,
+  };
 });
 
 /*

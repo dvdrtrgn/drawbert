@@ -1,33 +1,31 @@
 /*globals */
+/*
 
+  USE: singleton
+  - constructor is api
+
+ */
 define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
-], function ($, _, U, Dom, gesture, renderer) {
+], function ($, _, U, D, Gesture, Renderer) {
   let dbug = 1;
   //
   // GLOBAL VARS
   //
   const C = window.console;
   let Gest; // point array for current stroke(s)
-  let Render; // canvas toolkit
+  let Rend; // canvas toolkit
   let Down = false;
   let Api = {};
-
-  const Df = {
-    font: '20px impact',
-    fillStyle: 'silver',
-    lineWidth: 3,
-    strokeStyle: 'gray',
-  };
 
   //
   // DOM OPS
   //
   function updateCount() {
-    Dom.updateCount(trainingTotal());
+    D.updateCount(trainingTotal());
   }
 
   function hideOverlay() {
-    Dom.hideOverlay();
+    D.hideOverlay();
     updateCount();
   }
 
@@ -35,13 +33,11 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   // CONTEXT OPS
   //
   function drawText(str) {
-    if (dbug) {
-      Render.setMessage(str, 'darkgray');
-    }
+    if (dbug) Rend.setMessage(str, 'darkgray');
   }
 
   function clearCanvas() {
-    Render.defaults().fillAll();
+    Rend.defaults().fillAll();
     drawText('Canvas cleared');
     updateCount();
   }
@@ -66,7 +62,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
-      dbug && C.log(Gest);
+      if (dbug) C.log(Gest);
       let idx = Gest.saveAs(name);
       drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
@@ -78,20 +74,20 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
     if (result.score > 0.1) {
       // overlay drawn with segment colors
-      Render.drawGest(Gest, {
+      Rend.drawGest(Gest, {
         rotate: 1,
         opacity: 0.5,
       });
       // show guessed template
       if (result.score) guess.map(
-        obj => Render.drawCloud(obj.points, {
+        obj => Rend.drawCloud(obj.points, {
           color: 'gray',
           opacity: 0.2,
         })
       );
       // redraw normalized
       if (result.score < 0.5) {
-        Render.drawCloud(Gest.normal, {
+        Rend.drawCloud(Gest.normal, {
           rotate: 1,
           opacity: 1,
         });
@@ -107,7 +103,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     if (Gest.enough) {
       result = Gest.guess();
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
-      dbug && previewData(result);
+      if (dbug) previewData(result);
     } else {
       drawText('Not enough data');
     }
@@ -119,36 +115,35 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   //
   function lineStart(x, y) {
     Down = true;
-    x -= Render.box.x;
-    y -= Render.box.y - Dom.getScrollY();
+    x -= Rend.box.x;
+    y -= Rend.box.y - D.getScrollY();
 
     clearCanvas();
     if (Gest.stroke) {
-      Render.drawGest(Gest); // redraw current strokes
+      Rend.drawGest(Gest); // redraw current strokes
     }
     Gest.addPoint(x, y);
     drawText(`Recording stroke #${Gest.stroke + 1}...`);
 
-    Render.newColor();
-    Render.drawCirc(x, y, 8);
+    Rend.newColor();
+    Rend.drawCirc(x, y, 8);
   }
 
   function lineDraw(x, y) {
     if (Down) {
-      x -= Render.box.x;
-      y -= Render.box.y - U.getScrollY();
-      y -= Render.box.y - Dom.getScrollY();
+      x -= Rend.box.x;
+      y -= Rend.box.y - D.getScrollY();
       Gest.addPoint(x, y);
-      Render.connectPoints(Gest.from, Gest.to);
+      Rend.connectPoints(Gest.from, Gest.to);
     }
   }
 
   function lineEnd(x, y) {
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
-    Render.fillRect(x - 4, y - 4, 8, 8);
+    Rend.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    dbug > 1 && C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
+    if (dbug > 1) C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
   }
 
@@ -166,7 +161,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   function clickTrainer() {
     const result = tryRecognize();
     if (result) {
-      Dom.showOverlay(result);
+      D.showOverlay(result);
     }
   }
 
@@ -187,7 +182,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function downEvent(evt) {
-    Dom.normTouch(evt);
+    D.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
@@ -197,29 +192,29 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function moveEvent(evt) {
-    Dom.normTouch(evt);
+    D.normTouch(evt);
     lineDraw(evt.clientX, evt.clientY);
   }
 
   function upEvent(evt) {
-    Dom.normTouch(evt);
+    D.normTouch(evt);
     if (Down) {
       lineEnd(evt.clientX, evt.clientY);
     }
   }
 
   function clickInit() {
-    const $win = $(Render.canvas.ownerDocument.defaultView);
+    const $win = $(Rend.canvas.ownerDocument.defaultView);
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
-    Render.size($win.width(), $win.height() - 60);
+    Rend.size($win.width(), $win.height() - 60);
     resetGesture();
     clearCanvas();
   }
 
   function init(canvas) {
-    Api.gest = Gest = gesture.make();
-    Api.render = Render = renderer(canvas, Df);
+    Api.gest = Gest = Gesture.make();
+    Api.rend = Rend = Renderer.make(canvas);
 
     const $window = $(window);
     const $canvas = $(canvas);
@@ -237,9 +232,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       $('.js-choice').on('mousedown.drwbrt', clickAssign);
     }
 
-    if (dbug) {
-      clickLoad(); // load gestures
-    }
+    if (dbug) clickLoad(); // load gestures
     bindHanders();
     clickInit();
     updateCount();
@@ -248,14 +241,15 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   Api = {
-    init, Df, U,
+    U, D, Gesture, Renderer,
+    init,
     gest: null,
-    render: null,
+    rend: null,
     testdraw: function (arg) {
       if (U.undef(arg)) {
-        Gest.reader.clouds.map(obj => Render.drawCloud(obj.points));
+        Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
       } else if (typeof arg === 'number') {
-        Render.drawCloud(Gest.reader.clouds[arg].points);
+        Rend.drawCloud(Gest.reader.clouds[arg].points);
       } else if (typeof arg === 'string') {
         playStroke(arg);
       }

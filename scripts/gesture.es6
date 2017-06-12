@@ -102,7 +102,7 @@ define(['lib/pdollar', 'reader',
     });
   }
 
-  function Construct() {
+  function Gesture() {
     const api = [];
 
     extend(api);
@@ -112,7 +112,8 @@ define(['lib/pdollar', 'reader',
   }
 
   return {
-    make: Construct,
+    make: Gesture,
+    PDollar, Reader,
   };
 });
 
