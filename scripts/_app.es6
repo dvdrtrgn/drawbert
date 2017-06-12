@@ -50,12 +50,12 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   // RECOG OPS
   //
   function trainingTotal() {
-    return Gest.bank.count;
+    return Gest.reader.count;
   }
 
   function initData(cb) {
     require(['data/alphabet', 'data/gestures'], function (...arr) {
-      arr.map(Gest.bank.processData);
+      arr.map(Gest.reader.processData);
       cb && cb();
     });
   }
@@ -67,14 +67,14 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
       dbug && C.log(Gest);
-      let num = Gest.bank.addGesture(name, Gest);
-      drawText(`“${name}” added. Number of “${name}s” defined: ${num}.`);
+      let idx = Gest.saveAs(name);
+      drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
     }
   }
 
   function previewData(result) {
-    let guess = Gest.bank.findCloud(result.name);
+    let guess = Gest.reader.findCloud(result.name);
 
     if (result.score > 0.1) {
       // overlay drawn with segment colors
@@ -105,7 +105,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let result;
 
     if (Gest.enough) {
-      result = Gest.bank.recognize(Gest);
+      result = Gest.guess();
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       dbug && previewData(result);
     } else {
@@ -152,7 +152,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function playStroke(str) {
-    let arr = Gest.bank.strokePoints(str);
+    let arr = Gest.parsePointString(str);
     let [first, last] = [arr[0], arr[arr.length - 1]];
 
     lineStart(first.X, first.Y);
@@ -252,9 +252,9 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     render: null,
     testdraw: function (arg) {
       if (U.undef(arg)) {
-        Gest.bank.clouds.map(obj => Render.drawCloud(obj.points));
+        Gest.reader.clouds.map(obj => Render.drawCloud(obj.points));
       } else if (typeof arg === 'number') {
-        Render.drawCloud(Gest.bank.clouds[arg].points);
+        Render.drawCloud(Gest.reader.clouds[arg].points);
       } else if (typeof arg === 'string') {
         playStroke(arg);
       }

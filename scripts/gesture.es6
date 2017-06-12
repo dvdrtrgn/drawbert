@@ -54,11 +54,20 @@ define(['lib/pdollar', 'reader',
           return arr;
         },
       },
-      bank: {
+      reader: {
         get: () => reader,
       },
       enough: {
         get: () => api.length > 5,
+      },
+      saveAs: {
+        value: (name) => reader.addGesture(name, api),
+      },
+      guess: {
+        value: () => reader.recognize(api),
+      },
+      parsePointString: {
+        value: (str) => Reader.strokePoints(str),
       },
       from: {
         get: () => api[api.length - 2],
