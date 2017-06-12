@@ -1,6 +1,6 @@
 /*globals */
 
-define(['jquery', 'util',
+define(['jquery', 'lib/util',
 ], function ($, U) {
   let dbug = 1;
   const C = window.console;

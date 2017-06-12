@@ -1,21 +1,24 @@
 /*globals */
 
-define(['jquery', 'util'], function ($, U) {
+define(['jquery', 'lib/util'], function ($, U) {
   const C = window.console;
 
   //
   // DOM OPS
   //
-  function updateCount(str) {
-    $('.js-gesture-count').text(str);
-  }
-
   function hideOverlay() {
     $('.overlay').addClass('hidden');
   }
 
+  function normTouch(evt) {
+    evt.preventDefault(evt);
+    if (evt.originalEvent.changedTouches) {
+      evt = evt.originalEvent.changedTouches[0];
+    }
+  }
+
   function showOverlay(data) {
-    var $confidence = $('.js-confidence');
+    const $confidence = $('.js-confidence');
 
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(data.name);
@@ -32,10 +35,15 @@ define(['jquery', 'util'], function ($, U) {
     }
   }
 
+  function updateCount(str) {
+    $('.js-gesture-count').text(str);
+  }
+
   return {
-    updateCount,
     hideOverlay,
+    normTouch,
     showOverlay,
+    updateCount,
   };
 });
 
