@@ -23,8 +23,13 @@ define(['jquery', 'lib/util'], function ($, U) {
 
   function normTouch(evt) {
     evt.preventDefault(evt);
-    if (evt.originalEvent.changedTouches) {
-      evt = evt.originalEvent.changedTouches[0];
+
+    let touch = evt.originalEvent.changedTouches;
+    let button = evt.originalEvent.ctrlKey ? 2 : 0;
+
+    if (touch) {
+      evt = touch[0];
+      evt.button = button;
     }
     return evt;
   }
