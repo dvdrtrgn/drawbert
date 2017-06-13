@@ -94,7 +94,10 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       }
     }
 
-    C.log('draw Gesture/PointCloud', [Gest.exportDrawn, Gest.exportPercent]);
+    if (dbug > 1) C.log('previewData: pix/pct', {
+      pix: Gest.exportDrawn,
+      pct: Gest.exportPercent,
+    });
   }
 
   function tryRecognize() {
