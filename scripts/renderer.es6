@@ -89,7 +89,7 @@ define(['jquery', 'lib/util',
       cfg.color && (color = cfg.color);
       cfg.opacity && goGhost(cfg.opacity);
       cfg.random && (color = rando());
-      cfg.rotate && (color = colors.next());
+      cfg.cycle && (color = colors.next());
 
       api.strokeStyle = color;
       api.fillStyle = color;
