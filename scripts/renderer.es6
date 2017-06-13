@@ -11,7 +11,8 @@ INSTANCE
 define(['jquery', 'lib/util',
 ], function ($, U) {
   let dbug = 1;
-  const C = window.console;
+  const W = window;
+  const C = W.console;
   const D = {
     font: '20px impact',
     fillStyle: 'silver',
@@ -21,6 +22,31 @@ define(['jquery', 'lib/util',
 
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
+
+  function offset(api, seg) {
+    let currX, currY, gapX, gapY;
+    const reset = function () {
+      currX = seg - 1, currY = seg - 1;
+      gapX = api.box.width / seg;
+      gapY = api.box.height / seg;
+    };
+    const advance = function () {
+      currX -= 1;
+      if (currX === -1) currX = seg - 1, currY -= 1;
+    };
+
+    return {
+      factor: seg,
+      advance,
+      reset,
+      get x() {
+        return currX * gapX;
+      },
+      get y() {
+        return currY * gapY;
+      },
+    };
+  }
 
   function getRect(canvas) {
     let w = canvas.width;
@@ -49,15 +75,17 @@ define(['jquery', 'lib/util',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
+    let off = offset(api, 4);
 
     const normpoint = o => ({
-      X: normo(o.X, api.box.width),
-      Y: normo(o.Y, api.box.height),
+      X: normo(o.X, api.box.width) / off.factor + off.x,
+      Y: normo(o.Y, api.box.height) / off.factor + off.y,
     });
 
     const defaults = function () {
       $.extend(api, cfg); // reset
       api.box = getRect(api.canvas);
+      off.reset();
       return api;
     };
     const connectPoints = function (from, to) {
@@ -115,6 +143,7 @@ define(['jquery', 'lib/util',
     };
 
     function drawCloud(arr, cfg) {
+      off.advance();
       arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
           newColor(cfg);
