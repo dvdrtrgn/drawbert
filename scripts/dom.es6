@@ -26,6 +26,7 @@ define(['jquery', 'lib/util'], function ($, U) {
     if (evt.originalEvent.changedTouches) {
       evt = evt.originalEvent.changedTouches[0];
     }
+    return evt;
   }
 
   function showOverlay(data) {

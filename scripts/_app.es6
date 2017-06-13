@@ -182,7 +182,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function downEvent(evt) {
-    D.normTouch(evt);
+    evt = D.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
@@ -192,12 +192,12 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function moveEvent(evt) {
-    D.normTouch(evt);
+    evt = D.normTouch(evt);
     lineDraw(evt.clientX, evt.clientY);
   }
 
   function upEvent(evt) {
-    D.normTouch(evt);
+    evt = D.normTouch(evt);
     if (Down) {
       lineEnd(evt.clientX, evt.clientY);
     }
