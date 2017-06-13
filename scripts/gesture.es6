@@ -54,11 +54,20 @@ define(['lib/pdollar', 'reader',
           return arr;
         },
       },
-      bank: {
+      reader: {
         get: () => reader,
       },
       enough: {
         get: () => api.length > 5,
+      },
+      saveAs: {
+        value: (name) => reader.addGesture(name, api),
+      },
+      guess: {
+        value: () => reader.recognize(api),
+      },
+      parsePointString: {
+        value: (str) => Reader.strokePoints(str),
       },
       from: {
         get: () => api[api.length - 2],
@@ -93,7 +102,7 @@ define(['lib/pdollar', 'reader',
     });
   }
 
-  function Construct() {
+  function Gesture() {
     const api = [];
 
     extend(api);
@@ -103,7 +112,8 @@ define(['lib/pdollar', 'reader',
   }
 
   return {
-    make: Construct,
+    make: Gesture,
+    PDollar, Reader,
   };
 });
 

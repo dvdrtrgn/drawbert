@@ -6,6 +6,17 @@ define(['jquery', 'lib/util'], function ($, U) {
   //
   // DOM OPS
   //
+  function getScrollY() {
+    let scrollY = 0;
+
+    if (!U.undef(document.body.parentElement)) {
+      scrollY = document.body.parentElement.scrollTop; // IE
+    } else if (!U.undef(window.pageYOffset)) {
+      scrollY = window.pageYOffset; // FF
+    }
+    return scrollY;
+  }
+
   function hideOverlay() {
     $('.overlay').addClass('hidden');
   }
@@ -15,6 +26,7 @@ define(['jquery', 'lib/util'], function ($, U) {
     if (evt.originalEvent.changedTouches) {
       evt = evt.originalEvent.changedTouches[0];
     }
+    return evt;
   }
 
   function showOverlay(data) {
@@ -40,6 +52,7 @@ define(['jquery', 'lib/util'], function ($, U) {
   }
 
   return {
+    getScrollY,
     hideOverlay,
     normTouch,
     showOverlay,
