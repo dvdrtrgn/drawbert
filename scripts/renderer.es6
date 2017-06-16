@@ -23,12 +23,12 @@ define(['jquery', 'lib/util',
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
 
-  function offset(api, seg) {
+  function offset(box, seg) {
     let currX, currY, gapX, gapY;
     const reset = function () {
       currX = seg - 1, currY = seg - 1;
-      gapX = api.box.width / seg;
-      gapY = api.box.height / seg;
+      gapX = box.w / seg;
+      gapY = box.h / seg;
     };
     const advance = function () {
       currX -= 1;
@@ -49,21 +49,22 @@ define(['jquery', 'lib/util',
   }
 
   function getRect(canvas) {
-    let w = canvas.width;
-    let h = canvas.height;
-    let cx = canvas.offsetLeft;
-    let cy = canvas.offsetTop;
-
-    while (canvas.offsetParent !== null) {
-      canvas = canvas.offsetParent;
-      cx += canvas.offsetLeft;
-      cy += canvas.offsetTop;
-    }
+    const update = function () {
+      let cc = this.canvas;
+      this.w = cc.width;
+      this.h = cc.height;
+      this.x = cc.offsetLeft;
+      this.y = cc.offsetTop;
+      while (cc.offsetParent !== null) {
+        cc = cc.offsetParent;
+        this.x += cc.offsetLeft;
+        this.y += cc.offsetTop;
+      }
+      return this;
+    };
     return {
-      x: cx,
-      y: cy,
-      width: w,
-      height: h,
+      canvas,
+      update,
     };
   }
 
@@ -75,16 +76,17 @@ define(['jquery', 'lib/util',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
-    let off = offset(api, 4);
+    let box = getRect(canvas);
+    let off = offset(box, 4);
 
     const normpoint = o => ({
-      X: normo(o.X, api.box.width) / off.factor + off.x,
-      Y: normo(o.Y, api.box.height) / off.factor + off.y,
+      X: normo(o.X, box.w) / off.factor + off.x,
+      Y: normo(o.Y, box.h) / off.factor + off.y,
     });
 
     const defaults = function () {
       $.extend(api, cfg); // reset
-      api.box = getRect(api.canvas);
+      box.update();
       off.reset();
       return api;
     };
@@ -103,7 +105,7 @@ define(['jquery', 'lib/util',
       return api;
     };
     const fillAll = function () {
-      api.fillRect(0, 0, api.box.width, api.box.height);
+      api.fillRect(0, 0, box.w, box.h);
       return api;
     };
     const fillCirc = function (x = 100, y = 100, rad = 10) {
@@ -125,11 +127,11 @@ define(['jquery', 'lib/util',
     };
     const setMessage = function (str, bkgr) {
       api.fillStyle = bkgr;
-      api.fillRect(0, api.box.height - 20, api.box.width, api.box.height);
+      api.fillRect(0, box.h - 20, box.w, box.h);
       api.fillStyle = 'black';
-      api.fillText(str, 10.5, api.box.height - 2);
+      api.fillText(str, 10.5, box.h - 2);
       api.fillStyle = 'white';
-      api.fillText(str, 11, api.box.height - 2.5);
+      api.fillText(str, 11, box.h - 2.5);
       return api;
     };
     const size = function (w, h) {
@@ -165,6 +167,7 @@ define(['jquery', 'lib/util',
 
     U.expando(api, cfg, {
       dbug,
+      box,
       connectPoints,
       defaults,
       drawCirc,
