@@ -34,7 +34,7 @@ define(['lib/pdollar', 'reader',
     let strokeArr = [];
     let reader = Reader.make();
 
-    Object.defineProperties(api.__proto__, {
+    Object.defineProperties(api, { // .__proto__
       addPoint: {
         value: function (x, y) {
           api[api.length] = new PDollar.Point(x, y, strokeNum + 1); // projected ID
