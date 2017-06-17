@@ -60,7 +60,7 @@ define(['lib/pdollar', 'reader',
         get: () => reader,
       },
       enough: {
-        get: () => api.length > 5,
+        get: () => api.normal.length > 5,
       },
       saveAs: {
         value: (name) => reader.addGesture(name, api),
