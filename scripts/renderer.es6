@@ -8,8 +8,8 @@ INSTANCE
   recognize:    defer to pdollar.Recognizer method
 
 */
-define(['jquery', 'lib/util',
-], function ($, U) {
+define(['jquery', 'lib/util', 'box',
+], function ($, U, Box) {
   let dbug = 1;
   const W = window;
   const C = W.console;
@@ -23,51 +23,6 @@ define(['jquery', 'lib/util',
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
 
-  function offset(box, seg) {
-    let currX, currY, gapX, gapY;
-    const reset = function () {
-      currX = seg - 1, currY = seg - 1;
-      gapX = box.w / seg;
-      gapY = box.h / seg;
-    };
-    const advance = function () {
-      currX -= 1;
-      if (currX === -1) currX = seg - 1, currY -= 1;
-    };
-
-    return {
-      factor: seg,
-      advance,
-      reset,
-      get x() {
-        return currX * gapX;
-      },
-      get y() {
-        return currY * gapY;
-      },
-    };
-  }
-
-  function getRect(canvas) {
-    const update = function () {
-      let cc = this.canvas;
-      this.w = cc.width;
-      this.h = cc.height;
-      this.x = cc.offsetLeft;
-      this.y = cc.offsetTop;
-      while (cc.offsetParent !== null) {
-        cc = cc.offsetParent;
-        this.x += cc.offsetLeft;
-        this.y += cc.offsetTop;
-      }
-      return this;
-    };
-    return {
-      canvas,
-      update,
-    };
-  }
-
   function Renderer(canvas, cfg = D) {
     let api = canvas.getContext('2d');
     let colors = {
@@ -76,8 +31,8 @@ define(['jquery', 'lib/util',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
-    let box = getRect(canvas);
-    let off = offset(box, 4);
+    let box = Box.make.fromCanvas(canvas);
+    let off = Box.make.offset(box, 4);
 
     const normpoint = o => ({
       X: normo(o.X, box.w) / off.factor + off.x,
