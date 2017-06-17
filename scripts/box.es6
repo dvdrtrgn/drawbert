@@ -2,23 +2,31 @@
 
 define([], function () {
   const C = window.console;
+  const dbug = 1;
 
-  function offset(box, seg) {
+  function segment(xyObj, slices) {
     let currX, currY, gapX, gapY;
+
     const reset = function () {
-      currX = seg - 1, currY = seg - 1;
-      gapX = box.w / seg;
-      gapY = box.h / seg;
+      currX = slices - 1, currY = slices - 1;
+      gapX = xyObj.w / slices;
+      gapY = xyObj.h / slices;
     };
+
     const advance = function () {
       currX -= 1;
-      if (currX === -1) currX = seg - 1, currY -= 1;
+      if (currX === -1) currX = slices - 1, currY -= 1;
     };
 
     return {
-      factor: seg,
       advance,
       reset,
+      get slices() {
+        return slices;
+      },
+      set slices(int) {
+        slices = int;
+      },
       get x() {
         return currX * gapX;
       },
@@ -28,32 +36,34 @@ define([], function () {
     };
   }
 
-  function fromCanvas(canvas) {
-    const update = function () {
-      let cc = this.canvas;
-      this.w = cc.width;
-      this.h = cc.height;
-      this.x = cc.offsetLeft;
-      this.y = cc.offsetTop;
-      while (cc.offsetParent !== null) {
-        cc = cc.offsetParent;
-        this.x += cc.offsetLeft;
-        this.y += cc.offsetTop;
-      }
-      return this;
+  const measure = function () {
+    let cc = this.source;
+    this.w = cc.offsetWidth;
+    this.h = cc.offsetHeight;
+    this.x = cc.offsetLeft;
+    this.y = cc.offsetTop;
+    while (cc.offsetParent !== null) {
+      cc = cc.offsetParent;
+      this.x += cc.offsetLeft;
+      this.y += cc.offsetTop;
+    }
+    return this;
+  };
+
+  function Box(source) {
+    dbug && C.log(source.constructor);
+
+    const box = {
+      source,
+      offset: (qty) => segment(box, qty),
+      update: measure,
     };
-    return {
-      canvas,
-      update,
-    };
+
+    return box;
   }
 
   return {
-    C,
-    make: {
-      fromCanvas,
-      offset,
-    },
+    make: Box,
   };
 });
 

@@ -31,12 +31,12 @@ define(['jquery', 'lib/util', 'box',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
-    let box = Box.make.fromCanvas(canvas);
-    let off = Box.make.offset(box, 4);
+    let box = Box.make(canvas);
+    let off = box.offset(4);
 
     const normpoint = o => ({
-      X: normo(o.X, box.w) / off.factor + off.x,
-      Y: normo(o.Y, box.h) / off.factor + off.y,
+      X: normo(o.X, box.w) / off.slices + off.x,
+      Y: normo(o.Y, box.h) / off.slices + off.y,
     });
 
     const defaults = function () {
@@ -121,8 +121,10 @@ define(['jquery', 'lib/util', 'box',
     }
 
     U.expando(api, cfg, {
+      $, U, Box,
       dbug,
       box,
+      off,
       connectPoints,
       defaults,
       drawCirc,
