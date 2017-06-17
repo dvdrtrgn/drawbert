@@ -1,4 +1,5 @@
 /*globals */
+// GESTURE.ES6
 
 define(['lib/pdollar', 'reader',
 ], function (PDollar, Reader) {
@@ -27,6 +28,17 @@ define(['lib/pdollar', 'reader',
       read[i].push(rounds(e.X), rounds(e.Y));
     });
     return read;
+  }
+
+  function calcLimits(arr) {
+    const xs = arr.map(p => p.X);
+    const ys = arr.map(p => p.Y);
+    return {
+      xmin: Math.min(...xs),
+      ymin: Math.min(...ys),
+      xmax: Math.max(...xs),
+      ymax: Math.max(...ys),
+    };
   }
 
   function extend(api) {
@@ -61,6 +73,9 @@ define(['lib/pdollar', 'reader',
       },
       enough: {
         get: () => api.normal.length > 5,
+      },
+      limits: {
+        get: () => calcLimits(api),
       },
       saveAs: {
         value: (name) => reader.addGesture(name, api),
