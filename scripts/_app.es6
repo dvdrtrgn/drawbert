@@ -163,6 +163,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function clickTrainer() {
     const result = tryRecognize();
+    Rend.drawBounds(Gest.limits);
     if (result) {
       D.showOverlay(result);
     }

@@ -58,12 +58,23 @@ define([], function () {
       offset: (qty) => segment(box, qty),
       update: measure,
     };
+    return box;
+  }
 
+  function Calc(minmax) {
+    dbug && C.log(minmax);
+    const box = {
+      x: minmax.xmin,
+      y: minmax.ymin,
+      w: minmax.xmax - minmax.xmin,
+      h: minmax.ymax - minmax.ymin,
+    };
     return box;
   }
 
   return {
     make: Box,
+    calc: Calc,
   };
 });
 

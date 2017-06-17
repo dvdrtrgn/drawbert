@@ -59,6 +59,14 @@ define(['jquery', 'lib/util', 'box',
       api.stroke();
       return api;
     };
+    const drawRect = function (box) {
+      api.strokeRect(box.x, box.y, box.w, box.h);
+      return api;
+    };
+    const drawBounds = function (limits) {
+      api.drawRect(Box.calc(limits));
+      return api;
+    };
     const fillAll = function () {
       api.fillRect(0, 0, box.w, box.h);
       return api;
@@ -130,6 +138,8 @@ define(['jquery', 'lib/util', 'box',
       drawCirc,
       drawCloud,
       drawGest,
+      drawRect,
+      drawBounds,
       fillAll,
       fillCirc,
       newColor,
