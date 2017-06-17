@@ -11,6 +11,8 @@ define(['lib/pdollar', 'reader',
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
   const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
   const rounds = (num) => Math.abs(num) > 1 ? num : round0(num, 50, 1, 50);
+  const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
+  const fromBase64 = (str) => atob(str);
 
   const makeJSON = (arr) => deQuo(JSON.stringify(arr));
   const toStrings = (arr) => arr.map(makeJSON);
@@ -92,6 +94,9 @@ define(['lib/pdollar', 'reader',
       logPercent: {
         get: () => C.log(api.exportPercent),
       },
+      logPercent64: {
+        get: () => C.log(toBase64(api.exportPercent)),
+      },
       //
       stroke: {
         get: () => strokeNum,
@@ -113,7 +118,7 @@ define(['lib/pdollar', 'reader',
 
   return {
     make: Gesture,
-    PDollar, Reader,
+    PDollar, Reader, fromBase64,
   };
 });
 
