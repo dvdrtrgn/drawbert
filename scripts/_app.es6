@@ -75,7 +75,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     if (result.score > 0.1) {
       // overlay drawn with segment colors
       Rend.drawGest(Gest, {
-        rotate: 1,
+        cycle: 1,
         opacity: 0.5,
       });
       // show guessed template
@@ -88,13 +88,16 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       // redraw normalized
       if (result.score < 0.5) {
         Rend.drawCloud(Gest.normal, {
-          rotate: 1,
+          cycle: 1,
           opacity: 1,
         });
       }
     }
 
-    C.log('draw Gesture/PointCloud', [Gest.exportDrawn, Gest.exportPercent]);
+    if (dbug > 1) C.log('previewData: pix/pct', {
+      pix: Gest.exportDrawn,
+      pct: Gest.exportPercent,
+    });
   }
 
   function tryRecognize() {

@@ -8,10 +8,11 @@ INSTANCE
   recognize:    defer to pdollar.Recognizer method
 
 */
-define(['jquery', 'lib/util',
-], function ($, U) {
+define(['jquery', 'lib/util', 'box',
+], function ($, U, Box) {
   let dbug = 1;
-  const C = window.console;
+  const W = window;
+  const C = W.console;
   const D = {
     font: '20px impact',
     fillStyle: 'silver',
@@ -22,25 +23,6 @@ define(['jquery', 'lib/util',
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
 
-  function getRect(canvas) {
-    let w = canvas.width;
-    let h = canvas.height;
-    let cx = canvas.offsetLeft;
-    let cy = canvas.offsetTop;
-
-    while (canvas.offsetParent !== null) {
-      canvas = canvas.offsetParent;
-      cx += canvas.offsetLeft;
-      cy += canvas.offsetTop;
-    }
-    return {
-      x: cx,
-      y: cy,
-      width: w,
-      height: h,
-    };
-  }
-
   function Renderer(canvas, cfg = D) {
     let api = canvas.getContext('2d');
     let colors = {
@@ -49,15 +31,18 @@ define(['jquery', 'lib/util',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
+    let box = Box.make(canvas);
+    let off = box.offset(4);
 
     const normpoint = o => ({
-      X: normo(o.X, api.box.width),
-      Y: normo(o.Y, api.box.height),
+      X: normo(o.X, box.w) / off.slices + off.x,
+      Y: normo(o.Y, box.h) / off.slices + off.y,
     });
 
     const defaults = function () {
       $.extend(api, cfg); // reset
-      api.box = getRect(api.canvas);
+      box.update();
+      off.reset();
       return api;
     };
     const connectPoints = function (from, to) {
@@ -75,7 +60,7 @@ define(['jquery', 'lib/util',
       return api;
     };
     const fillAll = function () {
-      api.fillRect(0, 0, api.box.width, api.box.height);
+      api.fillRect(0, 0, box.w, box.h);
       return api;
     };
     const fillCirc = function (x = 100, y = 100, rad = 10) {
@@ -89,7 +74,7 @@ define(['jquery', 'lib/util',
       cfg.color && (color = cfg.color);
       cfg.opacity && goGhost(cfg.opacity);
       cfg.random && (color = rando());
-      cfg.rotate && (color = colors.next());
+      cfg.cycle && (color = colors.next());
 
       api.strokeStyle = color;
       api.fillStyle = color;
@@ -97,11 +82,11 @@ define(['jquery', 'lib/util',
     };
     const setMessage = function (str, bkgr) {
       api.fillStyle = bkgr;
-      api.fillRect(0, api.box.height - 20, api.box.width, api.box.height);
+      api.fillRect(0, box.h - 20, box.w, box.h);
       api.fillStyle = 'black';
-      api.fillText(str, 10.5, api.box.height - 2);
+      api.fillText(str, 10.5, box.h - 2);
       api.fillStyle = 'white';
-      api.fillText(str, 11, api.box.height - 2.5);
+      api.fillText(str, 11, box.h - 2.5);
       return api;
     };
     const size = function (w, h) {
@@ -115,6 +100,7 @@ define(['jquery', 'lib/util',
     };
 
     function drawCloud(arr, cfg) {
+      off.advance();
       arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
           newColor(cfg);
@@ -135,7 +121,10 @@ define(['jquery', 'lib/util',
     }
 
     U.expando(api, cfg, {
+      $, U, Box,
       dbug,
+      box,
+      off,
       connectPoints,
       defaults,
       drawCirc,
