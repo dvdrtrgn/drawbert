@@ -1,13 +1,22 @@
 /*globals */
 // GESTURE.ES6
+/*
 
-define(['lib/pdollar', 'reader',
-], function (PDollar, Reader) {
-  let dbug = 0;
+  USE:
 
+*/
+define(['lib/util', 'lib/pdollar', 'reader',
+], function (U, PDollar, Reader) {
   const Name = 'Gesture';
   const W = window;
   const C = W.console;
+  const API = {
+    name: Name,
+    dbug: 0,
+    imports: {
+      U, PDollar, Reader,
+    },
+  };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
   const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
@@ -126,17 +135,20 @@ define(['lib/pdollar', 'reader',
     const api = [];
 
     extend(api);
-    dbug && C.log(Name, 'invoke util', api);
+    API.dbug && C.log(Name, 'invoke util', api);
 
     return api;
   }
 
-  return {
+  U.expando(API, {
     make: Gesture,
-    PDollar, Reader, fromBase64,
-  };
+    new: Gesture,
+    fromBase64: fromBase64,
+  });
+  return API;
 });
-
 /*
+
+
 
 */

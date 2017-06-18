@@ -1,8 +1,21 @@
 /*globals */
+// BOX.ES6
+/*
 
-define([], function () {
-  const C = window.console;
-  const dbug = 1;
+  USE:
+
+*/
+define(['lib/util'], function (U) {
+  const Name = 'Box';
+  const W = window;
+  const C = W.console;
+  const API = {
+    name: Name,
+    dbug: 1,
+    imports: {
+      U,
+    },
+  };
 
   function segment(xyObj, slices) {
     let currX, currY, gapX, gapY;
@@ -51,7 +64,7 @@ define([], function () {
   };
 
   function Box(source) {
-    dbug && C.log(source.constructor);
+    API.dbug && C.log(source.constructor);
 
     const box = {
       source,
@@ -62,7 +75,7 @@ define([], function () {
   }
 
   function Calc(minmax) {
-    dbug && C.log(minmax);
+    API.dbug && C.log(minmax);
     const box = {
       x: minmax.xmin,
       y: minmax.ymin,
@@ -72,12 +85,15 @@ define([], function () {
     return box;
   }
 
-  return {
+  U.expando(API, {
     make: Box,
+    new: Box,
     calc: Calc,
-  };
+  });
+  return API;
 });
-
 /*
+
+
 
 */

@@ -1,7 +1,21 @@
 /*globals */
+// DOM.ES6
+/*
 
+  USE:
+
+*/
 define(['jquery', 'lib/util'], function ($, U) {
-  const C = window.console;
+  const Name = 'Dom';
+  const W = window;
+  const C = W.console;
+  const API = {
+    name: Name,
+    dbug: 1,
+    imports: {
+      $, U,
+    },
+  };
 
   //
   // DOM OPS
@@ -56,15 +70,17 @@ define(['jquery', 'lib/util'], function ($, U) {
     $('.js-gesture-count').text(str);
   }
 
-  return {
+  U.expando(API, {
     getScrollY,
     hideOverlay,
     normTouch,
     showOverlay,
     updateCount,
-  };
+  });
+  return API;
 });
-
 /*
+
+
 
 */

@@ -1,18 +1,26 @@
+/*globals */
 // RENDERER.ES6
 /*
 
-decorates a Canvas context instance
+  USE: decorates a Canvas context instance
 
 
-INSTANCE
-  recognize:    defer to pdollar.Recognizer method
+  INSTANCE
+    recognize:    defer to pdollar.Recognizer method
 
 */
 define(['jquery', 'lib/util', 'box',
 ], function ($, U, Box) {
-  let dbug = 1;
+  const Name = 'Renderer';
   const W = window;
   const C = W.console;
+  const API = {
+    name: Name,
+    dbug: 1,
+    imports: {
+      $, U, Box,
+    },
+  };
   const D = {
     font: '20px impact',
     fillStyle: 'silver',
@@ -129,8 +137,6 @@ define(['jquery', 'lib/util', 'box',
     }
 
     U.expando(api, cfg, {
-      $, U, Box,
-      dbug,
       box,
       off,
       connectPoints,
@@ -150,11 +156,14 @@ define(['jquery', 'lib/util', 'box',
     return api;
   }
 
-  return {
+  U.expando(API, {
     make: Renderer,
-  };
+    new: Renderer,
+  });
+  return API;
 });
-
 /*
+
+
 
 */
