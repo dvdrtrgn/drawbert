@@ -1,5 +1,10 @@
 /*globals */
 // ARR.ES6
+/*
+
+  USE:
+
+*/
 define([], function () {
   const C = window.console;
   const Nom = 'Arr';
@@ -31,5 +36,7 @@ define([], function () {
   return Arr;
 });
 /*
+
+
 
 */
