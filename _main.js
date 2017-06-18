@@ -13,8 +13,8 @@ require.config({
   },
 });
 
-require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app',
-], function ($, U, PDollar, App) {
+require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'arr',
+], function ($, U, PDollar, App, Arr) {
   const [C, W] = [console, window];
 
   W.drt = {
@@ -27,7 +27,7 @@ require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app',
   });
 
   // expose for testing
-  U.expando(W, W.drt, App);
+  U.expando(W, W.drt, App, {Arr});
   C.log('_main', W.drt);
 });
 
