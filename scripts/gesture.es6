@@ -46,7 +46,7 @@ define(['lib/pdollar', 'reader',
     let strokeArr = [];
     let reader = Reader.make();
 
-    Object.defineProperties(api, { // .__proto__
+    Object.defineProperties(api.__proto__, {
       addPoint: {
         value: function (x, y) {
           api[api.length] = new PDollar.Point(x, y, strokeNum + 1); // projected ID
@@ -122,8 +122,17 @@ define(['lib/pdollar', 'reader',
     });
   }
 
+  class Arr extends Array {
+    constructor() {
+      super();
+    }
+    method() {
+      return 'i am a method';
+    }
+  }
+
   function Gesture() {
-    const api = [];
+    const api = new Arr();
 
     extend(api);
     dbug && C.log(Name, 'invoke util', api);

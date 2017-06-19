@@ -37,6 +37,7 @@ define([], function () {
 });
 /*
 
-
+  Apart from changing the prototype of an existing object being a relatively costly operation,
+  the biggest disadvantage of this solution is that you can’t subclass MyArray in a normal manner, either.
 
 */
