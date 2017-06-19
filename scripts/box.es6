@@ -64,7 +64,7 @@ define(['lib/util'], function (U) {
   };
 
   function Box(source) {
-    API.dbug && C.log(source.constructor);
+    if (API.dbug) C.log(Name, 'make', source.constructor);
 
     const box = {
       source,
@@ -75,7 +75,7 @@ define(['lib/util'], function (U) {
   }
 
   function Calc(minmax) {
-    API.dbug && C.log(minmax);
+    if (API.dbug) C.log(Name, 'Calc', minmax);
     const box = {
       x: minmax.xmin,
       y: minmax.ymin,

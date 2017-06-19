@@ -70,7 +70,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
-      if (API.dbug) C.log(Gest);
+      if (API.dbug) C.log(Name, 'nameGesture', Gest);
       let idx = Gest.saveAs(name);
       drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
@@ -102,7 +102,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       }
     }
 
-    if (API.dbug > 1) C.log('previewData: pix/pct', {
+    if (API.dbug > 1) C.log(Name, 'previewData: pix/pct', {
       pix: Gest.exportDrawn,
       pct: Gest.exportPercent,
     });
@@ -154,9 +154,9 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    if (API.dbug > 1) C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
+    if (API.dbug > 1) C.log(Name, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
-    // C.log(Gest.exportPercent);
+    // C.log(Gest.exportPercent); // dump for snagging init data
   }
 
   function playStroke(str) {
@@ -189,6 +189,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     if (U.undef(name)) {
       alert('Unknown gesture chosen.');
     } else {
+      if (API.dbug) C.log(Name, 'clickAssign');
       nameGesture(name);
       hideOverlay();
     }
