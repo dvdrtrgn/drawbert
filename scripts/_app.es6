@@ -241,7 +241,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       $('.overlay').on('click.drwbrt', hideOverlay);
       $('.js-clear-stroke').on('click.drwbrt', clickInit);
       $('.js-init').on('click.drwbrt', clickLoad);
-      $('.js-check').on('click.drwbrt', clickTrainer);
+      $('.js-train').on('click.drwbrt', clickTrainer);
       $('.js-choice').on('mousedown.drwbrt', clickAssign);
     }
 
