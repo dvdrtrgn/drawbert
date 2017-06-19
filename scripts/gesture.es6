@@ -99,7 +99,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
         get: () => api[api.length - 2],
       },
       normal: {
-        get: () => PDollar.normalizePoints(api),
+        get: () => api.length && PDollar.normalizePoints(api),
       },
       // Drawn Form
       drawn: {
