@@ -58,7 +58,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function initData(cb) {
-    require(['data/alphabet', 'data/gestures'], function (...arr) {
+    require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
       cb && cb();
     });
@@ -156,6 +156,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     Down = false;
     if (API.dbug > 1) C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
+    // C.log(Gest.exportPercent);
   }
 
   function playStroke(str) {
