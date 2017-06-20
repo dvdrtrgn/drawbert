@@ -121,13 +121,18 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     return result;
   }
 
+  function tweakXY(x, y) {
+    x -= Rend.box.x;
+    y -= Rend.box.y - D.getScrollY();
+    return [x, y];
+  }
+
   //
   // Mouse Handlers
   //
   function lineStart(x, y) {
     Down = true;
-    x -= Rend.box.x;
-    y -= Rend.box.y - D.getScrollY();
+    [x, y] = tweakXY(x, y);
 
     clearCanvas();
     if (Gest.stroke) {
@@ -142,14 +147,14 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function lineDraw(x, y) {
     if (Down) {
-      x -= Rend.box.x;
-      y -= Rend.box.y - D.getScrollY();
+      [x, y] = tweakXY(x, y);
       Gest.addPoint(x, y);
       Rend.connectPoints(Gest.from, Gest.to);
     }
   }
 
   function lineEnd(x, y) {
+    [x, y] = tweakXY(x, y);
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
