@@ -70,7 +70,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
-      if (API.dbug) C.log(Name, 'nameGesture', Gest);
+      if (API.dbug) C.log(Name, 'nameGesture', name, Gest);
       let idx = Gest.saveAs(name);
       drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
@@ -184,12 +184,12 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function clickAssign(evt) {
-    const name = $(evt.target).data('name');
+    let name = evt.target.dataset.name;
 
     if (U.undef(name)) {
       alert('Unknown gesture chosen.');
     } else {
-      if (API.dbug) C.log(Name, 'clickAssign');
+      name = name.toString();
       nameGesture(name);
       hideOverlay();
     }
