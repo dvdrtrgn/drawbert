@@ -227,8 +227,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function init(canvas) {
-    API.Gest = Gest = Gesture.make();
-    API.Rend = Rend = Renderer.make(canvas);
+    API.Gest = Gest = Gesture.new();
+    API.Rend = Rend = Renderer.new(canvas);
 
     const $window = $(window);
     const $canvas = $(canvas);

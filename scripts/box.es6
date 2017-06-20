@@ -64,7 +64,7 @@ define(['lib/util'], function (U) {
   };
 
   function Box(source) {
-    if (API.dbug) C.log(NOM, 'make', source.constructor);
+    if (API.dbug) C.log(NOM, 'new', source.constructor);
 
     const box = {
       source,
@@ -74,21 +74,20 @@ define(['lib/util'], function (U) {
     return box;
   }
 
-  function Calc(minmax) {
-    if (API.dbug) C.log(NOM, 'Calc', minmax);
-    const box = {
+  function rect(minmax) {
+    if (API.dbug) C.log(NOM, 'rect', minmax);
+    const rect = {
       x: minmax.xmin,
       y: minmax.ymin,
       w: minmax.xmax - minmax.xmin,
       h: minmax.ymax - minmax.ymin,
     };
-    return box;
+    return rect;
   }
 
   U.expando(API, {
-    make: Box,
     new: Box,
-    calc: Calc,
+    calc: rect,
   });
   return API;
 });

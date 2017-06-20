@@ -53,7 +53,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
   function extend(api) {
     let strokeNum = 0;
     let strokeArr = [];
-    let reader = Reader.make();
+    let reader = Reader.new();
 
     Object.defineProperties(api, { // .__proto__
       addPoint: {
@@ -141,7 +141,6 @@ define(['lib/util', 'lib/pdollar', 'reader',
   }
 
   U.expando(API, {
-    make: Gesture,
     new: Gesture,
     fromBase64: fromBase64,
   });

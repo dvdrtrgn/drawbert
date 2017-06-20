@@ -39,7 +39,7 @@ define(['jquery', 'lib/util', 'box',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
-    let box = Box.make(canvas);
+    let box = Box.new(canvas);
     let off = box.offset(4);
 
     const normpoint = o => ({
@@ -157,7 +157,6 @@ define(['jquery', 'lib/util', 'box',
   }
 
   U.expando(API, {
-    make: Renderer,
     new: Renderer,
   });
   return API;

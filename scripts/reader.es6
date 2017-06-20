@@ -5,7 +5,7 @@
   USE: decorates a PDollar Recognizer instance
 
   CLASS
-    make:         Reader
+    new:          inst Reader
     joinTwos:     break array into pairs
     strokePoints: parse stroke string
 
@@ -103,7 +103,6 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   }
 
   U.expando(API, {
-    make: Reader,
     new: Reader,
     joinTwos: joinTwos,
     strokePoints: strokePoints,
