@@ -8,7 +8,8 @@
 define(['jquery', 'lib/util'], function ($, U) {
   const NOM = 'Dom';
   const W = window;
-  const C = W.console;
+  const C = console;
+  const D = document;
   const API = {
     name: NOM,
     dbug: 1,
@@ -18,17 +19,33 @@ define(['jquery', 'lib/util'], function ($, U) {
   };
 
   //
+  // DEBUG OPS
+  //
+  let testy;
+
+  W.setInterval(function () {
+    let y = JSON.stringify(getScrollYs());
+    if (y !== testy) {
+      testy = y;
+      C.log(testy);
+    }
+  }, 99);
+
+  //
   // DOM OPS
   //
-  function getScrollY() {
-    let scrollY = 0;
+  function getScrollYs() {
+    return {
+      norm: D.body.scrollTop,
+      msie: D.body.parentElement.scrollTop,
+      ff: W.pageYOffset,
+    };
+  }
 
-    if (!U.undef(document.body.parentElement)) {
-      scrollY = document.body.parentElement.scrollTop; // IE
-    } else if (!U.undef(window.pageYOffset)) {
-      scrollY = window.pageYOffset; // FF
-    }
-    return scrollY;
+  function getScrollY() {
+    return W.pageYOffset;
+    // let y = getScrollYs();
+    // return 0 || y.norm || y.msie || y.ff || 0;
   }
 
   function hideOverlay() {
