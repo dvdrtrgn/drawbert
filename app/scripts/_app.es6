@@ -123,7 +123,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function tweakXY(x, y) {
     x -= Rend.box.x;
-    y -= Rend.box.y - D.getScrollY();
+    y -= Rend.box.y - W.pageYOffset;
     return [x, y];
   }
 

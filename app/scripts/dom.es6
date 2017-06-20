@@ -9,7 +9,6 @@ define(['jquery', 'lib/util'], function ($, U) {
   const NOM = 'Dom';
   const W = window;
   const C = console;
-  const D = document;
   const API = {
     name: NOM,
     dbug: 1,
@@ -19,35 +18,8 @@ define(['jquery', 'lib/util'], function ($, U) {
   };
 
   //
-  // DEBUG OPS
-  //
-  let testy;
-
-  W.setInterval(function () {
-    let y = JSON.stringify(getScrollYs());
-    if (y !== testy) {
-      testy = y;
-      C.log(testy);
-    }
-  }, 99);
-
-  //
   // DOM OPS
   //
-  function getScrollYs() {
-    return {
-      norm: D.body.scrollTop,
-      msie: D.body.parentElement.scrollTop,
-      ff: W.pageYOffset,
-    };
-  }
-
-  function getScrollY() {
-    return W.pageYOffset;
-    // let y = getScrollYs();
-    // return 0 || y.norm || y.msie || y.ff || 0;
-  }
-
   function hideOverlay() {
     $('.overlay').addClass('hidden');
   }
@@ -88,7 +60,6 @@ define(['jquery', 'lib/util'], function ($, U) {
   }
 
   U.expando(API, {
-    getScrollY,
     hideOverlay,
     normTouch,
     showOverlay,
