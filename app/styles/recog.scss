@@ -1,17 +1,20 @@
+* {
+  box-sizing: border-box;
+}
 body,
 html {
   font-family: helvetica;
   margin: 0;
-  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+body {
+  overflow: auto;
 }
 button {
   cursor: pointer;
   font-family: helvetica;
   font-size: 1em;
-}
-
-.absolute {
-  position: fixed;
 }
 
 .on-top {
@@ -33,6 +36,7 @@ button {
 }
 
 .overlay {
+  position: fixed;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.8);
   display: flex;
