@@ -43,8 +43,8 @@ define(['jquery', 'lib/util', 'box',
     let off = box.offset(4);
 
     const normpoint = o => ({
-      X: normo(o.X, box.w) / off.slices + off.x,
-      Y: normo(o.Y, box.h) / off.slices + off.y,
+      X: normo(o.X, box.w) / off.scaling + off.x,
+      Y: normo(o.Y, box.h) / off.scaling + off.y,
     });
 
     const defaults = function () {

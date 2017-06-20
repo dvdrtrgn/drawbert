@@ -17,23 +17,38 @@ define(['lib/util'], function (U) {
     },
   };
 
-  function segment(xyObj, slices) {
+  function segment(xyObj, slices = 4) {
     let currX, currY, gapX, gapY;
+    let spacing = 1;
+    let scaling = 1;
 
     const reset = function () {
-      currX = slices - 1, currY = slices - 1;
-      gapX = xyObj.w / slices;
-      gapY = xyObj.h / slices;
+      currX = slices, currY = slices - 1;
+      gapX = xyObj.w / slices * api.spacing;
+      gapY = xyObj.h / slices * api.spacing;
     };
-
     const advance = function () {
       currX -= 1;
-      if (currX === -1) currX = slices - 1, currY -= 1;
+      if (currX < 0) currX = slices - 1, currY -= 1;
+      if (currY < 0) reset();
     };
 
-    return {
+    let api = {
       advance,
       reset,
+      get scaling() {
+        return slices / scaling;
+      },
+      set scaling(num) {
+        scaling = num;
+      },
+      get spacing() {
+        return spacing;
+      },
+      set spacing(num) {
+        spacing = num;
+        reset();
+      },
       get slices() {
         return slices;
       },
@@ -47,6 +62,7 @@ define(['lib/util'], function (U) {
         return currY * gapY;
       },
     };
+    return api;
   }
 
   const measure = function () {
