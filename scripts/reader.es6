@@ -23,11 +23,11 @@
 */
 define(['lodash', 'lib/util', 'lib/pdollar',
 ], function (_, U, PDollar) {
-  const Name = 'Reader';
+  const NOM = 'Reader';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 0,
     imports: {
       _, U, PDollar,
@@ -97,7 +97,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     const api = new PDollar.Recognizer();
 
     extend(api);
-    API.dbug && C.log('invoke reader util', api);
+    if (API.dbug) C.log('invoke reader util', api);
 
     return api;
   }

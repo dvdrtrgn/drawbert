@@ -8,11 +8,11 @@
  */
 define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 ], function ($, _, U, D, Gesture, Renderer) {
-  const Name = 'App';
+  const NOM = 'App';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 1,
     imports: {
       $, _, U, D, Gesture, Renderer,
@@ -60,7 +60,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   function initData(cb) {
     require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
-      cb && cb();
+      if (cb) cb();
     });
   }
 
@@ -70,7 +70,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
-      if (API.dbug) C.log(Name, 'nameGesture', name, Gest);
+      if (API.dbug) C.log(NOM, 'nameGesture', name, Gest);
       let idx = Gest.saveAs(name);
       drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
@@ -102,7 +102,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       }
     }
 
-    if (API.dbug > 1) C.log(Name, 'previewData: pix/pct', {
+    if (API.dbug > 1) C.log(NOM, 'previewData: pix/pct', {
       pix: Gest.exportDrawn,
       pct: Gest.exportPercent,
     });
@@ -154,7 +154,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    if (API.dbug > 1) C.log(Name, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
+    if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
     // C.log(Gest.exportPercent); // dump for snagging init data
   }
@@ -227,8 +227,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function init(canvas) {
-    API.gest = Gest = Gesture.make();
-    API.rend = Rend = Renderer.make(canvas);
+    API.Gest = Gest = Gesture.make();
+    API.Rend = Rend = Renderer.make(canvas);
 
     const $window = $(window);
     const $canvas = $(canvas);
@@ -256,8 +256,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   U.expando(API, {
     init,
-    gest: null,
-    rend: null,
+    Gest: null,
+    Rend: null,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));

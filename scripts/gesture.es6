@@ -7,11 +7,11 @@
 */
 define(['lib/util', 'lib/pdollar', 'reader',
 ], function (U, PDollar, Reader) {
-  const Name = 'Gesture';
+  const NOM = 'Gesture';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 0,
     imports: {
       U, PDollar, Reader,
@@ -135,7 +135,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
     const api = [];
 
     extend(api);
-    API.dbug && C.log(Name, 'invoke util', api);
+    if (API.dbug) C.log(NOM, 'invoke util', api);
 
     return api;
   }

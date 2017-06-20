@@ -6,11 +6,11 @@
 
 */
 define(['jquery', 'lib/util'], function ($, U) {
-  const Name = 'Dom';
+  const NOM = 'Dom';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 1,
     imports: {
       $, U,

@@ -11,11 +11,11 @@
 */
 define(['jquery', 'lib/util', 'box',
 ], function ($, U, Box) {
-  const Name = 'Renderer';
+  const NOM = 'Renderer';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 1,
     imports: {
       $, U, Box,

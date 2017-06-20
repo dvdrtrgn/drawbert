@@ -6,11 +6,11 @@
 
 */
 define(['lib/util'], function (U) {
-  const Name = 'Box';
+  const NOM = 'Box';
   const W = window;
   const C = W.console;
   const API = {
-    name: Name,
+    name: NOM,
     dbug: 1,
     imports: {
       U,
@@ -64,7 +64,7 @@ define(['lib/util'], function (U) {
   };
 
   function Box(source) {
-    if (API.dbug) C.log(Name, 'make', source.constructor);
+    if (API.dbug) C.log(NOM, 'make', source.constructor);
 
     const box = {
       source,
@@ -75,7 +75,7 @@ define(['lib/util'], function (U) {
   }
 
   function Calc(minmax) {
-    if (API.dbug) C.log(Name, 'Calc', minmax);
+    if (API.dbug) C.log(NOM, 'Calc', minmax);
     const box = {
       x: minmax.xmin,
       y: minmax.ymin,
