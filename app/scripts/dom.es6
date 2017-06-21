@@ -17,7 +17,29 @@ define(['jquery', 'lib/util'], function ($, U) {
     },
   };
 
-  //
+  // - - - - - - - - - - - - - - - - - -
+  // AUTOMATE
+  $.reify = function (obj) { // replace vals(selectors) with elements
+    return $.each(obj, function (i, sel) {
+      if (typeof sel === 'object') sel = sel.selector;
+      (obj[i] = $(sel)).selector = sel;
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - -
+  // PUBSUBS
+  let Q = $.pubsubs = $({});
+  $.publish = function () {
+    Q.trigger.apply(Q, arguments);
+  };
+  $.subscribe = function () {
+    Q.on.apply(Q, arguments);
+  };
+  $.unsubscribe = function () {
+    Q.off.apply(Q, arguments);
+  };
+
+  // - - - - - - - - - - - - - - - - - -
   // DOM OPS
   //
   function hideOverlay() {
@@ -55,15 +77,10 @@ define(['jquery', 'lib/util'], function ($, U) {
     }
   }
 
-  function updateCount(str) {
-    $('.js-gesture-count').text(str);
-  }
-
   U.expando(API, {
     hideOverlay,
     normTouch,
     showOverlay,
-    updateCount,
   });
   return API;
 });

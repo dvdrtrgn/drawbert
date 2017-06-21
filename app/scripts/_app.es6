@@ -18,18 +18,27 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       $, _, U, D, Gesture, Renderer,
     },
   };
-  //
+  const EL = {
+    btnChoose: '.js-choice',
+    btnClear: '.js-clear-stroke',
+    btnInit: '.js-init',
+    btnTrain: '.js-train',
+    overlay: '.overlay',
+    txtCount: '.js-gesture-count',
+  };
+
+  // - - - - - - - - - - - - - - - - - -
   // GLOBAL VARS
   //
   let Gest; // point array for current stroke(s)
   let Rend; // canvas toolkit
   let Down = false;
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // DOM OPS
   //
   function updateCount() {
-    D.updateCount(trainingTotal());
+    EL.txtCount.text(Gest.reader.count);
   }
 
   function hideOverlay() {
@@ -37,7 +46,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     updateCount();
   }
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // CONTEXT OPS
   //
   function drawText(str) {
@@ -50,17 +59,13 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     updateCount();
   }
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // RECOG OPS
   //
-  function trainingTotal() {
-    return Gest.reader.count;
-  }
-
-  function initData(cb) {
+  function initData() {
     require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
-      if (cb) cb();
+      updateCount();
     });
   }
 
@@ -127,7 +132,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     return [x, y];
   }
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // Mouse Handlers
   //
   function lineStart(x, y) {
@@ -184,8 +189,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function clickLoad() {
-    $('.js-init').hide();
-    initData(updateCount);
+    EL.btnInit.hide();
+    initData();
   }
 
   function clickAssign(evt) {
@@ -234,21 +239,21 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   function init(canvas) {
     API.Gest = Gest = Gesture.new();
     API.Rend = Rend = Renderer.new(canvas);
-
-    const $window = $(window);
-    const $canvas = $(canvas);
+    $.reify(EL);
+    EL.window = $(window);
+    EL.canvas = $(canvas);
 
     function bindHanders() {
-      $window.on('resize', _.debounce(clickInit, 333));
-      $canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
-      $canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
-      $canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
+      EL.window.on('resize', _.debounce(clickInit, 333));
+      EL.canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
+      EL.canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
+      EL.canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
 
-      $('.overlay').on('click.drwbrt', hideOverlay);
-      $('.js-clear-stroke').on('click.drwbrt', clickInit);
-      $('.js-init').on('click.drwbrt', clickLoad);
-      $('.js-train').on('click.drwbrt', clickTrainer);
-      $('.js-choice').on('mousedown.drwbrt', clickAssign);
+      EL.overlay.on('click.drwbrt', hideOverlay);
+      EL.btnClear.on('click.drwbrt', clickInit);
+      EL.btnInit.on('click.drwbrt', clickLoad);
+      EL.btnTrain.on('click.drwbrt', clickTrainer);
+      EL.btnChoose.on('mousedown.drwbrt', clickAssign);
     }
 
     if (API.dbug) clickLoad(); // load gestures
