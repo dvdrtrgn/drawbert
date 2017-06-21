@@ -1,18 +1,26 @@
+/*globals */
 // RENDERER.ES6
 /*
 
-decorates a Canvas context instance
+  USE: decorates a Canvas context instance
 
 
-INSTANCE
-  recognize:    defer to pdollar.Recognizer method
+  INSTANCE
+    recognize:    defer to pdollar.Recognizer method
 
 */
 define(['jquery', 'lib/util', 'box',
 ], function ($, U, Box) {
-  let dbug = 1;
+  const NOM = 'Renderer';
   const W = window;
   const C = W.console;
+  const API = {
+    name: NOM,
+    dbug: 1,
+    imports: {
+      $, U, Box,
+    },
+  };
   const D = {
     font: '20px impact',
     fillStyle: 'silver',
@@ -31,12 +39,12 @@ define(['jquery', 'lib/util', 'box',
       array: ['red', 'green', 'blue', 'yellow'],
       next: () => colors.array[colors.index++ % colors.limit],
     };
-    let box = Box.make(canvas);
+    let box = Box.new(canvas);
     let off = box.offset(4);
 
     const normpoint = o => ({
-      X: normo(o.X, box.w) / off.slices + off.x,
-      Y: normo(o.Y, box.h) / off.slices + off.y,
+      X: normo(o.X, box.w) / off.scaling + off.x,
+      Y: normo(o.Y, box.h) / off.scaling + off.y,
     });
 
     const defaults = function () {
@@ -57,6 +65,14 @@ define(['jquery', 'lib/util', 'box',
       api.beginPath();
       api.arc(x, y, rad, 0, 2 * Math.PI, false);
       api.stroke();
+      return api;
+    };
+    const drawRect = function (box) {
+      api.strokeRect(box.x, box.y, box.w, box.h);
+      return api;
+    };
+    const drawBounds = function (limits) {
+      api.drawRect(Box.calc(limits));
       return api;
     };
     const fillAll = function () {
@@ -121,8 +137,6 @@ define(['jquery', 'lib/util', 'box',
     }
 
     U.expando(api, cfg, {
-      $, U, Box,
-      dbug,
       box,
       off,
       connectPoints,
@@ -130,6 +144,8 @@ define(['jquery', 'lib/util', 'box',
       drawCirc,
       drawCloud,
       drawGest,
+      drawRect,
+      drawBounds,
       fillAll,
       fillCirc,
       newColor,
@@ -140,11 +156,13 @@ define(['jquery', 'lib/util', 'box',
     return api;
   }
 
-  return {
-    make: Renderer,
-  };
+  U.expando(API, {
+    new: Renderer,
+  });
+  return API;
 });
-
 /*
+
+
 
 */

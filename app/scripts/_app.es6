@@ -1,4 +1,5 @@
 /*globals */
+// APP.ES6
 /*
 
   USE: singleton
@@ -7,21 +8,37 @@
  */
 define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 ], function ($, _, U, D, Gesture, Renderer) {
-  let dbug = 1;
-  //
+  const NOM = 'App';
+  const W = window;
+  const C = W.console;
+  const API = {
+    name: NOM,
+    dbug: 1,
+    imports: {
+      $, _, U, D, Gesture, Renderer,
+    },
+  };
+  const EL = {
+    btnChoose: '.js-choice',
+    btnClear: '.js-clear-stroke',
+    btnInit: '.js-init',
+    btnTrain: '.js-train',
+    overlay: '.overlay',
+    txtCount: '.js-gesture-count',
+  };
+
+  // - - - - - - - - - - - - - - - - - -
   // GLOBAL VARS
   //
-  const C = window.console;
   let Gest; // point array for current stroke(s)
   let Rend; // canvas toolkit
   let Down = false;
-  let Api = {};
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // DOM OPS
   //
   function updateCount() {
-    D.updateCount(trainingTotal());
+    EL.txtCount.text(Gest.reader.count);
   }
 
   function hideOverlay() {
@@ -29,11 +46,11 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     updateCount();
   }
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // CONTEXT OPS
   //
   function drawText(str) {
-    if (dbug) Rend.setMessage(str, 'darkgray');
+    if (API.dbug) Rend.setMessage(str, 'darkgray');
   }
 
   function clearCanvas() {
@@ -42,17 +59,13 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     updateCount();
   }
 
-  //
+  // - - - - - - - - - - - - - - - - - -
   // RECOG OPS
   //
-  function trainingTotal() {
-    return Gest.reader.count;
-  }
-
-  function initData(cb) {
-    require(['data/alphabet', 'data/gestures'], function (...arr) {
+  function initData() {
+    require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
-      cb && cb();
+      updateCount();
     });
   }
 
@@ -62,7 +75,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function nameGesture(name) {
     if (Gest.enough && name.length > 0) {
-      if (dbug) C.log(Gest);
+      if (API.dbug) C.log(NOM, 'nameGesture', name, Gest);
       let idx = Gest.saveAs(name);
       drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
       resetGesture();
@@ -70,7 +83,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function previewData(result) {
-    let guess = Gest.reader.findCloud(result.name);
+    let matches = Gest.reader.findCloud(result.name);
 
     if (result.score > 0.1) {
       // overlay drawn with segment colors
@@ -79,7 +92,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
         opacity: 0.5,
       });
       // show guessed template
-      if (result.score) guess.map(
+      if (result.score) matches.map(
         obj => Rend.drawCloud(obj.points, {
           color: 'gray',
           opacity: 0.2,
@@ -94,7 +107,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       }
     }
 
-    if (dbug > 1) C.log('previewData: pix/pct', {
+    if (API.dbug > 1) C.log(NOM, 'previewData: pix/pct', {
       pix: Gest.exportDrawn,
       pct: Gest.exportPercent,
     });
@@ -104,22 +117,30 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let result;
 
     if (Gest.enough) {
-      result = Gest.guess();
+      result = Gest.guess;
+      result.gesture = Gest;
+      $.publish('recog-' + result.name, result);
+
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
-      if (dbug) previewData(result);
+      if (API.dbug) previewData(result);
     } else {
       drawText('Not enough data');
     }
     return result;
   }
 
-  //
+  function tweakXY(x, y) {
+    x -= Rend.box.x;
+    y -= Rend.box.y - W.pageYOffset;
+    return [x, y];
+  }
+
+  // - - - - - - - - - - - - - - - - - -
   // Mouse Handlers
   //
   function lineStart(x, y) {
     Down = true;
-    x -= Rend.box.x;
-    y -= Rend.box.y - D.getScrollY();
+    [x, y] = tweakXY(x, y);
 
     clearCanvas();
     if (Gest.stroke) {
@@ -134,20 +155,21 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function lineDraw(x, y) {
     if (Down) {
-      x -= Rend.box.x;
-      y -= Rend.box.y - D.getScrollY();
+      [x, y] = tweakXY(x, y);
       Gest.addPoint(x, y);
       Rend.connectPoints(Gest.from, Gest.to);
     }
   }
 
   function lineEnd(x, y) {
+    [x, y] = tweakXY(x, y);
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
     Down = false;
-    if (dbug > 1) C.log([`Stroke #${Gest.stroke} recorded`, pointString]);
+    if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
+    // C.log(Gest.exportPercent); // dump for snagging init data
   }
 
   function playStroke(str) {
@@ -163,22 +185,24 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
 
   function clickTrainer() {
     const result = tryRecognize();
+    Rend.drawBounds(Gest.limits);
     if (result) {
       D.showOverlay(result);
     }
   }
 
   function clickLoad() {
-    $('.js-init').hide();
-    initData(updateCount);
+    EL.btnInit.hide();
+    initData();
   }
 
   function clickAssign(evt) {
-    const name = $(evt.target).data('name');
+    let name = evt.target.dataset.name;
 
     if (U.undef(name)) {
       alert('Unknown gesture chosen.');
     } else {
+      name = name.toString();
       nameGesture(name);
       hideOverlay();
     }
@@ -216,38 +240,37 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function init(canvas) {
-    Api.gest = Gest = Gesture.make();
-    Api.rend = Rend = Renderer.make(canvas);
-
-    const $window = $(window);
-    const $canvas = $(canvas);
+    API.Gest = Gest = Gesture.new();
+    API.Rend = Rend = Renderer.new(canvas);
+    $.reify(EL);
+    EL.window = $(window);
+    EL.canvas = $(canvas);
 
     function bindHanders() {
-      $window.on('resize', _.debounce(clickInit, 333));
-      $canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
-      $canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
-      $canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
+      EL.window.on('resize', _.debounce(clickInit, 333));
+      EL.canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
+      EL.canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
+      EL.canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
 
-      $('.overlay').on('click.drwbrt', hideOverlay);
-      $('.js-clear-stroke').on('click.drwbrt', clickInit);
-      $('.js-init').on('click.drwbrt', clickLoad);
-      $('.js-check').on('click.drwbrt', clickTrainer);
-      $('.js-choice').on('mousedown.drwbrt', clickAssign);
+      EL.overlay.on('click.drwbrt', hideOverlay);
+      EL.btnClear.on('click.drwbrt', clickInit);
+      EL.btnInit.on('click.drwbrt', clickLoad);
+      EL.btnTrain.on('click.drwbrt', clickTrainer);
+      EL.btnChoose.on('mousedown.drwbrt', clickAssign);
     }
 
-    if (dbug) clickLoad(); // load gestures
+    if (API.dbug) clickLoad(); // load gestures
     bindHanders();
     clickInit();
     updateCount();
 
-    Api.init = () => true; // only used once
+    API.init = () => true; // only used once
   }
 
-  Api = {
-    U, D, Gesture, Renderer,
+  U.expando(API, {
     init,
-    gest: null,
-    rend: null,
+    Gest: null,
+    Rend: null,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
@@ -257,11 +280,11 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
         playStroke(arg);
       }
     },
-  };
-
-  return Api;
+  });
+  return API;
 });
-
 /*
+
+
 
 */

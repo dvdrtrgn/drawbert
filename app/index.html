@@ -7,13 +7,13 @@
 
     <!-- http://blog.musicallyut.in/dollar-family/ -->
 
-    <script src="/vendors/require.min.js" data-main="_main"></script>
+    <script src="./vendors/require.min.js" data-main="main"></script>
     <link rel="stylesheet" href="./styles/recog.css">
   </head>
 
-  <body class="dimmable">
+  <body>
 
-    <section class="absolute canvas container">
+    <section class="canvas">
       <canvas id="myCanvas" oncontextmenu="return false;"></canvas>
     </section>
 
@@ -31,7 +31,7 @@
 
     <div class="finished-buttons on-top">
       <div class="buttons">
-        <button class="js-check" type="button" data-position="left">
+        <button class="js-train" type="button" data-position="left">
           Open trainer
         </button>
       </div>
@@ -51,6 +51,17 @@
       </span>
 
       <div class="option-template">
+        <button class="js-choice" data-name="zero">0</button>
+        <button class="js-choice" data-name="1">1</button>
+        <button class="js-choice" data-name="2">2</button>
+        <button class="js-choice" data-name="3">3</button>
+        <button class="js-choice" data-name="4">4</button>
+        <button class="js-choice" data-name="5">5</button>
+        <button class="js-choice" data-name="6">6</button>
+        <button class="js-choice" data-name="7">7</button>
+        <button class="js-choice" data-name="8">8</button>
+        <button class="js-choice" data-name="9">9</button>
+
         <button class="js-choice" data-name="A">A</button>
         <button class="js-choice" data-name="B">B</button>
         <button class="js-choice" data-name="C">C</button>

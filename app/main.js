@@ -1,9 +1,9 @@
 require.config({
   baseUrl: 'scripts',
   paths: {
-    jquery: '/vendors/jquery.min', //'https://goo.gl/1NXWa8?',
-    lodash: '/vendors/lodash.min', //'https://goo.gl/uxQpja?',
-    reqyr: '/vendors/require.min', //'https://goo.gl/8jmmsx?',
+    jquery: '../vendors/jquery.min', //'https://goo.gl/1NXWa8?',
+    lodash: '../vendors/lodash.min', //'https://goo.gl/uxQpja?',
+    reqyr: '../vendors/require.min', //'https://goo.gl/8jmmsx?',
     lib: 'libs',
   },
   shim: {
@@ -15,11 +15,12 @@ require.config({
 
 require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app',
 ], function ($, U, PDollar, App) {
-  const [C, W] = [console, window];
+  var W = window;
+  var C = console;
 
   W.drt = {
-    App,
-    PDollar,
+    App: App,
+    PDollar: PDollar,
   };
 
   $(function () {

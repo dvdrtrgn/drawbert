@@ -1,22 +1,47 @@
 /*globals */
+// DOM.ES6
+/*
 
+  USE:
+
+*/
 define(['jquery', 'lib/util'], function ($, U) {
-  const C = window.console;
+  const NOM = 'Dom';
+  const W = window;
+  const C = console;
+  const API = {
+    name: NOM,
+    dbug: 1,
+    imports: {
+      $, U,
+    },
+  };
 
-  //
+  // - - - - - - - - - - - - - - - - - -
+  // AUTOMATE
+  $.reify = function (obj) { // replace vals(selectors) with elements
+    return $.each(obj, function (i, sel) {
+      if (typeof sel === 'object') sel = sel.selector;
+      (obj[i] = $(sel)).selector = sel;
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - -
+  // PUBSUBS
+  let Q = $.pubsubs = $({});
+  $.publish = function () {
+    Q.trigger.apply(Q, arguments);
+  };
+  $.subscribe = function () {
+    Q.on.apply(Q, arguments);
+  };
+  $.unsubscribe = function () {
+    Q.off.apply(Q, arguments);
+  };
+
+  // - - - - - - - - - - - - - - - - - -
   // DOM OPS
   //
-  function getScrollY() {
-    let scrollY = 0;
-
-    if (!U.undef(document.body.parentElement)) {
-      scrollY = document.body.parentElement.scrollTop; // IE
-    } else if (!U.undef(window.pageYOffset)) {
-      scrollY = window.pageYOffset; // FF
-    }
-    return scrollY;
-  }
-
   function hideOverlay() {
     $('.overlay').addClass('hidden');
   }
@@ -52,19 +77,15 @@ define(['jquery', 'lib/util'], function ($, U) {
     }
   }
 
-  function updateCount(str) {
-    $('.js-gesture-count').text(str);
-  }
-
-  return {
-    getScrollY,
+  U.expando(API, {
     hideOverlay,
     normTouch,
     showOverlay,
-    updateCount,
-  };
+  });
+  return API;
 });
-
 /*
+
+
 
 */

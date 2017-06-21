@@ -1,16 +1,28 @@
 /*globals */
+// GESTURE.ES6
+/*
 
-define(['lib/pdollar', 'reader',
-], function (PDollar, Reader) {
-  let dbug = 0;
+  USE:
 
-  const Name = 'Gesture';
+*/
+define(['lib/util', 'lib/pdollar', 'reader',
+], function (U, PDollar, Reader) {
+  const NOM = 'Gesture';
   const W = window;
   const C = W.console;
+  const API = {
+    name: NOM,
+    dbug: 0,
+    imports: {
+      U, PDollar, Reader,
+    },
+  };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
   const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
   const rounds = (num) => Math.abs(num) > 1 ? num : round0(num, 50, 1, 50);
+  const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
+  const fromBase64 = (str) => atob(str);
 
   const makeJSON = (arr) => deQuo(JSON.stringify(arr));
   const toStrings = (arr) => arr.map(makeJSON);
@@ -27,12 +39,23 @@ define(['lib/pdollar', 'reader',
     return read;
   }
 
+  function calcLimits(arr) {
+    const xs = arr.map(p => p.X);
+    const ys = arr.map(p => p.Y);
+    return {
+      xmin: Math.min(...xs),
+      ymin: Math.min(...ys),
+      xmax: Math.max(...xs),
+      ymax: Math.max(...ys),
+    };
+  }
+
   function extend(api) {
     let strokeNum = 0;
     let strokeArr = [];
-    let reader = Reader.make();
+    let reader = Reader.new();
 
-    Object.defineProperties(api.__proto__, {
+    Object.defineProperties(api, { // .__proto__
       addPoint: {
         value: function (x, y) {
           api[api.length] = new PDollar.Point(x, y, strokeNum + 1); // projected ID
@@ -58,13 +81,16 @@ define(['lib/pdollar', 'reader',
         get: () => reader,
       },
       enough: {
-        get: () => api.length > 5,
+        get: () => api.normal.length > 5,
+      },
+      limits: {
+        get: () => calcLimits(api),
       },
       saveAs: {
         value: (name) => reader.addGesture(name, api),
       },
       guess: {
-        value: () => reader.recognize(api),
+        get: () => reader.recognize(api),
       },
       parsePointString: {
         value: (str) => Reader.strokePoints(str),
@@ -73,7 +99,7 @@ define(['lib/pdollar', 'reader',
         get: () => api[api.length - 2],
       },
       normal: {
-        get: () => PDollar.normalizePoints(api),
+        get: () => api.length && PDollar.normalizePoints(api),
       },
       // Drawn Form
       drawn: {
@@ -92,6 +118,9 @@ define(['lib/pdollar', 'reader',
       logPercent: {
         get: () => C.log(api.exportPercent),
       },
+      logPercent64: {
+        get: () => C.log(toBase64(api.exportPercent)),
+      },
       //
       stroke: {
         get: () => strokeNum,
@@ -106,17 +135,19 @@ define(['lib/pdollar', 'reader',
     const api = [];
 
     extend(api);
-    dbug && C.log(Name, 'invoke util', api);
+    if (API.dbug) C.log(NOM, 'invoke util', api);
 
     return api;
   }
 
-  return {
-    make: Gesture,
-    PDollar, Reader,
-  };
+  U.expando(API, {
+    new: Gesture,
+    fromBase64: fromBase64,
+  });
+  return API;
 });
-
 /*
+
+
 
 */

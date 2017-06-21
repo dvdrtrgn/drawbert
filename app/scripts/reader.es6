@@ -1,29 +1,38 @@
+/*globals */
 // READER.ES6
 /*
 
-decorates a PDollar Recognizer instance
+  USE: decorates a PDollar Recognizer instance
 
-CLASS
-  make:         Construct
-  joinTwos:     break array into pairs
-  strokePoints: parse stroke string
+  CLASS
+    new:          inst Reader
+    joinTwos:     break array into pairs
+    strokePoints: parse stroke string
 
-INSTANCE
-  addGesture:   defer to pdollar.Recognizer method
-  count:        how many clouds?
-  findCloud:    search for name string
-  lastCloud:    what was last loaded?
-  makePoint:    defer to pdollar.Point constructor
-  processData:  take an array of arrays
-  readGesture:  parse array of strings [name, stroke, stroke,...]
-  readLegacy:   parse array of arrays
-  recognize:    defer to pdollar.Recognizer method
+  INSTANCE
+    addGesture:   defer to pdollar.Recognizer method
+    count:        how many clouds?
+    findCloud:    search for name string
+    lastCloud:    what was last loaded?
+    makePoint:    defer to pdollar.Point constructor
+    processData:  take an array of arrays
+    readGesture:  parse array of strings [name, stroke, stroke,...]
+    readLegacy:   parse array of arrays
+    recognize:    defer to pdollar.Recognizer method
 
 */
-define(['lodash', 'lib/pdollar',
-], function (_, PDollar) {
-  let dbug = 0;
-  const C = window.console;
+define(['lodash', 'lib/util', 'lib/pdollar',
+], function (_, U, PDollar) {
+  const NOM = 'Reader';
+  const W = window;
+  const C = W.console;
+  const API = {
+    name: NOM,
+    dbug: 0,
+    imports: {
+      _, U, PDollar,
+    },
+  };
   const makePoint = (arr) => new PDollar.Point(...arr);
   const readStrokes = (arg) => _.flatten(arg.map(strokePoints));
 
@@ -84,22 +93,24 @@ define(['lodash', 'lib/pdollar',
     });
   }
 
-  function Construct() {
+  function Reader() {
     const api = new PDollar.Recognizer();
 
     extend(api);
-    dbug && C.log('invoke reader util', api);
+    if (API.dbug) C.log('invoke reader util', api);
 
     return api;
   }
 
-  return {
-    make: Construct,
-    joinTwos,
-    strokePoints,
-  };
+  U.expando(API, {
+    new: Reader,
+    joinTwos: joinTwos,
+    strokePoints: strokePoints,
+  });
+  return API;
 });
-
 /*
+
+
 
 */
