@@ -90,7 +90,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
         value: (name) => reader.addGesture(name, api),
       },
       guess: {
-        value: () => reader.recognize(api),
+        get: () => reader.recognize(api),
       },
       parsePointString: {
         value: (str) => Reader.strokePoints(str),

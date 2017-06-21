@@ -83,7 +83,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   }
 
   function previewData(result) {
-    let guess = Gest.reader.findCloud(result.name);
+    let matches = Gest.reader.findCloud(result.name);
 
     if (result.score > 0.1) {
       // overlay drawn with segment colors
@@ -92,7 +92,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
         opacity: 0.5,
       });
       // show guessed template
-      if (result.score) guess.map(
+      if (result.score) matches.map(
         obj => Rend.drawCloud(obj.points, {
           color: 'gray',
           opacity: 0.2,
@@ -117,7 +117,10 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     let result;
 
     if (Gest.enough) {
-      result = Gest.guess();
+      result = Gest.guess;
+      result.gesture = Gest;
+      $.publish('recog-' + result.name, result);
+
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       if (API.dbug) previewData(result);
     } else {
