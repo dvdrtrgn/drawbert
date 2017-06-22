@@ -50,6 +50,16 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     return read;
   }
 
+  function dumper(clouds) {
+    let all = [];
+    clouds.forEach(cloud => {
+      let gest = convert(cloud.points);
+      gest[0] = cloud.name;
+      all.push((gest));
+    });
+    return toBase64(JSON.stringify(all));
+  }
+
   function joinTwos(all) {
     let arr = [];
     while (all.length) arr.push(all.splice(0, 2));
@@ -85,6 +95,9 @@ define(['lodash', 'lib/util', 'lib/pdollar',
         value: str => _.filter(api.clouds, {
           name: str,
         }),
+      },
+      dumpClouds: {
+        value: () => dumper(api.clouds),
       },
       lastCloud: {
         get: () => api.clouds[api.count - 1],
