@@ -35,6 +35,20 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   };
   const makePoint = (arr) => new PDollar.Point(...arr);
   const readStrokes = (arg) => _.flatten(arg.map(strokePoints));
+  const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
+  const rounds = (num) => Math.abs(num) > 1 ? num : round0(num, 50, 1, 50);
+  const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
+  const fromBase64 = (str) => atob(str);
+
+  function convert(arr) {
+    let read = [];
+    arr.forEach(function (e) {
+      const i = e.ID;
+      read[i] = read[i] || [];
+      read[i].push(rounds(e.X), rounds(e.Y));
+    });
+    return read;
+  }
 
   function joinTwos(all) {
     let arr = [];
@@ -104,8 +118,11 @@ define(['lodash', 'lib/util', 'lib/pdollar',
 
   U.expando(API, {
     new: Reader,
-    joinTwos: joinTwos,
-    strokePoints: strokePoints,
+    convert,
+    joinTwos,
+    strokePoints,
+    toBase64,
+    fromBase64,
   });
   return API;
 });
