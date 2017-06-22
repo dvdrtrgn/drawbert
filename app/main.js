@@ -21,7 +21,7 @@ require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
   W.drt = {
     App: App,
     PDollar: PDollar,
-    LS,
+    LS: LS,
   };
 
   $(function () {

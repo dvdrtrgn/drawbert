@@ -5,6 +5,9 @@ define([], function () {
   const LS = W.localStorage;
   const NOM = 'Locstow';
 
+  const unicodecharacters = (x) => decodeURIComponent(escape(x)); // utf8bytes
+  const utf8bytes = (x) => unescape(encodeURIComponent(x)); // unicodecharacters
+
   if (!C || !LS) throw ('I give up');
 
   function loadDataFrom(key) {
@@ -20,7 +23,7 @@ define([], function () {
       LS.setItem(key, value);
       C.log(NOM, 'saved key:' + key, printCurrentStorage());
     } catch (e) {
-      if (isQuotaExceeded(e)) C.log('No more storage space', e); // Storage full, maybe notify user or do some clean-up
+      if (isQuotaExceeded(e)) C.log('No more storage space', e);
     }
   }
 
@@ -37,7 +40,7 @@ define([], function () {
       for (let key in LS) {
         if (key.indexOf(keyPrefix) === 0) LS.removeItem(key);
       }
-      C.log(NOM, 'deleted all w/prefix:' + keyPrefix);
+      C.log(NOM, 'deleted all' + (keyPrefix ? 'prefixed:' + keyPrefix : ''));
     } catch (e) {
       C.log(NOM, 'no support.');
     }
@@ -77,7 +80,7 @@ define([], function () {
       let size = (LS.remainingSpace / 1024).toFixed(0);
       return `>>> Available Storage: ${size} KB`;
     } else {
-      let size = (unescape(encodeURIComponent(JSON.stringify(LS))).length / 1024).toFixed(0);
+      let size = (JSON.stringify(LS).length / 1024).toFixed(0);
       return `>>> Total Storage: ${size} KB`;
     }
   }
@@ -96,6 +99,9 @@ define([], function () {
 
   }
 
+  let K = (new Array(1023).fill('k').join(''));
+  let M = (new Array(1023).fill(K).join(', '));
+
   return {
     new: construct,
     load: loadDataFrom,
@@ -103,6 +109,9 @@ define([], function () {
     clearRecord: clearRecordFrom,
     clearAllData: clearAllDataFrom,
     getAllKeys: getAllKeysFrom,
+    K, M,
+    unicodecharacters,
+    utf8bytes,
   };
 
 });
