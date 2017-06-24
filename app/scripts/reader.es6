@@ -50,14 +50,20 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     return read;
   }
 
-  function dumper(clouds) {
+  function dumpHex(clouds) {
     let all = [];
     clouds.forEach(cloud => {
       let gest = convert(cloud.points);
       gest[0] = cloud.name;
-      all.push((gest));
+      all.push(gest.map(String));
     });
     return toBase64(JSON.stringify(all));
+  }
+
+  function suckHex(api, hex) {
+    let json = fromBase64(hex);
+    let data = JSON.parse(json);
+    return api.processData(data);
   }
 
   function joinTwos(all) {
@@ -97,7 +103,10 @@ define(['lodash', 'lib/util', 'lib/pdollar',
         }),
       },
       dumpClouds: {
-        value: () => dumper(api.clouds),
+        value: () => dumpHex(api.clouds),
+      },
+      suckClouds: {
+        value: (data) => suckHex(api, data),
       },
       lastCloud: {
         get: () => api.clouds[api.count - 1],

@@ -6,8 +6,8 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
-], function ($, _, U, D, Gesture, Renderer) {
+define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer',
+], function ($, _, U, LS, D, Gesture, Renderer) {
   const NOM = 'App';
   const W = window;
   const C = W.console;
@@ -67,6 +67,16 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       arr.map(Gest.reader.processData);
       updateCount();
     });
+  }
+
+  function saveData() {
+    LS.save('gest', Gest.reader.dumpClouds());
+    C.log(NOM, 'saved gestures');
+  }
+
+  function loadData() {
+    Gest.reader.suckClouds(LS.load('gest'));
+    updateCount();
   }
 
   function resetGesture() {
@@ -259,7 +269,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       EL.btnChoose.on('mousedown.drwbrt', clickAssign);
     }
 
-    if (API.dbug) clickLoad(); // load gestures
+    //if (API.dbug) clickLoad(); // load gestures
     bindHanders();
     clickInit();
     updateCount();
@@ -271,6 +281,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     init,
     Gest: null,
     Rend: null,
+    saveData,
+    loadData,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
