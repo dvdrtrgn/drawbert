@@ -5,6 +5,7 @@ define([], function () {
   const LS = W.localStorage;
   const NOM = 'Locstow';
 
+  const logerr = (e) => C.error(NOM, e);
   const unicodecharacters = (x) => decodeURIComponent(escape(x)); // utf8bytes
   const utf8bytes = (x) => unescape(encodeURIComponent(x)); // unicodecharacters
 
@@ -14,16 +15,16 @@ define([], function () {
     try {
       return JSON.parse(LS.getItem(key) || '');
     } catch (e) {
-      return null;
+      return undefined;
     }
   }
 
   function saveDataIn(key, value) {
     try {
       LS.setItem(key, JSON.stringify(value));
-      C.log(NOM, 'saved key:' + key, printCurrentStorage());
+      C.log(NOM, 'saved key:' + key, checkUsage());
     } catch (e) {
-      if (isQuotaExceeded(e)) C.log('No more storage space', e);
+      logerr(e);
     }
   }
 
@@ -31,7 +32,7 @@ define([], function () {
     try {
       LS.removeItem(key);
     } catch (e) {
-      C.log(NOM, 'no support.');
+      logerr(e);
     }
   }
 
@@ -42,7 +43,7 @@ define([], function () {
       }
       C.log(NOM, 'deleted all' + (keyPrefix ? 'prefixed:' + keyPrefix : ''));
     } catch (e) {
-      C.log(NOM, 'no support.');
+      logerr(e);
     }
   }
 
@@ -53,30 +54,13 @@ define([], function () {
         if (key.indexOf(keyPrefix) === 0) arr.push(key);
       }
     } catch (e) {
-      C.log(NOM, 'no support.');
+      logerr(e);
     }
     return arr;
   }
 
-  function isQuotaExceeded(e) {
-    let quotaExceeded = false;
-    if (e) {
-      if (e.code) {
-        switch (e.code) {
-        case 22: // Default error code in case of exceeded quota
-          quotaExceeded = true;
-          break;
-        case 1014: // Firefox
-          if (e.name === 'NS_ERROR_DOM_QUOTA_REACHED') quotaExceeded = true;
-          break;
-        }
-      } else if (e.number === -2147024882) quotaExceeded = true; // Internet Explorer 8
-    }
-    return quotaExceeded;
-  }
-
-  function printCurrentStorage() {
-    if (LS.remainingSpace && LS.remainingSpace > 0) { // Internet Explorer
+  function checkUsage() {
+    if (LS.remainingSpace && LS.remainingSpace > 0) { // MSIE
       let size = (LS.remainingSpace / 1024).toFixed(0);
       return `>>> Available Storage: ${size} KB`;
     } else {
