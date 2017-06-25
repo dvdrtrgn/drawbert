@@ -79,6 +79,11 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
+  function _readPoints(api, nom, arrs) {
+    // read old point arrays, [log name with stroke arrays]
+    api.addGesture(nom, arrs);
+  }
+
   function _readPointsArray(api, nom, arr) {
     // read old point arrays, [log name with stroke arrays]
     api.addGesture(nom, arr.map(api.makePoint));
@@ -122,7 +127,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
         value: (arg) => _readStrokesArray(api, arg),
       },
       readLegacy: {
-        value: (nom, arr) => _readPointsArray(api, nom, arr),
+        value: (nom, arr) => _readPoints(api, nom, arr),
       },
       recognize: {
         value: api.recognize,
