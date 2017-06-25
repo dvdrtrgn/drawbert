@@ -73,6 +73,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   }
 
   function strokePoints(str, idx) {
+    str = str || '';
     const splitstr = (str) => str.split(/\s*,\s*/g).map(Number);
     const all = joinTwos(splitstr(str));
     return all.map(arr => makePoint([...arr, idx + 1]));
@@ -106,7 +107,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
         value: () => dumpHex(api.clouds),
       },
       suckClouds: {
-        value: (data) => suckHex(api, data),
+        value: (data) => data && suckHex(api, data),
       },
       lastCloud: {
         get: () => api.clouds[api.count - 1],

@@ -12,7 +12,7 @@ define([], function () {
 
   function loadDataFrom(key) {
     try {
-      return LS.getItem(key);
+      return LS.getItem(key) || '';
     } catch (e) {
       return null;
     }
