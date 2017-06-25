@@ -12,7 +12,7 @@ define([], function () {
 
   function loadDataFrom(key) {
     try {
-      return LS.getItem(key) || '';
+      return JSON.parse(LS.getItem(key) || '');
     } catch (e) {
       return null;
     }
@@ -20,7 +20,7 @@ define([], function () {
 
   function saveDataIn(key, value) {
     try {
-      LS.setItem(key, value);
+      LS.setItem(key, JSON.stringify(value));
       C.log(NOM, 'saved key:' + key, printCurrentStorage());
     } catch (e) {
       if (isQuotaExceeded(e)) C.log('No more storage space', e);
