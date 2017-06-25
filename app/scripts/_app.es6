@@ -218,6 +218,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       name = name.toString();
       nameGesture(name);
       hideOverlay();
+      clickSave();
     }
   }
 
@@ -274,7 +275,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       EL.btnChoose.on('mousedown.drwbrt', clickAssign);
     }
 
-    //if (API.dbug) clickInit(); // load gestures
+    if (API.dbug) clickLoad(); // load gestures
     bindHanders();
     clickClear();
     updateCount();
