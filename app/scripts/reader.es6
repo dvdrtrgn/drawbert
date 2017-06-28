@@ -10,15 +10,14 @@
     strokePoints: parse stroke string
 
   INSTANCE
-    addGesture:   defer to pdollar.Recognizer method
+    addGesture:   defer to Recognizer.addGesture method
     count:        how many clouds?
     findCloud:    search for name string
     lastCloud:    what was last loaded?
-    makePoint:    defer to pdollar.Point constructor
     processData:  take an array of arrays
-    readGesture:  parse array of strings [name, stroke, stroke,...]
-    readLegacy:   parse array of arrays
-    recognize:    defer to pdollar.Recognizer method
+    readNew:      parse array of strings [name, stroke, [stroke,...]]
+    readOld:      parse [name] and array of point arrays [[X,Y,ID]...]
+    recognize:    defer to Recognizer.recognize method
 
 */
 define(['lodash', 'lib/util', 'lib/pdollar',
@@ -35,6 +34,36 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   };
   const makePoint = (arr) => new PDollar.Point(...arr);
   const readStrokes = (arg) => _.flatten(arg.map(strokePoints));
+  const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
+  const rounds = (num) => Math.abs(num) > 1 ? num : round0(num, 50, 1, 50);
+  const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
+  const fromBase64 = (str) => atob(str);
+
+  function points2strokes(arr) {
+    let read = [];
+    arr.forEach(function (e) {
+      const i = e.ID;
+      read[i] = read[i] || [];
+      read[i].push(rounds(e.X), rounds(e.Y));
+    });
+    return read;
+  }
+
+  function dumpHex(clouds) {
+    let all = [];
+    clouds.forEach(cloud => {
+      let gest = points2strokes(cloud.points);
+      gest[0] = cloud.name;
+      all.push(gest.map(String));
+    });
+    return toBase64(JSON.stringify(all));
+  }
+
+  function suckHex(api, hex) {
+    let json = fromBase64(hex);
+    let data = JSON.parse(json);
+    return api.processData(data);
+  }
 
   function joinTwos(all) {
     let arr = [];
@@ -43,19 +72,29 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   }
 
   function strokePoints(str, idx) {
+    str = str || '';
     const splitstr = (str) => str.split(/\s*,\s*/g).map(Number);
     const all = joinTwos(splitstr(str));
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
-  function _readPointsArray(api, nom, arr) {
-    // read old point arrays, [log name with stroke arrays]
-    api.addGesture(nom, arr.map(api.makePoint));
+  function bindSource(api, arr) {
+    api.lastCloud.source = arr;
+    if (API.dbug) C.log('bindSource', api.lastCloud);
   }
 
-  function _readStrokesArray(api, arg) {
-    api.addGesture(arg.shift(), readStrokes(arg));
-    // return [gest, api.lastCloud];
+  // read old point arrays
+  function _readPoints(api, nom, arrs) {
+    api.addGesture(nom, arrs);
+    let arg = points2strokes(arrs);
+    arg[0] = nom;
+    bindSource(api, arg.map(String));
+  }
+  // read new stroke arrays
+  function _readStrokes(api, arg) {
+    var arr = arg.concat();
+    api.addGesture(arr.shift(), readStrokes(arr));
+    bindSource(api, arg);
   }
 
   function extend(api) {
@@ -72,20 +111,23 @@ define(['lodash', 'lib/util', 'lib/pdollar',
           name: str,
         }),
       },
+      dumpClouds: {
+        value: () => dumpHex(api.clouds),
+      },
+      suckClouds: {
+        value: (data) => data && suckHex(api, data),
+      },
       lastCloud: {
         get: () => api.clouds[api.count - 1],
       },
-      makePoint: {
-        value: makePoint,
-      },
       processData: {
-        value: (data) => data.map(arr => api.readGesture(arr)),
+        value: (data) => data.map(arr => api.readNew(arr)),
       },
-      readGesture: {
-        value: (arg) => _readStrokesArray(api, arg),
+      readNew: {
+        value: (arg) => _readStrokes(api, arg),
       },
-      readLegacy: {
-        value: (nom, arr) => _readPointsArray(api, nom, arr),
+      readOld: {
+        value: (nom, arr) => _readPoints(api, nom, arr),
       },
       recognize: {
         value: api.recognize,
@@ -104,8 +146,11 @@ define(['lodash', 'lib/util', 'lib/pdollar',
 
   U.expando(API, {
     new: Reader,
-    joinTwos: joinTwos,
-    strokePoints: strokePoints,
+    convert: points2strokes,
+    joinTwos,
+    strokePoints,
+    toBase64,
+    fromBase64,
   });
   return API;
 });

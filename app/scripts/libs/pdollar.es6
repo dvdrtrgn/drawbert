@@ -1,6 +1,6 @@
 // http://depts.washington.edu/madlab/proj/dollar/pdollar.html
 (function () {
-
+  const C = console;
   // defaults (globals/constants)
   const DEF = {
     numPoints: 33, // lower...fewer
@@ -9,6 +9,11 @@
 
   // ================ PRIVATE ====================
 
+  /**
+   * Computes the centroid for an array of points
+   * @param  {Array} points [description]
+   * @return {Array}        [description]
+   */
   function centroid(points) {
     let [x, y] = [0, 0];
 
@@ -22,11 +27,25 @@
     return new Point(x, y, 0);
   }
 
+  /**
+   * Computes the Euclidean Distance between two points in 2D
+   * @param  {[type]} p1 [description]
+   * @param  {[type]} p2 [description]
+   * @return {[type]}    [description]
+   */
   function distance(p1, p2) { // Euclidean distance between two points
     const [dx, dy] = [p2.X - p1.X, p2.Y - p1.Y];
     return Math.sqrt(dx * dx + dy * dy);
   }
 
+  /**
+   * Computes the distance between two point clouds by performing a
+   * minimum-distance greedy matching starting with point startIndex
+   * @param  {[type]} pts1  [description]
+   * @param  {[type]} pts2  [description]
+   * @param  {[type]} start [description]
+   * @return {[type]}       [description]
+   */
   function cloudDistance(pts1, pts2, start) {
     const matched = new Array(pts1.length); // pts1.length == pts2.length
     let [sum, idx] = [0, start];
@@ -55,6 +74,12 @@
     return sum;
   }
 
+  /**
+   * Implements greedy search for a minimum-distance matching between two point clouds
+   * @param  {[type]} pts1 [description]
+   * @param  {[type]} pts2 [description]
+   * @return {[type]}      [description]
+   */
   function greedyCloudMatch(pts1, pts2) {
     const e = 0.5;
     const step = Math.floor(Math.pow(pts1.length, 1 - e));
@@ -68,6 +93,11 @@
     return min;
   }
 
+  /**
+   * Computes the path length for an array of points
+   * @param  {[type]} points [description]
+   * @return {[type]}        [description]
+   */
   function pathLength(points) { // length traversed by a point path
     let d = 0;
     for (let i = 1; i < points.length; i++) {
@@ -78,19 +108,27 @@
     return d;
   }
 
-  function resample(points, n) {
-    const I = pathLength(points) / (n - 1); // interval length
+  /**
+   * Resamples the array of points into n equally-distanced points
+   * @param  {Array} points   of points
+   * @param  {Number} tot     total intervals
+   * @return {Array}
+   */
+  function resample(points, tot) {
+    const I = pathLength(points) / (tot - 1); // interval length
     const newpoints = new Array(points[0]);
     let D = 0;
 
     for (let i = 1; i < points.length; i++) {
-      if (points[i].ID === points[i - 1].ID) {
-        const d = distance(points[i - 1], points[i]);
+      let p0 = points[i - 1];
+      let p1 = points[i];
+      if (p1.ID === p0.ID) {
+        const d = distance(p0, p1);
 
         if ((D + d) >= I) {
-          const qx = points[i - 1].X + ((I - D) / d) * (points[i].X - points[i - 1].X);
-          const qy = points[i - 1].Y + ((I - D) / d) * (points[i].Y - points[i - 1].Y);
-          const q = new Point(qx, qy, points[i].ID);
+          const qx = p0.X + ((I - D) / d) * (p1.X - p0.X);
+          const qy = p0.Y + ((I - D) / d) * (p1.Y - p0.Y);
+          const q = new Point(qx, qy, p1.ID);
 
           newpoints[newpoints.length] = q; // append new point 'q'
           // insert 'q' at position i in points s.t. 'q' will be the next i
@@ -100,7 +138,7 @@
       }
     }
     // sometimes we fall a rounding-error short of adding the last point, so add it if so
-    if (newpoints.length === n - 1) {
+    if (newpoints.length === tot - 1) {
       newpoints[newpoints.length] = new Point(
         points[points.length - 1].X,
         points[points.length - 1].Y,
@@ -109,6 +147,11 @@
     return newpoints;
   }
 
+  /**
+   * Performs scale normalization with shape preservation into [0..1]x[0..1]
+   * @param  {Array} points [description]
+   * @return {Array}        [description]
+   */
   function scale(points) {
     const newpoints = [];
     let [minX, minY, maxX, maxY] = [+Infinity, +Infinity, -Infinity, -Infinity];
@@ -129,6 +172,12 @@
     return newpoints;
   }
 
+  /**
+   * Translates the array of points by p
+   * @param  {[type]} points [description]
+   * @param  {[type]} pt     [description]
+   * @return {[type]}        [description]
+   */
   function translateTo(points, pt) { // translates points' centroid
     const c = centroid(points);
     const newpoints = [];
@@ -141,6 +190,11 @@
     return newpoints;
   }
 
+  /**
+   * [normalizePoints description]
+   * @param  {[type]} points [description]
+   * @return {[type]}        [description]
+   */
   function normalizePoints(points) {
     let pts = points.concat(); // protect passed array
     pts = resample(pts, DEF.numPoints);
@@ -151,12 +205,28 @@
 
   // ================ CLASSES ====================
 
+  /**
+   * Implements a 2D Point that exposes X, Y, and StrokeID properties.
+   *  StrokeID is the stroke index the point belongs to (e.g., 0, 1, 2, ...)
+   *  that is filled by counting pen down/up events.
+   * @param       {[type]} x  [description]
+   * @param       {[type]} y  [description]
+   * @param       {[type]} id [description]
+   * @constructor
+   */
   function Point(x, y, id) {
     this.X = x;
     this.Y = y;
     this.ID = id; // stroke ID to which this point belongs (1,2,...)
   }
 
+  /**
+   * Implements a gesture as a cloud of points (i.e., an unordered set of points).
+   * Gestures are normalized with respect to scale, translated to origin, and resampled into a fixed number of 32 points.
+   * @param       {[type]} name   [description]
+   * @param       {[type]} points [description]
+   * @constructor
+   */
   function PointCloud(name, points) { // template
     this.name = name;
     this.points = normalizePoints(points);
@@ -173,6 +243,14 @@
   // .addGesture()
   // .deleteUserGestures()
 
+  /**
+   * Main function of the $P recognizer.
+   *  Classifies a candidate gesture against a set of training samples.
+   *  Returns the class of the closest neighbor in the training set.
+   * @param       {[type]} numPoints [description]
+   * @param       {[type]} origin    [description]
+   * @constructor
+   */
   function Recognizer(numPoints, origin) {
     const Tmpl = this.clouds = [];
 
@@ -199,6 +277,12 @@
         new Result(Tmpl[idx].name, Math.max((best - 2) / -2, 0));
     };
 
+    /**
+     * Constructs a gesture from an array of points
+     * @param  {[type]} name   [description]
+     * @param  {[type]} points [description]
+     * @return {[type]}        [description]
+     */
     this.addGesture = function (name, points) {
       let num = 0;
 

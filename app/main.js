@@ -13,14 +13,15 @@ require.config({
   },
 });
 
-require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app',
-], function ($, U, PDollar, App) {
+require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
+], function ($, U, PDollar, App, LS) {
   var W = window;
   var C = console;
 
   W.drt = {
     App: App,
     PDollar: PDollar,
+    LS: LS,
   };
 
   $(function () {

@@ -19,25 +19,11 @@ define(['lib/util', 'lib/pdollar', 'reader',
   };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
-  const round0 = (n, f = 1, d = 1, a = 0) => Math.round(n * f) / d + a;
-  const rounds = (num) => Math.abs(num) > 1 ? num : round0(num, 50, 1, 50);
-  const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
-  const fromBase64 = (str) => atob(str);
 
   const makeJSON = (arr) => deQuo(JSON.stringify(arr));
   const toStrings = (arr) => arr.map(makeJSON);
   const toString = (arr) => reQuo(toStrings(arr).join(',\n'));
   const toCode = (arr) => `\n${toString(arr.slice(1))},\n`;
-
-  function convert(arr) {
-    let read = [];
-    arr.forEach(function (e) {
-      const i = e.ID;
-      read[i] = read[i] || [];
-      read[i].push(rounds(e.X), rounds(e.Y));
-    });
-    return read;
-  }
 
   function calcLimits(arr) {
     const xs = arr.map(p => p.X);
@@ -87,7 +73,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
         get: () => calcLimits(api),
       },
       saveAs: {
-        value: (name) => reader.addGesture(name, api),
+        value: (nom) => reader.readOld(nom, api),
       },
       guess: {
         get: () => reader.recognize(api),
@@ -106,20 +92,20 @@ define(['lib/util', 'lib/pdollar', 'reader',
         get: () => api,
       },
       exportDrawn: {
-        get: () => toCode(convert(api.drawn)),
+        get: () => toCode(Reader.convert(api.drawn)),
       },
       logDrawn: {
         get: () => C.log(api.exportDrawn),
       },
       // Percent Form
       exportPercent: {
-        get: () => toCode(convert(api.normal)),
+        get: () => toCode(Reader.convert(api.normal)),
       },
       logPercent: {
         get: () => C.log(api.exportPercent),
       },
       logPercent64: {
-        get: () => C.log(toBase64(api.exportPercent)),
+        get: () => C.log(Reader.toBase64(api.exportPercent)),
       },
       //
       stroke: {
@@ -142,7 +128,6 @@ define(['lib/util', 'lib/pdollar', 'reader',
 
   U.expando(API, {
     new: Gesture,
-    fromBase64: fromBase64,
   });
   return API;
 });

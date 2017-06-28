@@ -6,8 +6,8 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
-], function ($, _, U, D, Gesture, Renderer) {
+define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer',
+], function ($, _, U, LS, D, Gesture, Renderer) {
   const NOM = 'App';
   const W = window;
   const C = W.console;
@@ -22,6 +22,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     btnChoose: '.js-choice',
     btnClear: '.js-clear-stroke',
     btnInit: '.js-init',
+    btnLoad: '.js-load',
+    btnSave: '.js-save',
     btnTrain: '.js-train',
     overlay: '.overlay',
     txtCount: '.js-gesture-count',
@@ -63,6 +65,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
   // RECOG OPS
   //
   function initData() {
+    Gest.reader.clouds.length = 0; // start clean
     require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
       updateCount();
@@ -191,9 +194,20 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     }
   }
 
-  function clickLoad() {
+  function clickInit() {
     EL.btnInit.hide();
     initData();
+  }
+
+  function clickSave() {
+    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
+    C.log(NOM, 'saved gestures');
+  }
+
+  function clickLoad() {
+    let arr = LS.load(NOM) || [];
+    arr.forEach(o => Gest.reader.readNew(o));
+    updateCount();
   }
 
   function clickAssign(evt) {
@@ -205,6 +219,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
       name = name.toString();
       nameGesture(name);
       hideOverlay();
+      clickSave();
     }
   }
 
@@ -230,7 +245,7 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     }
   }
 
-  function clickInit() {
+  function clickClear() {
     const $win = $(Rend.canvas.ownerDocument.defaultView);
 
     $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
@@ -247,21 +262,23 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     EL.canvas = $(canvas);
 
     function bindHanders() {
-      EL.window.on('resize', _.debounce(clickInit, 333));
+      EL.window.on('resize', _.debounce(clickClear, 333));
       EL.canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
       EL.canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
       EL.canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
 
       EL.overlay.on('click.drwbrt', hideOverlay);
-      EL.btnClear.on('click.drwbrt', clickInit);
-      EL.btnInit.on('click.drwbrt', clickLoad);
+      EL.btnClear.on('click.drwbrt', clickClear);
+      EL.btnInit.on('click.drwbrt', clickInit);
+      EL.btnLoad.on('click.drwbrt', clickLoad);
+      EL.btnSave.on('click.drwbrt', clickSave);
       EL.btnTrain.on('click.drwbrt', clickTrainer);
       EL.btnChoose.on('mousedown.drwbrt', clickAssign);
     }
 
     if (API.dbug) clickLoad(); // load gestures
     bindHanders();
-    clickInit();
+    clickClear();
     updateCount();
 
     API.init = () => true; // only used once
@@ -271,6 +288,8 @@ define(['jquery', 'lodash', 'lib/util', 'dom', 'gesture', 'renderer',
     init,
     Gest: null,
     Rend: null,
+    clickSave,
+    clickLoad,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
