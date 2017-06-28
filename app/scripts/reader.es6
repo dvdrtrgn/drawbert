@@ -10,15 +10,14 @@
     strokePoints: parse stroke string
 
   INSTANCE
-    addGesture:   defer to pdollar.Recognizer method
+    addGesture:   defer to Recognizer.addGesture method
     count:        how many clouds?
     findCloud:    search for name string
     lastCloud:    what was last loaded?
-    makePoint:    defer to pdollar.Point constructor
     processData:  take an array of arrays
-    readGesture:  parse array of strings [name, stroke, stroke,...]
-    readLegacy:   parse array of arrays
-    recognize:    defer to pdollar.Recognizer method
+    readNew:      parse array of strings [name, stroke, [stroke,...]]
+    readOld:      parse [name] and array of point arrays [[X,Y,ID]...]
+    recognize:    defer to Recognizer.recognize method
 
 */
 define(['lodash', 'lib/util', 'lib/pdollar',
@@ -84,14 +83,11 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     api.addGesture(nom, arrs);
   }
 
-  function _readPointsArray(api, nom, arr) {
-    // read old point arrays, [log name with stroke arrays]
-    api.addGesture(nom, arr.map(api.makePoint));
-  }
-
-  function _readStrokesArray(api, arg) {
-    api.addGesture(arg.shift(), readStrokes(arg));
-    // return [gest, api.lastCloud];
+  function _readStrokes(api, arg) {
+    var arr = arg.concat();
+    api.addGesture(arr.shift(), readStrokes(arr));
+    api.lastCloud.source = arg;
+    C.log('_readStrokes', api.lastCloud);
   }
 
   function extend(api) {
@@ -117,16 +113,13 @@ define(['lodash', 'lib/util', 'lib/pdollar',
       lastCloud: {
         get: () => api.clouds[api.count - 1],
       },
-      makePoint: {
-        value: makePoint,
-      },
       processData: {
-        value: (data) => data.map(arr => api.readGesture(arr)),
+        value: (data) => data.map(arr => api.readNew(arr)),
       },
-      readGesture: {
-        value: (arg) => _readStrokesArray(api, arg),
+      readNew: {
+        value: (arg) => _readStrokes(api, arg),
       },
-      readLegacy: {
+      readOld: {
         value: (nom, arr) => _readPoints(api, nom, arr),
       },
       recognize: {

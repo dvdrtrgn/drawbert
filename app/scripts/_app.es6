@@ -200,13 +200,13 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function clickSave() {
-    LS.save(NOM, Gest.reader.clouds);
+    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
     C.log(NOM, 'saved gestures');
   }
 
   function clickLoad() {
     let arr = LS.load(NOM) || [];
-    arr.map(o => Gest.reader.readLegacy(o.name, o.points));
+    arr.forEach(o => Gest.reader.readNew(o));
     updateCount();
   }
 

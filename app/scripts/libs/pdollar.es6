@@ -1,6 +1,6 @@
 // http://depts.washington.edu/madlab/proj/dollar/pdollar.html
 (function () {
-
+  const C = console;
   // defaults (globals/constants)
   const DEF = {
     numPoints: 33, // lower...fewer
