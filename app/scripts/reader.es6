@@ -39,7 +39,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   const toBase64 = (str) => `\n${btoa(str)}`.replace(/(.{1,78})/g, '$1\n');
   const fromBase64 = (str) => atob(str);
 
-  function convert(arr) {
+  function points2strokes(arr) {
     let read = [];
     arr.forEach(function (e) {
       const i = e.ID;
@@ -52,7 +52,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   function dumpHex(clouds) {
     let all = [];
     clouds.forEach(cloud => {
-      let gest = convert(cloud.points);
+      let gest = points2strokes(cloud.points);
       gest[0] = cloud.name;
       all.push(gest.map(String));
     });
@@ -78,16 +78,23 @@ define(['lodash', 'lib/util', 'lib/pdollar',
     return all.map(arr => makePoint([...arr, idx + 1]));
   }
 
-  function _readPoints(api, nom, arrs) {
-    // read old point arrays, [log name with stroke arrays]
-    api.addGesture(nom, arrs);
+  function bindSource(api, arr) {
+    api.lastCloud.source = arr;
+    if (API.dbug) C.log('bindSource', api.lastCloud);
   }
 
+  // read old point arrays
+  function _readPoints(api, nom, arrs) {
+    api.addGesture(nom, arrs);
+    let arg = points2strokes(arrs);
+    arg[0] = nom;
+    bindSource(api, arg.map(String));
+  }
+  // read new stroke arrays
   function _readStrokes(api, arg) {
     var arr = arg.concat();
     api.addGesture(arr.shift(), readStrokes(arr));
-    api.lastCloud.source = arg;
-    C.log('_readStrokes', api.lastCloud);
+    bindSource(api, arg);
   }
 
   function extend(api) {
@@ -139,7 +146,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
 
   U.expando(API, {
     new: Reader,
-    convert,
+    convert: points2strokes,
     joinTwos,
     strokePoints,
     toBase64,

@@ -73,7 +73,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
         get: () => calcLimits(api),
       },
       saveAs: {
-        value: (name) => reader.addGesture(name, api),
+        value: (nom) => reader.readOld(nom, api),
       },
       guess: {
         get: () => reader.recognize(api),
