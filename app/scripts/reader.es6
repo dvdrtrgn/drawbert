@@ -85,17 +85,19 @@ define(['lodash', 'lib/util', 'lib/pdollar',
 
   // read old point arrays
   function _readPoints(api, nom, arrs) {
-    api.addGesture(nom, arrs);
+    let num = api.addGesture(nom, arrs);
     let arg = points2strokes(arrs);
     arg[0] = nom;
     bindSource(api, arg.map(String));
+    return num;
   }
   // read new stroke arrays
   function _readStrokes(api, arg) {
     if (!arg) return;
     var arr = arg.concat();
-    api.addGesture(arr.shift(), readStrokes(arr));
+    let num = api.addGesture(arr.shift(), readStrokes(arr));
     bindSource(api, arg);
+    return num;
   }
 
   function extend(api) {
