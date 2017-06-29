@@ -103,6 +103,9 @@ define(['lodash', 'lib/util', 'lib/pdollar',
       addGesture: {
         value: api.addGesture,
       },
+      clear: {
+        value: () => api.clouds.length = 0, // start clean
+      },
       count: {
         get: () => api.clouds.length,
       },

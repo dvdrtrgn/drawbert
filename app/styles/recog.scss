@@ -12,16 +12,26 @@ body {
   overflow: auto;
 }
 button {
+  background: white;
+  border: 1px solid silver;
+  border-radius: 6px;
   cursor: pointer;
   font-family: helvetica;
   font-size: 1em;
+  &:hover {
+    background: silver;
+  }
 }
 
 .shrink {
+  border-radius: 3px;
   font-family: 'arial narrow';
   font-size: 12px;
 }
 
+.stats {
+  text-align: center;
+}
 .on-top {
   position: relative;
   z-index: 10;

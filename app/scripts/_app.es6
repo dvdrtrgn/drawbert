@@ -40,7 +40,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // DOM OPS
   //
   function updateCount() {
-    EL.txtCount.text(Gest.reader.count);
+    let current = Gest.reader.count;
+    let unsaved = current - LS.load(NOM).length;
+    unsaved = unsaved ? `(${unsaved} unsaved)` : '';
+    EL.txtCount.text(`${current} ${unsaved}`);
   }
 
   function hideOverlay() {
@@ -64,16 +67,40 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   // - - - - - - - - - - - - - - - - - -
-  // RECOG OPS
+  // DATA OPS
   //
   function initData() {
-    Gest.reader.clouds.length = 0; // start clean
+    Gest.reader.clear();
     require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
       arr.map(Gest.reader.processData);
       updateCount();
     });
   }
 
+  function assignData(name) {
+    if (U.undef(name)) {
+      alert('Unknown gesture chosen.');
+    } else {
+      name = name.toString();
+      nameGesture(name);
+      hideOverlay();
+    }
+  }
+
+  function loadData() {
+    Gest.reader.clear();
+    let arr = LS.load(NOM) || [];
+    arr.forEach(o => Gest.reader.readNew(o));
+  }
+
+  function saveData() {
+    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
+    C.log(NOM, 'saved gestures');
+  }
+
+  // - - - - - - - - - - - - - - - - - -
+  // RECOG OPS
+  //
   function resetGesture() {
     Gest.clear();
   }
@@ -190,40 +217,38 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   // ================ BINDINGS ======================
 
+  function clickInit() {
+    initData();
+    EL.btnInit.hide();
+    EL.btnLoad.show();
+    EL.btnSave.hide();
+  }
+
+  function clickAssign(evt) {
+    let name = evt.target.dataset.name;
+    assignData(name);
+    EL.btnLoad.show();
+    EL.btnSave.show();
+  }
+
+  function clickLoad() {
+    loadData();
+    clearCanvas();
+    EL.btnInit.show();
+    EL.btnLoad.hide();
+  }
+
+  function clickSave() {
+    saveData();
+    clearCanvas();
+    EL.btnSave.hide();
+  }
+
   function clickTrainer() {
     const result = tryRecognize();
     Rend.drawBounds(Gest.limits);
     if (result) {
       D.showOverlay(result);
-    }
-  }
-
-  function clickInit() {
-    EL.btnInit.hide();
-    initData();
-  }
-
-  function clickSave() {
-    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
-    C.log(NOM, 'saved gestures');
-  }
-
-  function clickLoad() {
-    let arr = LS.load(NOM) || [];
-    arr.forEach(o => Gest.reader.readNew(o));
-    updateCount();
-  }
-
-  function clickAssign(evt) {
-    let name = evt.target.dataset.name;
-
-    if (U.undef(name)) {
-      alert('Unknown gesture chosen.');
-    } else {
-      name = name.toString();
-      nameGesture(name);
-      hideOverlay();
-      clickSave();
     }
   }
 

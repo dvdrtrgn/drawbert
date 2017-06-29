@@ -17,33 +17,38 @@
       <canvas id="myCanvas" oncontextmenu="return false;"></canvas>
     </section>
 
+    <div class="stats">
+      <span>
+        Total gestures: <span class="js-gesture-count">0</span>
+      </span>
+      <div class="shrink">
+        <b>Hints:</b> Right-click canvas to clear
+      </div>
+    </div>
+
     <div class="danger-buttons on-top">
       <div class="buttons">
         <button class="js-clear-stroke" data-position="right">
-          Clear strokes
+          Clear canvas
         </button>
         <button class="js-init shrink" data-position="right">
-          Load stock gestures
+          Stock gestures only
         </button>
       </div>
-      <span class="shrink">
-        <b>Hints:</b> Right-click canvas to clear
-      </span>
     </div>
 
     <div class="finished-buttons on-top">
       <div class="buttons">
         <button class="js-load shrink" data-position="left">
-          Load my gestures
+          Reload gestures
         </button>
         <button class="js-save shrink" data-position="left">
-          Save this set
+          Save gestures
         </button>
         <button class="js-train" data-position="left">
-          Learn
+          Learn gesture
         </button>
       </div>
-      <div class="stats">Total gestures: <span class="js-gesture-count">0</span></div>
     </div>
 
     <section class="overlay hidden on-top">
