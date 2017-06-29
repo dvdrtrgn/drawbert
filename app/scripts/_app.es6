@@ -42,7 +42,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   function updateCount() {
     let current = Gest.reader.count;
     let unsaved = current - LS.load(NOM).length;
-    unsaved = unsaved ? `(${unsaved} unsaved)` : '';
+    unsaved = unsaved ? `(${unsaved} new)` : '';
     EL.txtCount.text(`${current} ${unsaved}`);
   }
 
@@ -89,13 +89,13 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   function loadData() {
     Gest.reader.clear();
-    let arr = LS.load(NOM) || [];
+    let arr = LS.load(API.name) || [];
     arr.forEach(o => Gest.reader.readNew(o));
   }
 
   function saveData() {
-    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
-    C.log(NOM, 'saved gestures');
+    LS.save(API.name, Gest.reader.clouds.map(o => o.source));
+    C.log(API.name, 'saved gestures');
   }
 
   // - - - - - - - - - - - - - - - - - -
@@ -327,6 +327,17 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       } else if (typeof arg === 'string') {
         playStroke(arg);
       }
+    },
+    backup: function () {
+      API.name = 'App2';
+      clickSave();
+      API.name = NOM;
+    },
+    restore: function () {
+      API.name = 'App2';
+      clickLoad();
+      API.name = NOM;
+      clickSave();
     },
   });
   return API;

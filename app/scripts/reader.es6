@@ -92,6 +92,7 @@ define(['lodash', 'lib/util', 'lib/pdollar',
   }
   // read new stroke arrays
   function _readStrokes(api, arg) {
+    if (!arg) return;
     var arr = arg.concat();
     api.addGesture(arr.shift(), readStrokes(arr));
     bindSource(api, arg);
