@@ -59,6 +59,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Rend.defaults().fillAll();
     drawText('Canvas cleared');
     updateCount();
+    EL.btnTrain.hide();
+    EL.btnClear.hide();
   }
 
   // - - - - - - - - - - - - - - - - - -
@@ -172,6 +174,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Down = false;
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
+    EL.btnTrain.show();
+    EL.btnClear.show();
     // C.log(Gest.exportPercent); // dump for snagging init data
   }
 

@@ -19,26 +19,28 @@
 
     <div class="danger-buttons on-top">
       <div class="buttons">
-        <button class="js-init" data-position="right">
-          Stock gestures
-        </button>
         <button class="js-clear-stroke" data-position="right">
           Clear strokes
         </button>
+        <button class="js-init shrink" data-position="right">
+          Load stock gestures
+        </button>
       </div>
-      (or right-click canvas)
+      <span class="shrink">
+        <b>Hints:</b> Right-click canvas to clear
+      </span>
     </div>
 
     <div class="finished-buttons on-top">
       <div class="buttons">
-        <button class="js-load" data-position="left">
-          Load
+        <button class="js-load shrink" data-position="left">
+          Load my gestures
+        </button>
+        <button class="js-save shrink" data-position="left">
+          Save this set
         </button>
         <button class="js-train" data-position="left">
-          Open trainer
-        </button>
-        <button class="js-save" data-position="left">
-          Save
+          Learn
         </button>
       </div>
       <div class="stats">Total gestures: <span class="js-gesture-count">0</span></div>
