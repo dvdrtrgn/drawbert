@@ -17,6 +17,33 @@ define(['jquery', 'lib/util',
       $, U,
     },
   };
+  const DF = {
+    fposite: 'https://dummyimage.com/XxY',
+    starsite: 'http://stevensegallery.com/g/X/Y',
+    viasite: 'http//via.placeholder.com/XxY',
+  };
+
+  function _makeEle(evt, result) {
+    let box = result.gesture.bounds;
+    let div = $('<div>') //
+      .addClass(evt.type) //
+      .appendTo('body') //
+      .css({
+        height: box.h,
+        left: box.x,
+        position: 'absolute',
+        top: box.y,
+        width: box.w,
+      });
+
+    if (API.dbug) C.log(NOM, 'makeDiv', evt, result, div);
+    return div;
+  }
+
+  function _setBkgr(ele, site) {
+    let url = site.replace('X', ele.width()).replace('Y', ele.height());
+    ele.css('background', `url('${url}')`);
+  }
 
   function extend(api) {
 
@@ -34,8 +61,20 @@ define(['jquery', 'lib/util',
     return api;
   }
 
+  function makeSquare(evt, result) {
+    let div = _makeEle(evt, result);
+    _setBkgr(div, DF.fposite);
+  }
+
+  function makeStar(evt, result) {
+    let div = _makeEle(evt, result);
+    _setBkgr(div, DF.starsite);
+  }
+
   U.expando(API, {
     new: Trigger,
+    makeSquare,
+    makeStar,
   });
   return API;
 });

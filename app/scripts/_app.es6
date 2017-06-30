@@ -71,7 +71,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   //
   function initData() {
     Gest.reader.clear();
-    require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
+    // 'data/alphabet', 'data/gestures', 'data/numbers'
+    require(['data/rawbert'], function (...arr) {
       arr.map(Gest.reader.processData);
       updateCount();
     });
@@ -150,9 +151,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
     if (Gest.enough) {
       result = Gest.guess;
-      result.gesture = Gest;
-      $.publish('recog-' + result.name, result);
-
+      if (result.score > 0.2) {
+        result.gesture = Gest;
+        $.publish('recog-' + result.name, result);
+      }
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       if (API.dbug) previewData(result);
     } else {
@@ -221,7 +223,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     initData();
     EL.btnInit.hide();
     EL.btnLoad.show();
-    EL.btnSave.hide();
+    EL.btnSave.show();
   }
 
   function clickAssign(evt) {
@@ -303,6 +305,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       EL.btnSave.on('click.drwbrt', clickSave);
       EL.btnTrain.on('click.drwbrt', clickTrainer);
       EL.btnChoose.on('mousedown.drwbrt', clickAssign);
+
+      $.subscribe('recog-star', Trigger.makeStar);
+      $.subscribe('recog-square', Trigger.makeSquare);
+
     }
 
     if (API.dbug) clickLoad(); // load gestures
