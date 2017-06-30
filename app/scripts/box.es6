@@ -80,7 +80,7 @@ define(['lib/util'], function (U) {
   };
 
   function Box(source) {
-    if (API.dbug) C.log(NOM, 'new', source.constructor);
+    if (API.dbug > 1) C.log(NOM, 'new', source.constructor);
 
     const box = {
       source,
@@ -91,7 +91,7 @@ define(['lib/util'], function (U) {
   }
 
   function rect(minmax) {
-    if (API.dbug) C.log(NOM, 'rect', minmax);
+    if (API.dbug > 1) C.log(NOM, 'rect', minmax);
     const rect = {
       x: minmax.xmin,
       y: minmax.ymin,

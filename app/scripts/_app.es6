@@ -6,8 +6,8 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer',
-], function ($, _, U, LS, D, Gesture, Renderer) {
+define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
+], function ($, _, U, LS, D, Gesture, Renderer, Trigger) {
   const NOM = 'App';
   const W = window;
   const C = W.console;
@@ -15,7 +15,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     name: NOM,
     dbug: 1,
     imports: {
-      $, _, U, D, Gesture, Renderer,
+      $, _, U, D, Gesture, Renderer, Trigger,
     },
   };
   const EL = {
