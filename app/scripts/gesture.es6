@@ -5,8 +5,8 @@
   USE:
 
 */
-define(['lib/util', 'lib/pdollar', 'reader',
-], function (U, PDollar, Reader) {
+define(['lib/util', 'box', 'lib/pdollar', 'reader',
+], function (U, Box, PDollar, Reader) {
   const NOM = 'Gesture';
   const W = window;
   const C = W.console;
@@ -14,7 +14,7 @@ define(['lib/util', 'lib/pdollar', 'reader',
     name: NOM,
     dbug: 0,
     imports: {
-      U, PDollar, Reader,
+      U, Box, PDollar, Reader,
     },
   };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);
@@ -71,6 +71,9 @@ define(['lib/util', 'lib/pdollar', 'reader',
       },
       limits: {
         get: () => calcLimits(api),
+      },
+      bounds: {
+        get: () => Box.calc(api.limits),
       },
       saveAs: {
         value: (nom) => reader.readOld(nom, api),

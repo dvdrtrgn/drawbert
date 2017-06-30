@@ -6,8 +6,8 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer',
-], function ($, _, U, LS, D, Gesture, Renderer) {
+define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
+], function ($, _, U, LS, D, Gesture, Renderer, Trigger) {
   const NOM = 'App';
   const W = window;
   const C = W.console;
@@ -15,7 +15,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     name: NOM,
     dbug: 1,
     imports: {
-      $, _, U, D, Gesture, Renderer,
+      $, _, U, D, Gesture, Renderer, Trigger,
     },
   };
   const EL = {
@@ -40,7 +40,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // DOM OPS
   //
   function updateCount() {
-    EL.txtCount.text(Gest.reader.count);
+    let current = Gest.reader.count;
+    let unsaved = current - LS.load(NOM).length;
+    unsaved = unsaved ? `(${unsaved} new)` : '';
+    EL.txtCount.text(`${current} ${unsaved}`);
   }
 
   function hideOverlay() {
@@ -59,19 +62,46 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Rend.defaults().fillAll();
     drawText('Canvas cleared');
     updateCount();
+    EL.btnTrain.hide();
+    EL.btnClear.hide();
   }
 
   // - - - - - - - - - - - - - - - - - -
-  // RECOG OPS
+  // DATA OPS
   //
   function initData() {
-    Gest.reader.clouds.length = 0; // start clean
-    require(['data/alphabet', 'data/gestures', 'data/numbers'], function (...arr) {
+    Gest.reader.clear();
+    // 'data/alphabet', 'data/gestures', 'data/numbers'
+    require(['data/rawbert'], function (...arr) {
       arr.map(Gest.reader.processData);
       updateCount();
     });
   }
 
+  function assignData(name) {
+    if (U.undef(name)) {
+      alert('Unknown gesture chosen.');
+    } else {
+      name = name.toString();
+      nameGesture(name);
+      hideOverlay();
+    }
+  }
+
+  function loadData() {
+    Gest.reader.clear();
+    let arr = LS.load(API.name) || [];
+    arr.forEach(o => Gest.reader.readNew(o));
+  }
+
+  function saveData() {
+    LS.save(API.name, Gest.reader.clouds.map(o => o.source));
+    C.log(API.name, 'saved gestures');
+  }
+
+  // - - - - - - - - - - - - - - - - - -
+  // RECOG OPS
+  //
   function resetGesture() {
     Gest.clear();
   }
@@ -121,9 +151,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
     if (Gest.enough) {
       result = Gest.guess;
-      result.gesture = Gest;
-      $.publish('recog-' + result.name, result);
-
+      if (result.score > 0.2) {
+        result.gesture = Gest;
+        $.publish('recog-' + result.name, result);
+      }
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       if (API.dbug) previewData(result);
     } else {
@@ -172,6 +203,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Down = false;
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
+    EL.btnTrain.show();
+    EL.btnClear.show();
     // C.log(Gest.exportPercent); // dump for snagging init data
   }
 
@@ -186,40 +219,38 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   // ================ BINDINGS ======================
 
+  function clickInit() {
+    initData();
+    EL.btnInit.hide();
+    EL.btnLoad.show();
+    EL.btnSave.show();
+  }
+
+  function clickAssign(evt) {
+    let name = evt.target.dataset.name;
+    assignData(name);
+    EL.btnLoad.show();
+    EL.btnSave.show();
+  }
+
+  function clickLoad() {
+    loadData();
+    clearCanvas();
+    EL.btnInit.show();
+    EL.btnLoad.hide();
+  }
+
+  function clickSave() {
+    saveData();
+    clearCanvas();
+    EL.btnSave.hide();
+  }
+
   function clickTrainer() {
     const result = tryRecognize();
     Rend.drawBounds(Gest.limits);
     if (result) {
       D.showOverlay(result);
-    }
-  }
-
-  function clickInit() {
-    EL.btnInit.hide();
-    initData();
-  }
-
-  function clickSave() {
-    LS.save(NOM, Gest.reader.clouds.map(o => o.source));
-    C.log(NOM, 'saved gestures');
-  }
-
-  function clickLoad() {
-    let arr = LS.load(NOM) || [];
-    arr.forEach(o => Gest.reader.readNew(o));
-    updateCount();
-  }
-
-  function clickAssign(evt) {
-    let name = evt.target.dataset.name;
-
-    if (U.undef(name)) {
-      alert('Unknown gesture chosen.');
-    } else {
-      name = name.toString();
-      nameGesture(name);
-      hideOverlay();
-      clickSave();
     }
   }
 
@@ -274,6 +305,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       EL.btnSave.on('click.drwbrt', clickSave);
       EL.btnTrain.on('click.drwbrt', clickTrainer);
       EL.btnChoose.on('mousedown.drwbrt', clickAssign);
+
+      $.subscribe('recog-star', Trigger.makeStar);
+      $.subscribe('recog-square', Trigger.makeSquare);
+
     }
 
     if (API.dbug) clickLoad(); // load gestures
@@ -298,6 +333,17 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       } else if (typeof arg === 'string') {
         playStroke(arg);
       }
+    },
+    backup: function () {
+      API.name = 'App2';
+      clickSave();
+      API.name = NOM;
+    },
+    restore: function () {
+      API.name = 'App2';
+      clickLoad();
+      API.name = NOM;
+      clickSave();
     },
   });
   return API;
