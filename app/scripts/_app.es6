@@ -19,6 +19,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     },
   };
   const EL = {
+    body: 'body',
     btnChoose: '.js-choice',
     btnClear: '.js-clear-stroke',
     btnInit: '.js-init',
@@ -151,7 +152,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
     if (Gest.enough) {
       result = Gest.guess;
-      if (result.score > 0.2) {
+      if (result.score > 0.1) {
         result.gesture = Gest;
         $.publish('recog-' + result.name, result);
       }
@@ -271,6 +272,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   function upEvent(evt) {
     evt = D.normTouch(evt);
+    let out = (evt.type === 'mouseout' && evt.toElement);
+    if (out && out.localName !== 'html') return;
     if (Down) {
       lineEnd(evt.clientX, evt.clientY);
     }
