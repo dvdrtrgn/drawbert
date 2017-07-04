@@ -59,14 +59,19 @@ define(['jquery', 'lib/util'], function ($, U) {
     return evt;
   }
 
-  function showOverlay(data) {
+  function showOverlay(dat) {
     const $confidence = $('.js-confidence');
+    let data = Object.assign({
+      name: 'null',
+      score: 0,
+    }, dat);
 
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(data.name);
 
     $confidence.text(U.percent(data.score) + '%');
     $confidence.removeClass('high medium low');
+    $(`[data-name=${data.name}]`).focus();
 
     if (data.score > 0.8) {
       $confidence.addClass('high');
