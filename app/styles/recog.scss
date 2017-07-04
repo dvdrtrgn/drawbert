@@ -23,6 +23,11 @@ button {
   }
 }
 
+section {
+  position: absolute;
+  z-index: 1;
+}
+
 .shrink {
   border-radius: 3px;
   font-family: 'arial narrow';

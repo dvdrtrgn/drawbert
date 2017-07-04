@@ -25,7 +25,7 @@ require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
   };
 
   $(function () {
-    App.init($('canvas:first')[0]);
+    App.init($('section.canvas canvas')[0]);
   });
 
   // expose for testing

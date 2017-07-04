@@ -92,12 +92,34 @@ define(['jquery', 'lib/util'], function ($, U) {
     return (jq, evstr, handler) => jq[meth](namespacer(evstr), handler);
   }
 
+  function _getZ(jq) {
+    return Number($(jq).css('z-index')) || 1;
+  }
+
+  function raise(jq) {
+    let z = _getZ(jq);
+    jq.css({
+      opacity: 0.9,
+      zIndex: z * 10,
+    });
+  }
+
+  function lower(jq) {
+    let z = _getZ(jq);
+    jq.css({
+      opacity: 1,
+      zIndex: z / 10,
+    });
+  }
+
   U.expando(API, {
     hideOverlay,
     bindNameSpacer,
     makeNameSpacer,
     normTouch,
     showOverlay,
+    raise,
+    lower,
   });
   return API;
 });

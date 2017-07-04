@@ -21,6 +21,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   };
   const EL = {
     body: 'body',
+    section: 'section.canvas',
     btnChoose: '.js-choice',
     btnClear: '.js-clear-stroke',
     btnInit: '.js-init',
@@ -69,6 +70,14 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     drawText('Canvas cleared');
     updateCount();
     EL.btnClear.hide();
+  }
+
+  function raiseCanvas() {
+    D.raise(EL.section);
+  }
+
+  function lowerCanvas() {
+    D.lower(EL.section);
   }
 
   // - - - - - - - - - - - - - - - - - -
@@ -178,6 +187,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // Mouse Handlers
   //
   function lineStart(x, y) {
+    raiseCanvas();
     Down = true;
     [x, y] = tweakXY(x, y);
 
@@ -201,6 +211,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function lineEnd(x, y) {
+    lowerCanvas();
     [x, y] = tweakXY(x, y);
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
