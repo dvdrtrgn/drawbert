@@ -77,8 +77,20 @@ define(['jquery', 'lib/util'], function ($, U) {
     }
   }
 
+  function makeNameSpacer(namespace) {
+    let join = `.${namespace} `;
+    // str + space ensures namespace on last item
+    return (str) => `${str} `.replace(/ +/g, join);
+  }
+
+  function bindNameSpacer(namespacer, meth) {
+    return (jq, evstr, handler) => jq[meth](namespacer(evstr), handler);
+  }
+
   U.expando(API, {
     hideOverlay,
+    bindNameSpacer,
+    makeNameSpacer,
     normTouch,
     showOverlay,
   });

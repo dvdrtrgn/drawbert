@@ -32,6 +32,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     overlay: '.overlay',
     txtCount: '.js-gesture-count',
   };
+  const spacer = D.makeNameSpacer(NOM);
+  const bindon = D.bindNameSpacer(spacer, 'on');
 
   // - - - - - - - - - - - - - - - - - -
   // GLOBAL VARS
@@ -306,12 +308,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     clearCanvas();
   }
 
-  function bind(jq, evtstr, handler) {
-    let str = `${evtstr} `; // space ensures namespace
-    str = str.replace(/ /g, `.${NOM} `);
-    jq.on(str, handler);
-  }
-
   function init(canvas) {
     API.Gest = Gest = Gesture.new();
     API.Rend = Rend = Renderer.new(canvas);
@@ -320,20 +316,20 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     EL.canvas = $(canvas);
 
     function bindHanders() {
-      bind(EL.window, 'resize', _.debounce(clickClear, 333));
-      bind(EL.canvas, 'mousedown touchstart', downEvent);
-      bind(EL.canvas, 'mousemove touchmove', _.throttle(moveEvent, 16));
-      bind(EL.canvas, 'mouseup mouseout touchend', upEvent);
+      bindon(EL.window, 'resize', _.debounce(clickClear, 333));
+      bindon(EL.canvas, 'mousedown touchstart', downEvent);
+      bindon(EL.canvas, 'mousemove touchmove', _.throttle(moveEvent, 16));
+      bindon(EL.canvas, 'mouseup mouseout touchend', upEvent);
 
-      bind(EL.overlay, 'click', hideOverlay);
-      bind(EL.btnClear, 'click', clickClear);
-      bind(EL.btnInit, 'click', clickInit);
-      bind(EL.btnLoad, 'click', clickLoad);
-      bind(EL.btnSave, 'click', clickSave);
-      bind(EL.btnBackup, 'click', clickBackup);
-      bind(EL.btnRestore, 'click', clickRestore);
-      bind(EL.btnTrain, 'click', clickTrainer);
-      bind(EL.btnChoose, 'mousedown', clickAssign);
+      bindon(EL.overlay, 'click', hideOverlay);
+      bindon(EL.btnClear, 'click', clickClear);
+      bindon(EL.btnInit, 'click', clickInit);
+      bindon(EL.btnLoad, 'click', clickLoad);
+      bindon(EL.btnSave, 'click', clickSave);
+      bindon(EL.btnBackup, 'click', clickBackup);
+      bindon(EL.btnRestore, 'click', clickRestore);
+      bindon(EL.btnTrain, 'click', clickTrainer);
+      bindon(EL.btnChoose, 'mousedown', clickAssign);
 
       $.subscribe('recog-star', Trigger.makeStar);
       $.subscribe('recog-square', Trigger.makeSquare);
