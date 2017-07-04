@@ -112,6 +112,29 @@ define(['jquery', 'lib/util'], function ($, U) {
     });
   }
 
+  function makeChoiceBtn(name, value) {
+    let btn = $('<button class="js-choice">');
+    btn.data('name', name);
+    btn.text(value || name);
+    return btn;
+  }
+
+  function readTemplate() {
+    let div = $('.option-template');
+    return JSON.parse(div.text());
+  }
+
+  function fillOptions(opts) {
+    let div = $('.option-template');
+    opts = (opts || readTemplate());
+    div.empty();
+    opts.forEach(arr => {
+      if (arr) div.append(makeChoiceBtn(...arr));
+    });
+  }
+
+  window.DOM = API;
+
   U.expando(API, {
     hideOverlay,
     bindNameSpacer,
@@ -120,6 +143,7 @@ define(['jquery', 'lib/util'], function ($, U) {
     showOverlay,
     raise,
     lower,
+    fillOptions,
   });
   return API;
 });

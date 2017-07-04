@@ -25,95 +25,7 @@
       </div>
     </section>
 
-    <section class="overlay hidden on-top">
-      <span class="results">
-        <h2>Training Panel</h2>
-        <h3>
-          Guess:
-          “<span class="guess js-guess"></span>”
-          @
-          <span class="confidence js-confidence"></span>
-          confidence.
-        </h3>
-      </span>
-
-      <div class="option-template">
-<!--
-        <button class="js-choice" data-name="zero">0</button>
-        <button class="js-choice" data-name="1">1</button>
-        <button class="js-choice" data-name="2">2</button>
-        <button class="js-choice" data-name="3">3</button>
-        <button class="js-choice" data-name="4">4</button>
-        <button class="js-choice" data-name="5">5</button>
-        <button class="js-choice" data-name="6">6</button>
-        <button class="js-choice" data-name="7">7</button>
-        <button class="js-choice" data-name="8">8</button>
-        <button class="js-choice" data-name="9">9</button>
-
-        <button class="js-choice" data-name="A">A</button>
-        <button class="js-choice" data-name="B">B</button>
-        <button class="js-choice" data-name="C">C</button>
-        <button class="js-choice" data-name="D">D</button>
-        <button class="js-choice" data-name="E">E</button>
-        <button class="js-choice" data-name="F">F</button>
-        <button class="js-choice" data-name="G">G</button>
-        <button class="js-choice" data-name="H">H</button>
-        <button class="js-choice" data-name="I">I</button>
-        <button class="js-choice" data-name="J">J</button>
-        <button class="js-choice" data-name="K">K</button>
-        <button class="js-choice" data-name="L">L</button>
-        <button class="js-choice" data-name="M">M</button>
-        <button class="js-choice" data-name="N">N</button>
-        <button class="js-choice" data-name="O">O</button>
-        <button class="js-choice" data-name="P">P</button>
-        <button class="js-choice" data-name="Q">Q</button>
-        <button class="js-choice" data-name="R">R</button>
-        <button class="js-choice" data-name="S">S</button>
-        <button class="js-choice" data-name="T">T</button>
-        <button class="js-choice" data-name="U">U</button>
-        <button class="js-choice" data-name="V">V</button>
-        <button class="js-choice" data-name="W">W</button>
-        <button class="js-choice" data-name="X">X</button>
-        <button class="js-choice" data-name="Y">Y</button>
-        <button class="js-choice" data-name="Z">Z</button>
- -->
-        <button class="js-choice" data-name="exclamation">!</button>
-        <button class="js-choice" data-name="line">—</button>
-        <button class="js-choice" data-name="star">✯</button>
-        <button class="js-choice" data-name="arrowhead">></button>
-        <button class="js-choice" data-name="asterisk">*</button>
-        <button class="js-choice" data-name="square">⭐︎</button>
-        <button class="js-choice" data-name="triangle">△</button>
-      </div>
-      <p>
-        Use above buttons to add to database.
-      </p>
-      <button class="js-return">
-        Cancel
-      </button>
-
-      <div>
-        <button class="js-backup shrink">
-          Backup
-        </button>
-        <button class="js-restore shrink">
-          Restore
-        </button>
-      </div>
-
-      <div class="buttons shrink">
-        <button class="js-init shrink" data-position="right">
-          Stock gestures only
-        </button>
-        <button class="js-load shrink" data-position="left">
-          Reload gestures
-        </button>
-        <button class="js-save shrink" data-position="left">
-          Save gestures
-        </button>
-      </div>
-
-    </section>
+    <!-- OUTSIDE DRAWAREA -->
 
     <div class="danger-buttons on-top">
       <div class="buttons">
@@ -130,6 +42,59 @@
         </button>
       </div>
     </div>
+
+    <!-- BEGIN OVERLAY -->
+    <section class="overlay hidden on-top">
+      <span class="results">
+        <h2>Training Panel</h2>
+        <h3>
+          Guess:
+          “<span class="guess js-guess"></span>”
+          @
+          <span class="confidence js-confidence"></span>
+          confidence.
+        </h3>
+      </span>
+
+      <hr>
+
+      <h4>
+        Add to gesture database.
+      </h4>
+      <div class="option-template">
+        <!--
+        ["zero", "0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"],
+        ["A"], ["B"], ["C"], ["D"], ["E"], ["F"], ["G"], ["H"], ["I"], ["J"], ["K"], ["L"], ["M"],
+        ["N"], ["O"], ["P"], ["Q"], ["R"], ["S"], ["T"], ["U"], ["V"], ["W"], ["X"], ["Y"], ["Z"],
+        -->
+        [
+        ["exclamation", "!"],
+        ["line", "—"],
+        ["star", "✯"],
+        ["arrowhead", ">"],
+        ["asterisk", "*"],
+        ["square", "⭐︎"],
+        ["triangle", "△"],
+        ""
+        ]
+      </div>
+
+      <hr>
+
+      <div class="buttons shrink">
+        <button class="js-init">Load stock gestures only</button>
+        <button class="js-load">Reload saved gestures</button>
+        <button class="js-save">Save current gestures</button>
+      </div>
+
+      <div class="buttons shrink">
+        <button class="js-backup">Backup</button>
+        <button class="js-restore">Restore</button>
+      </div>
+
+      <button class="js-return">Cancel</button>
+      <!-- END OVERLAY -->
+    </section>
 
     <section class="editzone"></section>
 

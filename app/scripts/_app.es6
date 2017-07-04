@@ -7,7 +7,7 @@
 
  */
 define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
-], function ($, _, U, LS, D, Gesture, Renderer, Trigger) {
+], function ($, _, U, LS, Dom, Gesture, Renderer, Trigger) {
   const NOM = 'Dbrt';
   const W = window;
   const C = W.console;
@@ -16,12 +16,13 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     dbug: 1,
     gestKey: NOM + '-gest',
     imports: {
-      $, _, U, D, Gesture, Renderer, Trigger,
+      $, _, U, Dom, Gesture, Renderer, Trigger,
     },
   };
   const EL = {
     body: 'body',
     section: 'section.canvas',
+    options: '.option-template',
     btnChoose: '.js-choice',
     btnClear: '.js-clear-stroke',
     btnInit: '.js-init',
@@ -33,8 +34,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     overlay: '.overlay',
     txtCount: '.js-gesture-count',
   };
-  const spacer = D.makeNameSpacer(NOM);
-  const bindon = D.bindNameSpacer(spacer, 'on');
+  const spacer = Dom.makeNameSpacer(NOM);
+  const bindon = Dom.bindNameSpacer(spacer, 'on');
 
   // - - - - - - - - - - - - - - - - - -
   // GLOBAL VARS
@@ -54,7 +55,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function hideOverlay() {
-    D.hideOverlay();
+    Dom.hideOverlay();
     updateCount();
   }
 
@@ -73,17 +74,17 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function raiseCanvas() {
-    D.raise(EL.section);
+    Dom.raise(EL.section);
   }
 
   function lowerCanvas() {
-    D.lower(EL.section);
+    Dom.lower(EL.section);
   }
 
   // - - - - - - - - - - - - - - - - - -
   // DATA OPS
   //
-  function initData() {
+  function stockData() {
     Gest.reader.clear();
     // 'data/alphabet', 'data/gestures', 'data/numbers'
     require(['data/rawbert'], function (...arr) {
@@ -235,7 +236,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // ================ BINDINGS ======================
 
   function clickInit() {
-    initData();
+    stockData();
     EL.btnInit.hide();
     EL.btnLoad.show();
     EL.btnSave.show();
@@ -281,11 +282,11 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     if (result) {
       Rend.drawBounds(Gest.limits);
     }
-    D.showOverlay(result);
+    Dom.showOverlay(result);
   }
 
   function downEvent(evt) {
-    evt = D.normTouch(evt);
+    evt = Dom.normTouch(evt);
     if (evt.button === 2) {
       clearCanvas();
       resetGesture();
@@ -295,12 +296,12 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function moveEvent(evt) {
-    evt = D.normTouch(evt);
+    evt = Dom.normTouch(evt);
     lineDraw(evt.clientX, evt.clientY);
   }
 
   function upEvent(evt) {
-    evt = D.normTouch(evt);
+    evt = Dom.normTouch(evt);
     let out = (evt.type === 'mouseout' && evt.toElement);
     if (out && out.localName !== 'html') return;
     if (Down) {
@@ -350,6 +351,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     clickClear();
     updateCount();
 
+    Dom.fillOptions();
     API.init = () => true; // only used once
   }
 
