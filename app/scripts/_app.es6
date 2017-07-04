@@ -8,12 +8,13 @@
  */
 define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
 ], function ($, _, U, LS, D, Gesture, Renderer, Trigger) {
-  const NOM = 'App';
+  const NOM = 'Dbrt';
   const W = window;
   const C = W.console;
   const API = {
     name: NOM,
     dbug: 1,
+    gestKey: NOM + '-gest',
     imports: {
       $, _, U, D, Gesture, Renderer, Trigger,
     },
@@ -25,6 +26,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     btnInit: '.js-init',
     btnLoad: '.js-load',
     btnSave: '.js-save',
+    btnBackup: '.js-backup',
+    btnRestore: '.js-restore',
     btnTrain: '.js-train',
     overlay: '.overlay',
     txtCount: '.js-gesture-count',
@@ -42,7 +45,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   //
   function updateCount() {
     let current = Gest.reader.count;
-    let unsaved = current - LS.load(NOM).length;
+    let unsaved = current - (LS.load(API.gestKey) || []).length;
     unsaved = unsaved ? `(${unsaved} new)` : '';
     EL.txtCount.text(`${current} ${unsaved}`);
   }
@@ -89,15 +92,15 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     }
   }
 
-  function loadData() {
+  function loadGests() {
     Gest.reader.clear();
-    let arr = LS.load(API.name) || [];
+    let arr = LS.load(API.gestKey) || [];
     arr.forEach(o => Gest.reader.readNew(o));
   }
 
-  function saveData() {
-    LS.save(API.name, Gest.reader.clouds.map(o => o.source));
-    C.log(API.name, 'saved gestures');
+  function saveGests() {
+    LS.save(API.gestKey, Gest.reader.clouds.map(o => o.source));
+    C.log(API.gestKey, 'saved gestures');
   }
 
   // - - - - - - - - - - - - - - - - - -
@@ -235,16 +238,31 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function clickLoad() {
-    loadData();
+    loadGests();
     clearCanvas();
     EL.btnInit.show();
     EL.btnLoad.hide();
   }
 
   function clickSave() {
-    saveData();
+    saveGests();
     clearCanvas();
     EL.btnSave.hide();
+  }
+
+  function clickBackup() {
+    let bu = API.gestKey;
+    API.gestKey = `${API.name}-gbak`;
+    clickSave();
+    API.gestKey = bu;
+  }
+
+  function clickRestore() {
+    let bu = API.gestKey;
+    API.gestKey = `${API.name}-gbak`;
+    clickLoad();
+    API.gestKey = bu;
+    clickSave();
   }
 
   function clickTrainer() {
@@ -288,6 +306,12 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     clearCanvas();
   }
 
+  function bind(jq, evtstr, handler) {
+    let str = `${evtstr} `; // space ensures namespace
+    str = str.replace(/ /g, `.${NOM} `);
+    jq.on(str, handler);
+  }
+
   function init(canvas) {
     API.Gest = Gest = Gesture.new();
     API.Rend = Rend = Renderer.new(canvas);
@@ -296,18 +320,20 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     EL.canvas = $(canvas);
 
     function bindHanders() {
-      EL.window.on('resize', _.debounce(clickClear, 333));
-      EL.canvas.on('mousedown.drwbrt touchstart.drwbrt', downEvent);
-      EL.canvas.on('mousemove.drwbrt touchmove.drwbrt', _.throttle(moveEvent, 16));
-      EL.canvas.on('mouseup.drwbrt mouseout.drwbrt touchend.drwbrt', upEvent);
+      bind(EL.window, 'resize', _.debounce(clickClear, 333));
+      bind(EL.canvas, 'mousedown touchstart', downEvent);
+      bind(EL.canvas, 'mousemove touchmove', _.throttle(moveEvent, 16));
+      bind(EL.canvas, 'mouseup mouseout touchend', upEvent);
 
-      EL.overlay.on('click.drwbrt', hideOverlay);
-      EL.btnClear.on('click.drwbrt', clickClear);
-      EL.btnInit.on('click.drwbrt', clickInit);
-      EL.btnLoad.on('click.drwbrt', clickLoad);
-      EL.btnSave.on('click.drwbrt', clickSave);
-      EL.btnTrain.on('click.drwbrt', clickTrainer);
-      EL.btnChoose.on('mousedown.drwbrt', clickAssign);
+      bind(EL.overlay, 'click', hideOverlay);
+      bind(EL.btnClear, 'click', clickClear);
+      bind(EL.btnInit, 'click', clickInit);
+      bind(EL.btnLoad, 'click', clickLoad);
+      bind(EL.btnSave, 'click', clickSave);
+      bind(EL.btnBackup, 'click', clickBackup);
+      bind(EL.btnRestore, 'click', clickRestore);
+      bind(EL.btnTrain, 'click', clickTrainer);
+      bind(EL.btnChoose, 'mousedown', clickAssign);
 
       $.subscribe('recog-star', Trigger.makeStar);
       $.subscribe('recog-square', Trigger.makeSquare);
@@ -326,8 +352,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     init,
     Gest: null,
     Rend: null,
-    clickSave,
-    clickLoad,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
@@ -336,17 +360,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       } else if (typeof arg === 'string') {
         playStroke(arg);
       }
-    },
-    backup: function () {
-      API.name = 'App2';
-      clickSave();
-      API.name = NOM;
-    },
-    restore: function () {
-      API.name = 'App2';
-      clickLoad();
-      API.name = NOM;
-      clickSave();
     },
   });
   return API;
