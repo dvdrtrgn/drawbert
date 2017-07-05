@@ -89,14 +89,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     });
   }
 
-  function assignData(name) {
-    if (U.undef(name)) {
-      alert('Unknown gesture chosen.');
-    } else {
-      name = name.toString();
-      nameGesture(name);
-    }
-  }
 
   function loadGests() {
     Gest.reader.clear();
@@ -117,6 +109,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function nameGesture(name) {
+    if (U.undef(name)) {
+      return alert('Unknown gesture chosen.');
+    }
+    name = name.toString();
     if (Gest.enough && name.length > 0) {
       if (API.dbug) C.log(NOM, 'nameGesture', name, Gest);
       let idx = Gest.saveAs(name);
@@ -252,7 +248,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   function clickAssign(evt) {
     let name = evt.target.dataset.name;
-    assignData(name);
+    nameGesture(name);
     closeTrainer();
     EL.btnLoad.show();
     EL.btnSave.show();
