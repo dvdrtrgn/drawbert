@@ -54,7 +54,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     EL.txtCount.text(`${current} ${unsaved}`);
   }
 
-
   // - - - - - - - - - - - - - - - - - -
   // CONTEXT OPS
   //
@@ -80,26 +79,35 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // - - - - - - - - - - - - - - - - - -
   // DATA OPS
   //
-  function stockData() {
-    Gest.reader.clear();
-    // 'data/alphabet', 'data/gestures', 'data/numbers'
-    require(['data/rawbert'], function (...arr) {
-      arr.map(Gest.reader.processData);
-      updateCount();
-    });
-  }
-
-
-  function loadGests() {
-    Gest.reader.clear();
-    let arr = LS.load(API.gestKey) || [];
-    arr.forEach(o => Gest.reader.readNew(o));
-  }
-
-  function saveGests() {
-    LS.save(API.gestKey, Gest.reader.clouds.map(o => o.source));
-    C.log(API.gestKey, 'saved gestures');
-  }
+  let Data = {
+    loadDefaults: function () {
+      Gest.reader.clear();
+      // 'data/alphabet', 'data/gestures', 'data/numbers'
+      require(['data/rawbert'], function (...arr) {
+        arr.map(Gest.reader.processData);
+        updateCount();
+      });
+    },
+    saveGests: function (key) {
+      key = (key || API.gestKey);
+      C.log(key, 'saving gestures');
+      LS.save(key, Gest.reader.clouds.map(o => o.source));
+      clearCanvas();
+    },
+    loadGests: function (key) {
+      key = (key || API.gestKey);
+      Gest.reader.clear();
+      let arr = LS.load(key) || [];
+      arr.forEach(o => Gest.reader.readNew(o));
+    },
+    backupGests: function () {
+      this.saveGests(`${API.name}-gbak`);
+    },
+    restoreGests: function () {
+      this.loadGests(`${API.name}-gbak`);
+      this.saveGests();
+    },
+  };
 
   // - - - - - - - - - - - - - - - - - -
   // RECOG OPS
@@ -226,11 +234,11 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   // ================ BINDINGS ======================
 
-  function clickInit() {
-    stockData();
+  function clickInit(evt) {
+    evt.stopPropagation();
+    Data.loadDefaults();
     EL.btnInit.hide();
-    EL.btnLoad.show();
-    EL.btnSave.show();
+    $(EL.btnLoad, EL.btnSave).show();
   }
 
   function clickTrainer() {
@@ -255,31 +263,26 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function clickLoad() {
-    loadGests();
+    Data.loadGests();
     clearCanvas();
     EL.btnInit.show();
     EL.btnLoad.hide();
   }
 
-  function clickSave() {
-    saveGests();
-    clearCanvas();
+  function clickSave(evt) {
+    evt.stopPropagation();
+    Data.saveGests();
     EL.btnSave.hide();
   }
 
-  function clickBackup() {
-    let bu = API.gestKey;
-    API.gestKey = `${API.name}-gbak`;
-    clickSave();
-    API.gestKey = bu;
+  function clickBackup(evt) {
+    evt.stopPropagation();
+    Data.backupGests();
   }
 
-  function clickRestore() {
-    let bu = API.gestKey;
-    API.gestKey = `${API.name}-gbak`;
-    clickLoad();
-    API.gestKey = bu;
-    clickSave();
+  function clickRestore(evt) {
+    evt.stopPropagation();
+    Data.restoreGests();
   }
 
   function downEvent(evt) {
