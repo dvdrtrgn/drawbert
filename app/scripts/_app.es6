@@ -65,7 +65,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Rend.defaults().fillAll();
     drawText('Canvas cleared');
     updateCount();
-    EL.btnClear.hide();
+    $(EL.btnClear).hide();
   }
 
   function raiseCanvas() {
@@ -138,15 +138,15 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
         cycle: 1,
         opacity: 0.5,
       });
-      // show guessed template
       if (result.score) matches.map(
+        // show guessed template
         obj => Rend.drawCloud(obj.points, {
           color: 'gray',
           opacity: 0.2,
         })
       );
-      // redraw normalized
       if (result.score < 0.5) {
+        // redraw normalized
         Rend.drawCloud(Gest.normal, {
           cycle: 1,
           opacity: 1,
@@ -219,8 +219,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     Down = false;
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
-    EL.btnClear.show();
-    // C.log(Gest.exportPercent); // dump for snagging init data
+    $(EL.btnClear).show();
   }
 
   function playStroke(str) {
@@ -237,7 +236,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   function clickInit(evt) {
     evt.stopPropagation();
     Data.loadDefaults();
-    EL.btnInit.hide();
+    $(EL.btnInit).hide();
     $(EL.btnLoad, EL.btnSave).show();
   }
 
@@ -258,21 +257,20 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     let name = evt.target.dataset.name;
     nameGesture(name);
     closeTrainer();
-    EL.btnLoad.show();
-    EL.btnSave.show();
+    $(EL.btnLoad, EL.btnSave).show();
   }
 
   function clickLoad() {
     Data.loadGests();
     clearCanvas();
-    EL.btnInit.show();
-    EL.btnLoad.hide();
+    $(EL.btnInit).show();
+    $(EL.btnLoad).hide();
   }
 
   function clickSave(evt) {
     evt.stopPropagation();
     Data.saveGests();
-    EL.btnSave.hide();
+    $(EL.btnSave).hide();
   }
 
   function clickBackup(evt) {
@@ -312,7 +310,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   function clickClear() {
     const $win = $(Rend.canvas.ownerDocument.defaultView);
 
-    $win[0].scrollTo(0, 0); // Make sure that the page is not accidentally scrolled.
+    $win[0].scrollTo(0, 0); // just in case page is scrolled
     Rend.size($win.width(), $win.height() - 60);
     resetGesture();
     clearCanvas();

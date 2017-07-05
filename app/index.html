@@ -2,12 +2,9 @@
 <html lang="en">
   <head>
     <title>Gesture recognizer</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
     <!-- http://blog.musicallyut.in/dollar-family/ -->
-
-    <script src="./vendors/require.min.js" data-main="main"></script>
     <link rel="stylesheet" href="./styles/recog.css">
+    <script src="./vendors/require.min.js" data-main="main"></script>
   </head>
 
   <body>
@@ -45,52 +42,52 @@
 
     <!-- BEGIN OVERLAY -->
     <section class="overlay hidden on-top">
-      <span class="results">
-        <h2>Training Panel</h2>
-        <h3>
-          Guess:
-          “<span class="guess js-guess"></span>”
-          @
+
+      <h1>Gesture Operations</h1>
+      <div class="results">
+        <h2>Results</h2>
+        <strong>
+          Guess: “<span class="guess js-guess"></span>” @
           <span class="confidence js-confidence"></span>
           confidence.
-        </h3>
-      </span>
+        </strong>
+      </div>
 
-      <hr>
-
-      <h4>
-        Add to gesture database.
-      </h4>
       <div class="option-template">
+        [
         <!--
         ["zero", "0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"],
         ["A"], ["B"], ["C"], ["D"], ["E"], ["F"], ["G"], ["H"], ["I"], ["J"], ["K"], ["L"], ["M"],
         ["N"], ["O"], ["P"], ["Q"], ["R"], ["S"], ["T"], ["U"], ["V"], ["W"], ["X"], ["Y"], ["Z"],
-        -->
-        [
         ["exclamation", "!"],
         ["line", "—"],
-        ["star", "✯"],
         ["arrowhead", ">"],
         ["asterisk", "*"],
+        -->
         ["square", "⭐︎"],
+        ["star", "✯"],
         ["triangle", "△"],
         ""
         ]
       </div>
+      <em>Add as a sample to one of the gestures options above?</em>
 
       <hr>
 
-      <div class="buttons shrink">
-        <button class="js-init">Load stock gestures only</button>
-        <button class="js-load">Reload saved gestures</button>
-        <button class="js-save">Save current gestures</button>
+      <h3>Gesture Data</h3>
+      <div class="buttons">
+        <button class="js-save">Save current set</button>
+        <button class="js-init">Load default set</button>
+        <button class="js-load">Reload saved set</button>
       </div>
 
       <div class="buttons shrink">
-        <button class="js-backup">Backup</button>
-        <button class="js-restore">Restore</button>
+        <strong>Safety Net:</strong>
+        <button class="js-backup">Backup mine</button>
+        <button class="js-restore">Restore mine</button>
       </div>
+
+      <hr>
 
       <button class="js-return">Cancel</button>
       <!-- END OVERLAY -->
