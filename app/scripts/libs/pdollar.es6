@@ -3,9 +3,18 @@
   const C = console;
   // defaults (globals/constants)
   const DEF = {
-    numPoints: 33, // lower...fewer
+    samples: 33, // lower...fewer
     origin: new Point(0, 0, 0),
   };
+  let def = Object.defineProperties({}, {
+    samples: {
+      get: () => DEF.samples,
+      set: (x) => DEF.samples = Math.max(24, x),
+    },
+    origin: {
+      get: () => DEF.origin,
+    },
+  });
 
   // ================ PRIVATE ====================
 
@@ -197,7 +206,7 @@
    */
   function normalizePoints(points) {
     let pts = points.concat(); // protect passed array
-    pts = resample(pts, DEF.numPoints);
+    pts = resample(pts, DEF.samples);
     pts = scale(pts);
     pts = translateTo(pts, DEF.origin);
     return pts;
@@ -247,15 +256,15 @@
    * Main function of the $P recognizer.
    *  Classifies a candidate gesture against a set of training samples.
    *  Returns the class of the closest neighbor in the training set.
-   * @param       {[type]} numPoints [description]
+   * @param       {[type]} samples [description]
    * @param       {[type]} origin    [description]
    * @constructor
    */
-  function Recognizer(numPoints, origin) {
+  function Recognizer(samples, origin) {
     const Tmpl = this.clouds = [];
 
-    if (typeof numPoints !== 'undefined') {
-      DEF.numPoints = numPoints;
+    if (typeof samples !== 'undefined') {
+      DEF.samples = samples;
     }
     if (typeof origin !== 'undefined') {
       DEF.origin = origin;
@@ -307,6 +316,7 @@
     Point,
     Recognizer,
     normalizePoints,
+    def,
   });
 
   if (typeof define === 'function' && define.amd) {

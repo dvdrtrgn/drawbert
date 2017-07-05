@@ -59,14 +59,19 @@ define(['jquery', 'lib/util'], function ($, U) {
     return evt;
   }
 
-  function showOverlay(data) {
+  function showOverlay(dat) {
     const $confidence = $('.js-confidence');
+    let data = Object.assign({
+      name: 'null',
+      score: 0,
+    }, dat);
 
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(data.name);
 
     $confidence.text(U.percent(data.score) + '%');
     $confidence.removeClass('high medium low');
+    $(`[data-name=${data.name}]`).focus();
 
     if (data.score > 0.8) {
       $confidence.addClass('high');
@@ -77,10 +82,68 @@ define(['jquery', 'lib/util'], function ($, U) {
     }
   }
 
+  function makeNameSpacer(namespace) {
+    let join = `.${namespace} `;
+    // str + space ensures namespace on last item
+    return (str) => `${str} `.replace(/ +/g, join);
+  }
+
+  function bindNameSpacer(namespacer, meth) {
+    return (jq, evstr, handler) => jq[meth](namespacer(evstr), handler);
+  }
+
+  function _getZ(jq) {
+    return Number($(jq).css('z-index')) || 1;
+  }
+
+  function raise(jq) {
+    let z = _getZ(jq);
+    jq.css({
+      opacity: 0.9,
+      zIndex: z * 10,
+    });
+  }
+
+  function lower(jq) {
+    let z = _getZ(jq);
+    jq.css({
+      opacity: 1,
+      zIndex: z / 10,
+    });
+  }
+
+  function makeChoiceBtn(name, value) {
+    let btn = $('<button class="js-choice">');
+    btn.attr('data-name', name);
+    btn.text(value || name);
+    return btn;
+  }
+
+  function readTemplate() {
+    let div = $('.option-template');
+    return JSON.parse(div.text());
+  }
+
+  function fillOptions(opts) {
+    let div = $('.option-template');
+    opts = (opts || readTemplate());
+    div.empty();
+    opts.forEach(arr => {
+      if (arr) div.append(makeChoiceBtn(...arr));
+    });
+  }
+
+  window.DOM = API;
+
   U.expando(API, {
     hideOverlay,
+    bindNameSpacer,
+    makeNameSpacer,
     normTouch,
     showOverlay,
+    raise,
+    lower,
+    fillOptions,
   });
   return API;
 });

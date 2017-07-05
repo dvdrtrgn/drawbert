@@ -24,10 +24,11 @@ define(['jquery', 'lib/util',
   };
 
   function _makeEle(evt, result) {
+    let zone = $('.editzone').first();
     let box = result.gesture.bounds;
     let div = $('<div>') //
       .addClass(evt.type) //
-      .appendTo('body') //
+      .appendTo(zone) //
       .css({
         height: box.h,
         left: box.x,

@@ -72,7 +72,10 @@ define(['jquery', 'lib/util', 'box',
       return api;
     };
     const drawBounds = function (limits) {
+      let prev = api.fillStyle;
+      api.fillStyle = 'yellow';
       api.drawRect(Box.calc(limits));
+      api.fillStyle = prev;
       return api;
     };
     const fillAll = function () {

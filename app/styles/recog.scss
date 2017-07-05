@@ -16,11 +16,17 @@ button {
   border: 1px solid silver;
   border-radius: 6px;
   cursor: pointer;
-  font-family: helvetica;
   font-size: 1em;
   &:hover {
     background: silver;
   }
+}
+hr {
+  width: 100%;
+}
+section {
+  position: absolute;
+  z-index: 1;
 }
 
 .shrink {
