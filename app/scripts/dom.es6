@@ -114,7 +114,7 @@ define(['jquery', 'lib/util'], function ($, U) {
 
   function makeChoiceBtn(name, value) {
     let btn = $('<button class="js-choice">');
-    btn.data('name', name);
+    btn.attr('data-name', name);
     btn.text(value || name);
     return btn;
   }

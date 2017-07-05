@@ -322,6 +322,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   function init(canvas) {
     API.Gest = Gest = Gesture.new();
     API.Rend = Rend = Renderer.new(canvas);
+    Dom.fillOptions();
+
     $.reify(EL);
     EL.window = $(window);
     EL.canvas = $(canvas);
@@ -345,7 +347,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
       $.subscribe('recog-star', Trigger.makeStar);
       $.subscribe('recog-square', Trigger.makeSquare);
-
     }
 
     if (API.dbug) clickLoad(); // load gestures
@@ -353,7 +354,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     clickClear();
     updateCount();
 
-    Dom.fillOptions();
     API.init = () => true; // only used once
   }
 
