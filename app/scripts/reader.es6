@@ -20,7 +20,7 @@
     recognize:    defer to Recognizer.recognize method
 
 */
-define(['lodash', 'lib/util', 'lib/pdollar',
+define(['lodash', 'util', 'lib/pdollar',
 ], function (_, U, PDollar) {
   const NOM = 'Reader';
   const W = window;

@@ -5,6 +5,7 @@ require.config({
     lodash: '../vendors/lodash.min', //'https://goo.gl/uxQpja?',
     reqyr: '../vendors/require.min', //'https://goo.gl/8jmmsx?',
     lib: 'libs',
+    util: 'libs/util',
   },
   shim: {
     _app: {
@@ -13,7 +14,7 @@ require.config({
   },
 });
 
-require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
+require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow',
 ], function ($, U, PDollar, App, LS) {
   var W = window;
   var C = console;

@@ -6,7 +6,7 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
+define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
 ], function ($, _, U, LS, Dom, Gesture, Renderer, Trigger) {
   const NOM = 'Dbrt';
   const W = window;

@@ -5,7 +5,7 @@
   USE:
 
 */
-define(['jquery', 'lib/util'], function ($, U) {
+define(['jquery', 'util'], function ($, U) {
   const NOM = 'Dom';
   const W = window;
   const C = console;

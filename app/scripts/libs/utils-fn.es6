@@ -1,5 +1,5 @@
 /*globals */
-define(['lib/util'], function (U) {
+define(['util'], function (U) {
   const double = (x) => x + x;
   const hasval = (x) => x != null;
   const summer = (...az) => az.reduce((a, b) => a + b);

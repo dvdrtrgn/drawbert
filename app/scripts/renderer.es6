@@ -9,7 +9,7 @@
     recognize:    defer to pdollar.Recognizer method
 
 */
-define(['jquery', 'lib/util', 'box',
+define(['jquery', 'util', 'box',
 ], function ($, U, Box) {
   const NOM = 'Renderer';
   const W = window;

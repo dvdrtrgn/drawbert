@@ -5,7 +5,7 @@
   USE:
 
 */
-define(['jquery', 'lib/util',
+define(['jquery', 'util',
 ], function ($, U) {
   const NOM = 'Trigger';
   const W = window;

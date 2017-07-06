@@ -5,7 +5,7 @@
   USE:
 
 */
-define(['lib/util'], function (U) {
+define(['util'], function (U) {
   const NOM = 'Box';
   const W = window;
   const C = W.console;
