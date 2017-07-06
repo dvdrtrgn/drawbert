@@ -89,7 +89,17 @@ define(['jquery', 'util'], function ($, U) {
   }
 
   function bindNameSpacer(namespacer, meth) {
-    return (jq, evstr, handler) => jq[meth](namespacer(evstr), handler);
+    let opt = {
+      passive: true,
+    };
+    return (jq, evstr, handler) => {
+      if (evstr.match(/^touch/)) {
+        jq.each((i, e) => e.addEventListener(evstr, handler, opt));
+        return jq;
+      } else {
+        return jq[meth](namespacer(evstr), handler);
+      }
+    };
   }
 
   function _getZ(jq) {

@@ -326,9 +326,14 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
     EL.canvas = $(canvas);
 
     function bindHanders() {
-      bindon(EL.window, 'resize', _.debounce(clickClear, 333));
-      bindon(EL.canvas, 'mousedown touchstart', downEvent);
-      bindon(EL.canvas, 'mousemove touchmove', _.throttle(moveEvent, 16));
+      let _clickClear = _.debounce(clickClear, 333);
+      let _moveEvent = _.throttle(moveEvent, 16);
+
+      bindon(EL.window, 'resize', _clickClear);
+      bindon(EL.canvas, 'mousedown', downEvent);
+      bindon(EL.canvas, 'touchstart', downEvent);
+      bindon(EL.canvas, 'mousemove', _moveEvent);
+      bindon(EL.canvas, 'touchmove', _moveEvent);
       bindon(EL.canvas, 'mouseup mouseout touchend', upEvent);
 
       bindon(EL.overlay, 'click', closeTrainer);
