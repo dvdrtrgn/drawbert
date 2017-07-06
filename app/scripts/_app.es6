@@ -167,7 +167,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       result = Gest.guess;
       if (result.score > 0.1) {
         result.gesture = Gest;
-        $.publish('recog-' + result.name, result);
+        $.publish('recog.' + result.name, result);
       }
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       if (API.dbug) previewData(result);
@@ -342,8 +342,9 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       bindon(EL.btnRestore, 'click', clickRestore);
       bindon(EL.btnChoose, 'click', clickAssign);
 
-      $.subscribe('recog-star', Trigger.makeStar);
-      $.subscribe('recog-square', Trigger.makeSquare);
+      $.subscribe('recog', alert);
+      $.subscribe('recog.star', Trigger.makeStar);
+      $.subscribe('recog.square', Trigger.makeSquare);
     }
 
     if (API.dbug) clickLoad(); // load gestures
@@ -355,9 +356,9 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   U.expando(API, {
-    init,
     Gest: null,
     Rend: null,
+    init,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
