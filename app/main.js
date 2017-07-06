@@ -6,6 +6,8 @@ require.config({
     reqyr: '../vendors/require.min', //'https://goo.gl/8jmmsx?',
     lib: 'libs',
     util: 'libs/util',
+    ufnp: 'libs/utils-fn',
+    usup: 'libs/utils-support',
   },
   shim: {
     _app: {
@@ -23,6 +25,7 @@ require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow',
     App: App,
     PDollar: PDollar,
     LS: LS,
+    U: U,
   };
 
   $(function () {
