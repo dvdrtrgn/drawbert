@@ -16,7 +16,7 @@ require.config({
   },
 });
 
-require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow',
+require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
 ], function ($, U, PDollar, App, LS) {
   var W = window;
   var C = console;
@@ -42,6 +42,9 @@ require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow',
 TODO PDollar
   fix where strokes having 0 distance (10 duplicate points) throws error
 
+  stop drawing little versions
+  clear after subscription
+  make grabbing and moving objects happen
 
 
 mion wants a draw area
@@ -50,12 +53,6 @@ mion wants a draw area
   size
 
 make adding triggers easy
-
-
-save learned patterns
-  how to export?
-  how to save?
-  how to view?
 
 
 ------
