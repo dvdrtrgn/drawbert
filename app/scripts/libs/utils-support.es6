@@ -1,33 +1,52 @@
 /*globals */
 define(['util'], function (U) {
   let Supports = Object.create(null);
-
-  let passive = false;
+  let hasPassive;
 
   function detectPassiveEvents() {
     if (
+      U.undef(hasPassive) &&
       typeof window === 'object' &&
       typeof window.addEventListener === 'function' &&
       typeof Object.defineProperty === 'function'
     ) {
-      const options = Object.defineProperty({}, 'passive', {
-        get() {
-          passive = true;
-        },
+      const opts = Object.defineProperty({}, 'passive', {
+        get: () => hasPassive = true,
       });
-      window.addEventListener('test', null, options);
-      // Supports.passiveEvents = passive;
+      window.addEventListener('test', null, opts);
+    } else {
+      hasPassive = false;
     }
-    return passive;
+    return hasPassive;
   }
+
+  let default2passive = function () {
+    if (!detectPassiveEvents()) throw 'passive events not supported';
+
+    const theSuper = EventTarget.prototype.addEventListener;
+    const defOpts = {
+      passive: true,
+      capture: false,
+    };
+    EventTarget.prototype.addEventListener = function (type, listener, opts) {
+      const usesOpts = (typeof opts === 'object');
+      const useCapture = (usesOpts ? opts.capture : opts);
+      opts = usesOpts ? opts : {};
+      opts.passive = U.undef(opts.passive) ? defOpts.passive : opts.passive;
+      opts.capture = U.undef(useCapture) ? defOpts.capture : useCapture;
+      theSuper.call(this, type, listener, opts);
+    };
+    default2passive = U.noop;
+  };
 
   Supports = Object.defineProperties(Supports, {
     passiveEvents: {
-      get: () => passive || detectPassiveEvents(),
+      get: () => detectPassiveEvents(),
     },
   });
 
   return U.expando(U, {
     Supports,
+    default2passive,
   });
 });

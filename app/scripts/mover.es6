@@ -56,7 +56,6 @@ define(['jquery', 'util'], function ($, U) {
     });
     body.on({
       mousemove: function (evt) {
-        evt.preventDefault();
         if (isDown) ele.offset({
           left: (evt.clientX + offset.left),
           top: (evt.clientY + offset.top),

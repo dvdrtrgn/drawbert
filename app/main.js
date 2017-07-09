@@ -16,7 +16,7 @@ require.config({
   },
 });
 
-require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
+require(['jquery', 'usup', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
 ], function ($, U, PDollar, App, LS) {
   var W = window;
   var C = console;
