@@ -31,6 +31,20 @@ define(['jquery', 'util', 'box',
   const normo = (n, m) => (n + 1) * m / 2;
   const rando = () => `rgb(${U.rand(50,250)},${U.rand(50,250)},${U.rand(50,250)})`;
 
+  function copyStyle(api) {
+    return {
+      fillStyle: api.fillStyle,
+      font: api.font,
+      globalAlpha: api.globalAlpha,
+      lineWidth: api.lineWidth,
+      strokeStyle: api.strokeStyle,
+    };
+  }
+
+  function pasteStyle(api, cfg) {
+    $.extend(api, cfg);
+  }
+
   function Renderer(canvas, cfg = D) {
     let api = canvas.getContext('2d');
     let colors = {
@@ -115,10 +129,11 @@ define(['jquery', 'util', 'box',
     };
     const goGhost = function (num) {
       api.globalAlpha = num;
-      window.setTimeout(() => api.globalAlpha = 1, 0);
+      window.setTimeout(() => api.globalAlpha = 1, 4);
     };
 
     function drawCloud(arr, cfg) {
+      let old = copyStyle(api);
       off.advance();
       arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // do not connect strokes
@@ -127,9 +142,11 @@ define(['jquery', 'util', 'box',
         }
         return next;
       });
+      pasteStyle(api, old);
     }
 
     function drawGest(arr, cfg) {
+      let old = copyStyle(api);
       arr.reduce(function (last, next) {
         if (last.ID === next.ID) { // points from same stroke
           newColor(cfg);
@@ -137,6 +154,7 @@ define(['jquery', 'util', 'box',
         }
         return next;
       });
+      pasteStyle(api, old);
     }
 
     U.expando(api, cfg, {
