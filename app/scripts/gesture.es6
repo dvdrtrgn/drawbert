@@ -66,6 +66,9 @@ define(['util', 'box', 'lib/pdollar', 'reader',
       reader: {
         get: () => reader,
       },
+      getCount: {
+        value: () => reader.count,
+      },
       enough: {
         get: () => api.length > PDollar.def.samples,
       },

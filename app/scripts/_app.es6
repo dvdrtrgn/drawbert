@@ -48,8 +48,8 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   // DOM OPS
   //
   function updateCount() {
-    let current = Gest.reader.count;
-    let unsaved = current - (LS.load(API.gestKey) || []).length;
+    let current = Gest.getCount();
+    let unsaved = current - Data.getCount();
     unsaved = unsaved ? `(${unsaved} new)` : '';
     EL.txtCount.text(`${current} ${unsaved}`);
   }
@@ -80,6 +80,9 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   // DATA OPS
   //
   let Data = {
+    getCount: function () {
+      return (LS.load(API.gestKey) || []).length;
+    },
     loadDefaults: function () {
       Gest.reader.clear();
       // 'data/alphabet', 'data/gestures', 'data/numbers'
