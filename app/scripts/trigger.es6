@@ -44,6 +44,7 @@ define(['jquery', 'util',
   function _setBkgr(ele, site) {
     let url = site.replace('X', ele.width()).replace('Y', ele.height());
     ele.css('background', `url('${url}')`);
+    $.publish('clear.gesture');
   }
 
   function extend(api) {
@@ -65,11 +66,13 @@ define(['jquery', 'util',
   function makeSquare(evt, result) {
     let div = _makeEle(evt, result);
     _setBkgr(div, DF.fposite);
+    $.publish('print.canvas', 'You drew a square');
   }
 
   function makeStar(evt, result) {
     let div = _makeEle(evt, result);
     _setBkgr(div, DF.starsite);
+    $.publish('print.canvas', 'You drew a star');
   }
 
   U.expando(API, {

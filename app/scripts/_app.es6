@@ -145,13 +145,6 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
           opacity: 0.2,
         })
       );
-      if (result.score < 0.5) {
-        // redraw normalized
-        Rend.drawCloud(Gest.normal, {
-          cycle: 1,
-          opacity: 1,
-        });
-      }
     }
 
     if (API.dbug > 1) C.log(NOM, 'previewData: pix/pct', {
@@ -165,12 +158,12 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
 
     if (Gest.enough) {
       result = Gest.guess;
+      drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
+      if (API.dbug) previewData(result);
       if (result.score > 0.1) {
         result.gesture = Gest;
         $.publish('recog.' + result.name, result);
       }
-      drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
-      if (API.dbug) previewData(result);
     } else {
       drawText('Not enough data');
     }
@@ -187,9 +180,9 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   // Mouse Handlers
   //
   function lineStart(x, y) {
-    raiseCanvas();
     Down = true;
     [x, y] = tweakXY(x, y);
+    raiseCanvas();
 
     clearCanvas();
     if (Gest.stroke) {
@@ -211,12 +204,12 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   }
 
   function lineEnd(x, y) {
-    lowerCanvas();
+    Down = false;
     [x, y] = tweakXY(x, y);
+    lowerCanvas();
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
-    Down = false;
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
     $(EL.btnClear).show();
@@ -348,8 +341,12 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
       bindon(EL.btnChoose, 'click', clickAssign);
 
       $.subscribe('recog', alert);
+      $.subscribe('clear.all', clickClear);
+      $.subscribe('clear.canvas', clearCanvas);
+      $.subscribe('clear.gesture', resetGesture);
       $.subscribe('recog.star', Trigger.makeStar);
       $.subscribe('recog.square', Trigger.makeSquare);
+      $.subscribe('print.canvas', (a, b) => drawText(b));
     }
 
     if (API.dbug) clickLoad(); // load gestures
