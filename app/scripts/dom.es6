@@ -90,7 +90,7 @@ define(['jquery', 'util'], function ($, U) {
     $guess.text(data.name);
 
     if (!dat) {
-      $head.text('No Gesture');
+      $head.text('No Guesses');
       $message.hide();
       $options.hide();
       return;

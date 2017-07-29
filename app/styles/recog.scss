@@ -101,11 +101,13 @@ section {
 .results {
 
   .guess {
-    color: black;
+    color: blue;
+    font-weight: bold;
   }
 
   .confidence {
-    color: black;
+    font-weight: bold;
+
     &.high {
       color: green;
     }
