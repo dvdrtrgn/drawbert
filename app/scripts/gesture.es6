@@ -5,7 +5,7 @@
   USE:
 
 */
-define(['lib/util', 'box', 'lib/pdollar', 'reader',
+define(['util', 'box', 'lib/pdollar', 'reader',
 ], function (U, Box, PDollar, Reader) {
   const NOM = 'Gesture';
   const W = window;
@@ -65,6 +65,9 @@ define(['lib/util', 'box', 'lib/pdollar', 'reader',
       },
       reader: {
         get: () => reader,
+      },
+      getCount: {
+        value: () => reader.count,
       },
       enough: {
         get: () => api.length > PDollar.def.samples,

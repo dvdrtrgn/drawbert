@@ -5,6 +5,9 @@ require.config({
     lodash: '../vendors/lodash.min', //'https://goo.gl/uxQpja?',
     reqyr: '../vendors/require.min', //'https://goo.gl/8jmmsx?',
     lib: 'libs',
+    util: 'libs/util',
+    ufnp: 'libs/utils-fn',
+    usup: 'libs/utils-support',
   },
   shim: {
     _app: {
@@ -13,7 +16,7 @@ require.config({
   },
 });
 
-require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
+require(['jquery', 'usup', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
 ], function ($, U, PDollar, App, LS) {
   var W = window;
   var C = console;
@@ -22,6 +25,7 @@ require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
     App: App,
     PDollar: PDollar,
     LS: LS,
+    U: U,
   };
 
   $(function () {
@@ -38,6 +42,9 @@ require(['jquery', 'lib/utils-fn', 'lib/pdollar', '_app', 'lib/locstow',
 TODO PDollar
   fix where strokes having 0 distance (10 duplicate points) throws error
 
+  stop drawing little versions
+  clear after subscription
+  make grabbing and moving objects happen
 
 
 mion wants a draw area
@@ -46,12 +53,6 @@ mion wants a draw area
   size
 
 make adding triggers easy
-
-
-save learned patterns
-  how to export?
-  how to save?
-  how to view?
 
 
 ------

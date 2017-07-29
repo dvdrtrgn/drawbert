@@ -5,7 +5,7 @@
   USE:
 
 */
-define(['jquery', 'lib/util'], function ($, U) {
+define(['jquery', 'util'], function ($, U) {
   const NOM = 'Dom';
   const W = window;
   const C = console;
@@ -19,6 +19,7 @@ define(['jquery', 'lib/util'], function ($, U) {
 
   // - - - - - - - - - - - - - - - - - -
   // AUTOMATE
+  //
   $.reify = function (obj) { // replace vals(selectors) with elements
     return $.each(obj, function (i, sel) {
       if (typeof sel === 'object') sel = sel.selector;
@@ -26,8 +27,17 @@ define(['jquery', 'lib/util'], function ($, U) {
     });
   };
 
+  $.fn.enable = function () {
+    $(this).removeClass('disabled').attr('disabled', false);
+  };
+
+  $.fn.disable = function () {
+    $(this).addClass('disabled').attr('disabled', true);
+  };
+
   // - - - - - - - - - - - - - - - - - -
   // PUBSUBS
+  //
   let Q = $.pubsubs = $({});
   $.publish = function () {
     Q.trigger.apply(Q, arguments);
@@ -60,18 +70,38 @@ define(['jquery', 'lib/util'], function ($, U) {
   }
 
   function showOverlay(dat) {
-    const $confidence = $('.js-confidence');
+    const $overlay = $('.overlay');
+
+    const $options = $overlay.find('.option-template');
+    const $results = $overlay.find('.results');
+
+    const $message = $results.find('.message');
+    const $head = $results.find('h2');
+
+    const $confidence = $message.find('.js-confidence');
+    const $guess = $message.find('.js-guess');
+
     let data = Object.assign({
       name: 'null',
       score: 0,
     }, dat);
 
-    $('.overlay').removeClass('hidden');
-    $('.js-guess').text(data.name);
+    $overlay.removeClass('hidden');
+    $guess.text(data.name);
+
+    if (!dat) {
+      $head.text('No Guesses');
+      $message.hide();
+      $options.hide();
+      return;
+    }
+    $head.text('Results');
+    $message.show();
+    $options.show();
 
     $confidence.text(U.percent(data.score) + '%');
     $confidence.removeClass('high medium low');
-    $(`[data-name=${data.name}]`).focus();
+    $options.find(`[data-name=${data.name}]`).focus();
 
     if (data.score > 0.8) {
       $confidence.addClass('high');
@@ -89,7 +119,17 @@ define(['jquery', 'lib/util'], function ($, U) {
   }
 
   function bindNameSpacer(namespacer, meth) {
-    return (jq, evstr, handler) => jq[meth](namespacer(evstr), handler);
+    let opt = {
+      passive: true,
+    };
+    return (jq, evstr, handler) => {
+      if (evstr.match(/^touch/)) {
+        jq.each((i, e) => e.addEventListener(evstr, handler, opt));
+        return jq;
+      } else {
+        return jq[meth](namespacer(evstr), handler);
+      }
+    };
   }
 
   function _getZ(jq) {
@@ -115,6 +155,7 @@ define(['jquery', 'lib/util'], function ($, U) {
   function makeChoiceBtn(name, value) {
     let btn = $('<button class="js-choice">');
     btn.attr('data-name', name);
+    btn.attr('title', name.toUpperCase());
     btn.text(value || name);
     return btn;
   }

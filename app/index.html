@@ -43,16 +43,20 @@
     <!-- BEGIN OVERLAY -->
     <section class="overlay hidden on-top">
 
-      <h1>Gesture Operations</h1>
+      <h1>Gesture Control Panel</h1>
+
       <div class="results">
         <h2>Results</h2>
-        <strong>
+
+        <div class="message">
           Guess: “<span class="guess js-guess"></span>” @
           <span class="confidence js-confidence"></span>
           confidence.
-        </strong>
-      </div>
+          <br><br>
+          <em class="shrink">Increase confidence by assigning to one of these:</em>
+        </div>
 
+      <div class="options">
       <div class="option-template">
         [
         <!--
@@ -64,21 +68,24 @@
         ["arrowhead", ">"],
         ["asterisk", "*"],
         -->
-        ["square", "⭐︎"],
-        ["star", "✯"],
-        ["triangle", "△"],
+        ["square", "■"],
+        ["star", "★"],
+        ["triangle", "▲"],
         ""
         ]
       </div>
-      <em>Add as a sample to one of the gestures options above?</em>
+      </div>
 
+      </div>
       <hr>
+      <div class="operations">
 
-      <h3>Gesture Data</h3>
+      <h2>Data</h2>
       <div class="buttons">
         <button class="js-save">Save current set</button>
-        <button class="js-init">Load default set</button>
         <button class="js-load">Reload saved set</button>
+        &nbsp; &nbsp;
+        <button class="js-init">Load default set</button>
       </div>
 
       <div class="buttons shrink">
@@ -87,6 +94,7 @@
         <button class="js-restore">Restore mine</button>
       </div>
 
+      </div>
       <hr>
 
       <button class="js-return">Cancel</button>

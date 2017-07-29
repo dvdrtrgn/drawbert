@@ -6,7 +6,7 @@
   - constructor is api
 
  */
-define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
+define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
 ], function ($, _, U, LS, Dom, Gesture, Renderer, Trigger) {
   const NOM = 'Dbrt';
   const W = window;
@@ -48,8 +48,8 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // DOM OPS
   //
   function updateCount() {
-    let current = Gest.reader.count;
-    let unsaved = current - (LS.load(API.gestKey) || []).length;
+    let current = Gest.getCount();
+    let unsaved = current - Data.getCount();
     unsaved = unsaved ? `(${unsaved} new)` : '';
     EL.txtCount.text(`${current} ${unsaved}`);
   }
@@ -62,10 +62,13 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function clearCanvas() {
-    Rend.defaults().fillAll();
+    const $win = $(Rend.canvas.ownerDocument.defaultView);
+    $win[0].scrollTo(0, 0); // just in case page is scrolled
+    Rend.size($win.width(), $win.height() - 60).defaults().fillAll();
+
     drawText('Canvas cleared');
     updateCount();
-    $(EL.btnClear).hide();
+    $(EL.btnClear).disable();
   }
 
   function raiseCanvas() {
@@ -80,6 +83,9 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // DATA OPS
   //
   let Data = {
+    getCount: function () {
+      return (LS.load(API.gestKey) || []).length;
+    },
     loadDefaults: function () {
       Gest.reader.clear();
       // 'data/alphabet', 'data/gestures', 'data/numbers'
@@ -145,13 +151,6 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
           opacity: 0.2,
         })
       );
-      if (result.score < 0.5) {
-        // redraw normalized
-        Rend.drawCloud(Gest.normal, {
-          cycle: 1,
-          opacity: 1,
-        });
-      }
     }
 
     if (API.dbug > 1) C.log(NOM, 'previewData: pix/pct', {
@@ -165,12 +164,12 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
     if (Gest.enough) {
       result = Gest.guess;
-      if (result.score > 0.1) {
-        result.gesture = Gest;
-        $.publish('recog-' + result.name, result);
-      }
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
       if (API.dbug) previewData(result);
+      if (result.score > 0.1) {
+        result.gesture = Gest;
+        $.publish('recog.' + result.name, result);
+      }
     } else {
       drawText('Not enough data');
     }
@@ -187,9 +186,9 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   // Mouse Handlers
   //
   function lineStart(x, y) {
-    raiseCanvas();
     Down = true;
     [x, y] = tweakXY(x, y);
+    raiseCanvas();
 
     clearCanvas();
     if (Gest.stroke) {
@@ -211,15 +210,15 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function lineEnd(x, y) {
-    lowerCanvas();
+    Down = false;
     [x, y] = tweakXY(x, y);
+    lowerCanvas();
     Gest.addPoint(x, y);
     let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
-    Down = false;
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
-    $(EL.btnClear).show();
+    $(EL.btnClear).enable();
   }
 
   function playStroke(str) {
@@ -235,9 +234,10 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
 
   function clickInit(evt) {
     evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.loadDefaults();
-    $(EL.btnInit).hide();
-    $(EL.btnLoad, EL.btnSave).show();
+    $(EL.btnInit).disable();
+    $(EL.btnLoad, EL.btnSave).enable();
   }
 
   function clickTrainer() {
@@ -257,20 +257,23 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     let name = evt.target.dataset.name;
     nameGesture(name);
     closeTrainer();
-    $(EL.btnLoad, EL.btnSave).show();
+    $(EL.btnLoad, EL.btnSave).enable();
   }
 
-  function clickLoad() {
+  function clickLoad(evt) {
+    evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.loadGests();
     clearCanvas();
-    $(EL.btnInit).show();
-    $(EL.btnLoad).hide();
+    $(EL.btnInit).enable();
+    $(EL.btnLoad).disable();
   }
 
   function clickSave(evt) {
     evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.saveGests();
-    $(EL.btnSave).hide();
+    $(EL.btnSave).disable();
   }
 
   function clickBackup(evt) {
@@ -308,10 +311,7 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
   }
 
   function clickClear() {
-    const $win = $(Rend.canvas.ownerDocument.defaultView);
-
-    $win[0].scrollTo(0, 0); // just in case page is scrolled
-    Rend.size($win.width(), $win.height() - 60);
+    if ($(this).is('.disabled')) return;
     resetGesture();
     clearCanvas();
   }
@@ -326,9 +326,14 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
     EL.canvas = $(canvas);
 
     function bindHanders() {
-      bindon(EL.window, 'resize', _.debounce(clickClear, 333));
-      bindon(EL.canvas, 'mousedown touchstart', downEvent);
-      bindon(EL.canvas, 'mousemove touchmove', _.throttle(moveEvent, 16));
+      let _clickClear = _.debounce(clickClear, 333);
+      let _moveEvent = _.throttle(moveEvent, 16);
+
+      bindon(EL.window, 'resize', _clickClear);
+      bindon(EL.canvas, 'mousedown', downEvent);
+      bindon(EL.canvas, 'touchstart', downEvent);
+      bindon(EL.canvas, 'mousemove', _moveEvent);
+      bindon(EL.canvas, 'touchmove', _moveEvent);
       bindon(EL.canvas, 'mouseup mouseout touchend', upEvent);
 
       bindon(EL.overlay, 'click', closeTrainer);
@@ -342,22 +347,27 @@ define(['jquery', 'lodash', 'lib/util', 'lib/locstow', 'dom', 'gesture', 'render
       bindon(EL.btnRestore, 'click', clickRestore);
       bindon(EL.btnChoose, 'click', clickAssign);
 
-      $.subscribe('recog-star', Trigger.makeStar);
-      $.subscribe('recog-square', Trigger.makeSquare);
+      $.subscribe('recog', alert);
+      $.subscribe('clear.all', clickClear);
+      $.subscribe('clear.canvas', clearCanvas);
+      $.subscribe('clear.gesture', resetGesture);
+      $.subscribe('recog.star', Trigger.makeStar);
+      $.subscribe('recog.square', Trigger.makeSquare);
+      $.subscribe('print.canvas', (a, b) => drawText(b));
     }
 
-    if (API.dbug) clickLoad(); // load gestures
     bindHanders();
-    clickClear();
+    clearCanvas();
+    Data.loadGests();
     updateCount();
 
     API.init = () => true; // only used once
   }
 
   U.expando(API, {
-    init,
     Gest: null,
     Rend: null,
+    init,
     testdraw: function (arg) {
       if (U.undef(arg)) {
         Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));

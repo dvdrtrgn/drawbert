@@ -5,6 +5,7 @@ define(['jquery'], function ($) {
   const undef = (x) => typeof x === 'undefined';
   const percent = (num) => (round(num, 2) * 100) | 0;
   const collisions = (o, a) => a.filter(k => k in o && typeof o[k] === 'function');
+  const noop = () => {};
 
   function allkeys(obj) {
     const arr = [];
@@ -41,6 +42,7 @@ define(['jquery'], function ($) {
     expando,
     fastarrclone,
     flattarr,
+    noop,
     percent,
     rand,
     round,
