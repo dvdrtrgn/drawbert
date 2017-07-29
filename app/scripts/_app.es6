@@ -62,10 +62,13 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   }
 
   function clearCanvas() {
-    Rend.defaults().fillAll();
+    const $win = $(Rend.canvas.ownerDocument.defaultView);
+    $win[0].scrollTo(0, 0); // just in case page is scrolled
+    Rend.size($win.width(), $win.height() - 60).defaults().fillAll();
+
     drawText('Canvas cleared');
     updateCount();
-    $(EL.btnClear).hide();
+    $(EL.btnClear).disable();
   }
 
   function raiseCanvas() {
@@ -215,7 +218,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
     Rend.fillRect(x - 4, y - 4, 8, 8);
     if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
     tryRecognize();
-    $(EL.btnClear).show();
+    $(EL.btnClear).enable();
   }
 
   function playStroke(str) {
@@ -231,9 +234,10 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
 
   function clickInit(evt) {
     evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.loadDefaults();
-    $(EL.btnInit).hide();
-    $(EL.btnLoad, EL.btnSave).show();
+    $(EL.btnInit).disable();
+    $(EL.btnLoad, EL.btnSave).enable();
   }
 
   function clickTrainer() {
@@ -253,20 +257,23 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
     let name = evt.target.dataset.name;
     nameGesture(name);
     closeTrainer();
-    $(EL.btnLoad, EL.btnSave).show();
+    $(EL.btnLoad, EL.btnSave).enable();
   }
 
-  function clickLoad() {
+  function clickLoad(evt) {
+    evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.loadGests();
     clearCanvas();
-    $(EL.btnInit).show();
-    $(EL.btnLoad).hide();
+    $(EL.btnInit).enable();
+    $(EL.btnLoad).disable();
   }
 
   function clickSave(evt) {
     evt.stopPropagation();
+    if ($(this).is('.disabled')) return;
     Data.saveGests();
-    $(EL.btnSave).hide();
+    $(EL.btnSave).disable();
   }
 
   function clickBackup(evt) {
@@ -304,10 +311,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   }
 
   function clickClear() {
-    const $win = $(Rend.canvas.ownerDocument.defaultView);
-
-    $win[0].scrollTo(0, 0); // just in case page is scrolled
-    Rend.size($win.width(), $win.height() - 60);
+    if ($(this).is('.disabled')) return;
     resetGesture();
     clearCanvas();
   }
@@ -352,9 +356,9 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
       $.subscribe('print.canvas', (a, b) => drawText(b));
     }
 
-    if (API.dbug) clickLoad(); // load gestures
     bindHanders();
-    clickClear();
+    clearCanvas();
+    Data.loadGests();
     updateCount();
 
     API.init = () => true; // only used once

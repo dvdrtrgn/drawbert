@@ -19,6 +19,7 @@ define(['jquery', 'util'], function ($, U) {
 
   // - - - - - - - - - - - - - - - - - -
   // AUTOMATE
+  //
   $.reify = function (obj) { // replace vals(selectors) with elements
     return $.each(obj, function (i, sel) {
       if (typeof sel === 'object') sel = sel.selector;
@@ -26,8 +27,17 @@ define(['jquery', 'util'], function ($, U) {
     });
   };
 
+  $.fn.enable = function () {
+    $(this).removeClass('disabled').attr('disabled', false);
+  };
+
+  $.fn.disable = function () {
+    $(this).addClass('disabled').attr('disabled', true);
+  };
+
   // - - - - - - - - - - - - - - - - - -
   // PUBSUBS
+  //
   let Q = $.pubsubs = $({});
   $.publish = function () {
     Q.trigger.apply(Q, arguments);
@@ -61,6 +71,7 @@ define(['jquery', 'util'], function ($, U) {
 
   function showOverlay(dat) {
     const $confidence = $('.js-confidence');
+    const $options = $('.option-template');
     let data = Object.assign({
       name: 'null',
       score: 0,
@@ -68,6 +79,9 @@ define(['jquery', 'util'], function ($, U) {
 
     $('.overlay').removeClass('hidden');
     $('.js-guess').text(data.name);
+
+    if (!dat) $options.disable();
+    else $options.enable();
 
     $confidence.text(U.percent(data.score) + '%');
     $confidence.removeClass('high medium low');
@@ -125,6 +139,7 @@ define(['jquery', 'util'], function ($, U) {
   function makeChoiceBtn(name, value) {
     let btn = $('<button class="js-choice">');
     btn.attr('data-name', name);
+    btn.attr('title', name.toUpperCase());
     btn.text(value || name);
     return btn;
   }

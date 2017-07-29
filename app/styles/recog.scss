@@ -68,14 +68,12 @@ section {
   top: 0;
   transition: left 0.5s;
   width: 100vw;
-}
-
-.overlay > * {
-  margin: 1em 0;
-}
-
-.overlay.hidden {
-  left: 100%;
+  &.hidden {
+    left: 100%;
+  }
+  > * {
+    margin: 1em 0;
+  }
 }
 
 .option-template {
@@ -83,40 +81,42 @@ section {
   flex-wrap: wrap;
   justify-content: space-around;
   max-width: 40em;
-}
 
-.option-template button {
-  color: gray;
-  margin: 0.25em;
-  padding: 0.5em;
-  width: 3em;
+  button {
+    color: gray;
+    margin: 0.25em;
+    padding: 0.5em;
+    width: 3em;
 
-  &:hover {
-    color: black;
+    &:hover {
+      color: black;
+    }
   }
 }
 
 .results {
   color: grey;
   text-align: center;
+
+  .guess {
+    color: black;
+  }
+
+  .confidence {
+    color: black;
+    &.high {
+      color: green;
+    }
+    &.low {
+      color: red;
+    }
+    &.medium {
+      color: orange;
+    }
+  }
 }
 
-.results .guess {
-  color: black;
-}
-
-.results .confidence {
-  color: black;
-}
-
-.results .confidence.high {
-  color: green;
-}
-
-.results .confidence.low {
-  color: red;
-}
-
-.results .confidence.medium {
-  color: orange;
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
