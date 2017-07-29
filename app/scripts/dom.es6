@@ -70,22 +70,38 @@ define(['jquery', 'util'], function ($, U) {
   }
 
   function showOverlay(dat) {
-    const $confidence = $('.js-confidence');
-    const $options = $('.option-template');
+    const $overlay = $('.overlay');
+
+    const $options = $overlay.find('.option-template');
+    const $results = $overlay.find('.results');
+
+    const $message = $results.find('.message');
+    const $head = $results.find('h2');
+
+    const $confidence = $message.find('.js-confidence');
+    const $guess = $message.find('.js-guess');
+
     let data = Object.assign({
       name: 'null',
       score: 0,
     }, dat);
 
-    $('.overlay').removeClass('hidden');
-    $('.js-guess').text(data.name);
+    $overlay.removeClass('hidden');
+    $guess.text(data.name);
 
-    if (!dat) $options.disable();
-    else $options.enable();
+    if (!dat) {
+      $head.text('No Gesture');
+      $message.hide();
+      $options.hide();
+      return;
+    }
+    $head.text('Results');
+    $message.show();
+    $options.show();
 
     $confidence.text(U.percent(data.score) + '%');
     $confidence.removeClass('high medium low');
-    $(`[data-name=${data.name}]`).focus();
+    $options.find(`[data-name=${data.name}]`).focus();
 
     if (data.score > 0.8) {
       $confidence.addClass('high');

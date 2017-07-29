@@ -21,6 +21,9 @@ button {
     background: silver;
   }
 }
+h2 {
+  color: gray;
+}
 hr {
   width: 100%;
 }
@@ -57,7 +60,6 @@ section {
 }
 
 .overlay {
-  position: fixed;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.8);
   display: flex;
@@ -65,14 +67,16 @@ section {
   height: 100vh;
   justify-content: center;
   left: 0;
+  position: fixed;
+  text-align: center;
   top: 0;
   transition: left 0.5s;
   width: 100vw;
   &.hidden {
     left: 100%;
   }
-  > * {
-    margin: 1em 0;
+  * {
+    margin: 0.5em 0;
   }
 }
 
@@ -95,8 +99,6 @@ section {
 }
 
 .results {
-  color: grey;
-  text-align: center;
 
   .guess {
     color: black;
