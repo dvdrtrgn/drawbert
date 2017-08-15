@@ -1,4 +1,11 @@
-/*globals */
+///
+//lib/util.es6
+/*globals
+
+  CHANGED: 2017-08-01
+  IDEA: base for util functions
+
+*/
 define(['jquery'], function ($) {
   const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
   const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;

@@ -1,9 +1,11 @@
-/*globals */
-// APP.ES6
-/*
+///
+//_app.es6
+/*globals
 
-  USE: singleton
-  - constructor is api
+  CHANGED: 2017-08-01
+  IDEA: compose this heap
+  NOTE: constructor is api
+  FIXME: singleton
 
  */
 define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',

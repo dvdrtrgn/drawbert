@@ -1,8 +1,9 @@
-/*globals */
-// DOM.ES6
-/*
+///
+//dom.es6
+/*globals
 
-  USE:
+  CHANGED: 2017-08-01
+  IDEA: manage elements
 
 */
 define(['jquery', 'util'], function ($, U) {
@@ -174,7 +175,7 @@ define(['jquery', 'util'], function ($, U) {
     });
   }
 
-  window.DOM = API;
+  window.DOM = API; // BUG: do not do this
 
   U.expando(API, {
     hideOverlay,

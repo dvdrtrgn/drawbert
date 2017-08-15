@@ -1,8 +1,9 @@
-/*globals */
-// READER.ES6
-/*
+///
+//reader.es6
+/*globals
 
-  USE: decorates a PDollar Recognizer instance
+  CHANGED: 2017-08-01
+  IDEA: decorate a PDollar Recognizer instance
 
   CLASS
     new:          inst Reader

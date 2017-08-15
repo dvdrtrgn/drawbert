@@ -1,4 +1,11 @@
-/*globals */
+///
+//lib/utils-fn.es6
+/*globals
+
+  CHANGED: 2017-08-01
+  IDEA: extend util with functional helpers
+
+*/
 define(['util'], function (U) {
   const double = (x) => x + x;
   const hasval = (x) => x != null;

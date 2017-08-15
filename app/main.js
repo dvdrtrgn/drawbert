@@ -39,7 +39,7 @@ require(['jquery', 'usup', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
 
 /*
 
-TODO PDollar
+TODO: PDollar
   fix where strokes having 0 distance (10 duplicate points) throws error
 
   stop drawing little versions

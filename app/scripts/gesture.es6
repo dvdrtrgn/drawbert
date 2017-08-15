@@ -1,8 +1,9 @@
-/*globals */
-// GESTURE.ES6
-/*
+///
+//gesture.es6
+/*globals
 
-  USE:
+  CHANGED: 2017-08-01
+  IDEA: abstract gesture from pdollar
 
 */
 define(['util', 'box', 'lib/pdollar', 'reader',
@@ -41,7 +42,7 @@ define(['util', 'box', 'lib/pdollar', 'reader',
     let strokeArr = [];
     let reader = Reader.new();
 
-    Object.defineProperties(api, { // .__proto__
+    Object.defineProperties(api, { // HACK: .__proto__
       addPoint: {
         value: function (x, y) {
           api[api.length] = new PDollar.Point(x, y, strokeNum + 1); // projected ID

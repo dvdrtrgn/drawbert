@@ -1,4 +1,11 @@
-/*globals */
+///
+//lib/utils-inview.es6
+/*globals
+
+  CHANGED: 2017-08-01
+  IDEA: extend util with viewport observer
+
+*/
 define(['util'], function (U) {
   const opts = {
     root: null, // viewport

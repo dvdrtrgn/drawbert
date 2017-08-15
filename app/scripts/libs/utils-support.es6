@@ -1,4 +1,11 @@
-/*globals */
+///
+//lib/utils-support.es6
+/*globals
+
+  CHANGED: 2017-08-01
+  IDEA: extend util with `supports` paradigm
+
+*/
 define(['util'], function (U) {
   let Supports = Object.create(null);
   let hasPassive;

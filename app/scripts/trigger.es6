@@ -1,8 +1,9 @@
-/*globals */
-// TRIGGER.ES6
-/*
+///
+//trigger.es6
+/*globals
 
-  USE:
+  CHANGED: 2017-08-01
+  IDEA: subscribe to gesture triggers
 
 */
 define(['jquery', 'util',
@@ -49,7 +50,7 @@ define(['jquery', 'util',
 
   function extend(api) {
 
-    Object.defineProperties(api, { // .__proto__
+    Object.defineProperties(api, { // HACK: .__proto__
       to: {
         get: () => api[api.length - 1],
       },

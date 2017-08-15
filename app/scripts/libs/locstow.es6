@@ -1,4 +1,11 @@
-/*globals */
+///
+//lib/locstow.es6
+/*globals
+
+  CHANGED: 2017-08-01
+  IDEA: construct localstorage porters
+
+*/
 define([], function () {
   const W = window;
   const C = W.console;

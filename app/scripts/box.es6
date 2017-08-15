@@ -1,8 +1,10 @@
-/*globals */
-// BOX.ES6
-/*
+///
+//box.es6
+/*globals
 
-  USE:
+  CHANGED: 2017-08-01
+  IDEA: provide box calculating
+  FIXME: sort out the Box vs rect confusion
 
 */
 define(['util'], function (U) {
@@ -103,7 +105,7 @@ define(['util'], function (U) {
 
   U.expando(API, {
     new: Box,
-    calc: rect,
+    calc: rect, // XXX: confusing
   });
   return API;
 });

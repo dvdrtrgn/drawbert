@@ -1,9 +1,9 @@
-/*globals */
-// RENDERER.ES6
-/*
+///
+//renderer.es6
+/*globals
 
-  USE: decorates a Canvas context instance
-
+  CHANGED: 2017-08-01
+  IDEA: decorate a Canvas context instance
 
   INSTANCE
     recognize:    defer to pdollar.Recognizer method

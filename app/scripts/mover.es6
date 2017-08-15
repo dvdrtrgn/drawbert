@@ -1,8 +1,10 @@
-/*globals */
-// MOVE.ES6
-/*
+///
+//mover.es6
+/*globals
 
-  USE:
+  CHANGED: 2017-08-01
+  IDEA: allow dragging of elements
+  TODO: everything
 
 */
 define(['jquery', 'util'], function ($, U) {
