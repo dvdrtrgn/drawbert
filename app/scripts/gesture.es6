@@ -6,7 +6,7 @@
   IDEA: abstract gesture from pdollar
 
 */
-define(['util', 'box', 'lib/pdollar', 'reader',
+define(['util', 'lib/box', 'lib/pdollar', 'reader',
 ], function (U, Box, PDollar, Reader) {
   const NOM = 'Gesture';
   const W = window;

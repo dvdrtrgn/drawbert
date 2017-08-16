@@ -1,5 +1,5 @@
 ///
-//box.es6
+//lib/box.es6
 /*globals
 
   CHANGED: 2017-08-01
