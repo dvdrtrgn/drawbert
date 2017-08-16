@@ -16,25 +16,20 @@ require.config({
   },
 });
 
-require(['jquery', 'util', 'lib/pdollar', '_app', 'lib/locstow', 'mover',
-], function ($, U, PDollar, App, LS) {
+require(['jquery', 'util', '_app',
+], function ($, U, App) {
   var W = window;
   var C = console;
 
-  W.drt = {
-    App: App,
-    PDollar: PDollar,
-    LS: LS,
-    U: U,
-  };
+  W.drt = {};
 
   $(function () {
     App.init($('section.canvas canvas')[0]);
   });
 
   // expose for testing
-  U.expando(W, W.drt, App);
-  C.log('_main', W.drt);
+  U.expando(W.drt, App);
+  C.log('drt_main', W.drt);
 });
 
 /*

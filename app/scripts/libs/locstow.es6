@@ -7,10 +7,10 @@
 
 */
 define([], function () {
+  const NOM = 'Locstow';
   const W = window;
   const C = W.console;
   const LS = W.localStorage;
-  const NOM = 'Locstow';
 
   const logerr = (e) => C.error(NOM, e);
   const unicodecharacters = (x) => decodeURIComponent(escape(x)); // utf8bytes
@@ -94,6 +94,7 @@ define([], function () {
   let M = (new Array(1023).fill(K).join(', '));
 
   return {
+    __: NOM,
     new: construct,
     load: loadDataFrom,
     save: saveDataIn,

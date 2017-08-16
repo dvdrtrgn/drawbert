@@ -6,7 +6,8 @@
   IDEA: base for util functions
 
 */
-define(['jquery'], function ($) {
+define(['jquery', 'lodash'], function ($, _) {
+  const NOM = 'Util';
   const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
   const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
   const undef = (x) => typeof x === 'undefined';
@@ -20,16 +21,28 @@ define(['jquery'], function ($) {
     return arr;
   }
 
+  function apiExpose(api, args, etc) {
+    var imports = Object.create(null);
+    expando(api, etc);
+    [...args].forEach(function (e) {
+      var nom = e['__'];
+      nom = typeof nom === 'string' ? nom : 'anon';
+      if (e === $) nom = 'jquery';
+      if (e === _) nom = 'lodash';
+      imports[nom] = e;
+    });
+    api[''] = imports;
+  }
+
   function checkCollision(o1, o2) {
     const all = collisions(o1, allkeys(o2));
     if (all.length) throw Error(`collisions: ${all}`);
   }
 
   function expando(obj, ...args) {
-    const exp = $.extend({}, ...args);
+    const exp = _.extend({}, ...args);
     checkCollision(obj, exp);
-    $.extend(obj, exp);
-    return obj;
+    _.extend(obj, exp);
   }
 
   function fastarrclone(arr) {
@@ -44,7 +57,9 @@ define(['jquery'], function ($) {
   }
 
   return {
+    __: NOM,
     allkeys,
+    apiExpose,
     checkCollision,
     expando,
     fastarrclone,

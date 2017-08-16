@@ -14,12 +14,9 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 1,
     gestKey: NOM + '-gest',
-    imports: {
-      $, _, U, Dom, Gesture, Renderer, Trigger,
-    },
   };
   const EL = {
     body: 'body',
@@ -366,7 +363,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
     API.init = () => true; // only used once
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     Gest: null,
     Rend: null,
     init,

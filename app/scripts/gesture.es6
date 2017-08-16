@@ -12,11 +12,8 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 0,
-    imports: {
-      U, Box, PDollar, Reader,
-    },
   };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);
   const reQuo = (str) => str.replace(/"|\[|\]/g, `'`);
@@ -133,7 +130,7 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
     return api;
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: Gesture,
   });
   return API;

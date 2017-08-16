@@ -11,11 +11,8 @@ define(['jquery', 'util'], function ($, U) {
   const W = window;
   const C = console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 1,
-    imports: {
-      $, U,
-    },
   };
 
   // - - - - - - - - - - - - - - - - - -
@@ -175,9 +172,9 @@ define(['jquery', 'util'], function ($, U) {
     });
   }
 
-  window.DOM = API; // BUG: do not do this
+  //window.DOM = API; // BUG: do not do this
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     hideOverlay,
     bindNameSpacer,
     makeNameSpacer,

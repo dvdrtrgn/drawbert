@@ -12,11 +12,8 @@ define(['util'], function (U) {
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 1,
-    imports: {
-      U,
-    },
   };
 
   function segment(xyObj, slices = 4) {
@@ -103,7 +100,7 @@ define(['util'], function (U) {
     return rect;
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: Box,
     calc: rect, // XXX: confusing
   });

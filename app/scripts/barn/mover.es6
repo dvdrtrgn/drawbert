@@ -12,7 +12,7 @@ define(['jquery', 'util'], function ($, U) {
   const W = window;
   const C = console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 1,
     imports: {
       $, U,
@@ -77,7 +77,7 @@ define(['jquery', 'util'], function ($, U) {
   // - - - - - - - - - - - - - - - - - -
   // EXPORT
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: makeMovable,
     makeDummyDiv: () => makeMovable(makeDiv()),
   });

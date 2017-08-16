@@ -27,11 +27,8 @@ define(['lodash', 'util', 'lib/pdollar',
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 0,
-    imports: {
-      _, U, PDollar,
-    },
   };
   const makePoint = (arr) => new PDollar.Point(...arr);
   const readStrokes = (arg) => _.flatten(arg.map(strokePoints));
@@ -151,7 +148,7 @@ define(['lodash', 'util', 'lib/pdollar',
     return api;
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: Reader,
     convert: points2strokes,
     joinTwos,

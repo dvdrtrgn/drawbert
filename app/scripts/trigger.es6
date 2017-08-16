@@ -12,11 +12,8 @@ define(['jquery', 'util',
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 0,
-    imports: {
-      $, U,
-    },
   };
   const DF = {
     fposite: 'https://dummyimage.com/XxY',
@@ -76,7 +73,7 @@ define(['jquery', 'util',
     $.publish('print.canvas', 'You drew a star');
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: Trigger,
     makeSquare,
     makeStar,

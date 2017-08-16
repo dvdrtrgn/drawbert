@@ -15,11 +15,8 @@ define(['jquery', 'util', 'lib/box',
   const W = window;
   const C = W.console;
   const API = {
-    name: NOM,
+    __: NOM,
     dbug: 1,
-    imports: {
-      $, U, Box,
-    },
   };
   const D = {
     font: '20px impact',
@@ -177,7 +174,7 @@ define(['jquery', 'util', 'lib/box',
     return api;
   }
 
-  U.expando(API, {
+  U.apiExpose(API, arguments, {
     new: Renderer,
   });
   return API;
