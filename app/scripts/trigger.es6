@@ -20,6 +20,12 @@ define(['jquery', 'util',
     starsite: 'http://stevensegallery.com/g/X/Y',
     viasite: 'http//via.placeholder.com/XxY',
   };
+  let lorem =
+    `<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco
+    eu fugiat laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit nulla pariatur.</p>`;
 
   function _makeEle(evt, result) {
     let zone = $('.editzone').first();
@@ -73,8 +79,22 @@ define(['jquery', 'util',
     $.publish('print.canvas', 'You drew a star');
   }
 
+  function blatherOn(ele) {
+    while(!ele.overflowing()) ele.append(lorem);
+  }
+
+  function makeParagraph(evt, result) {
+    let div = _makeEle(evt, result).css({
+      overflow: 'hidden',
+    });
+
+    blatherOn(div);
+    $.publish('print.canvas', 'You drew a paragraph');
+  }
+
   U.apiExpose(API, arguments, {
     new: Trigger,
+    makeParagraph,
     makeSquare,
     makeStar,
   });

@@ -33,6 +33,11 @@ define(['jquery', 'util'], function ($, U) {
     $(this).addClass('disabled').attr('disabled', true);
   };
 
+  $.fn.overflowing = function () {
+    let e = this[0];
+    return e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth;
+  };
+
   // - - - - - - - - - - - - - - - - - -
   // PUBSUBS
   //

@@ -350,9 +350,11 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
       $.subscribe('clear.all', clickClear);
       $.subscribe('clear.canvas', clearCanvas);
       $.subscribe('clear.gesture', resetGesture);
+      $.subscribe('print.canvas', (a, b) => drawText(b));
+
       $.subscribe('recog.star', Trigger.makeStar);
       $.subscribe('recog.square', Trigger.makeSquare);
-      $.subscribe('print.canvas', (a, b) => drawText(b));
+      $.subscribe('recog.paragraph', Trigger.makeParagraph);
     }
 
     bindHanders();
