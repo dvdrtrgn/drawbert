@@ -8,15 +8,14 @@
   FIXME: singleton
 
  */
-define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer', 'trigger',
-], function ($, _, U, LS, Dom, Gesture, Renderer, Trigger) {
+define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 'trigger',
+], function ($, _, U, Database, Dom, Gesture, Renderer, Trigger) {
   const NOM = 'Dbrt';
   const W = window;
   const C = W.console;
   const API = {
     __: NOM,
     dbug: 1,
-    gestKey: NOM + '-gest',
   };
   const EL = {
     body: 'body',
@@ -39,6 +38,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   // - - - - - - - - - - - - - - - - - -
   // GLOBAL VARS
   //
+  let Data; // keep settings across sessions
   let Gest; // point array for current stroke(s)
   let Rend; // canvas toolkit
   let Down = false;
@@ -73,42 +73,6 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   function lowerCanvas() {
     Dom.lower(EL.section);
   }
-
-  // - - - - - - - - - - - - - - - - - -
-  // DATA OPS
-  //
-  let Data = {
-    getCount: function () {
-      return (LS.load(API.gestKey) || []).length;
-    },
-    loadDefaults: function () {
-      Gest.reader.clear();
-      // 'data/alphabet', 'data/gestures', 'data/numbers'
-      require(['data/rawbert'], function (...arr) {
-        arr.map(Gest.reader.processData);
-        updateCount();
-      });
-    },
-    saveGests: function (key) {
-      key = (key || API.gestKey);
-      C.log(key, 'saving gestures');
-      LS.save(key, Gest.reader.clouds.map(o => o.source));
-      clearCanvas();
-    },
-    loadGests: function (key) {
-      key = (key || API.gestKey);
-      Gest.reader.clear();
-      let arr = LS.load(key) || [];
-      arr.forEach(o => Gest.reader.readNew(o));
-    },
-    backupGests: function () {
-      this.saveGests(`${API.name}-gbak`);
-    },
-    restoreGests: function () {
-      this.loadGests(`${API.name}-gbak`);
-      this.saveGests();
-    },
-  };
 
   // - - - - - - - - - - - - - - - - - -
   // RECOG OPS
@@ -230,7 +194,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   function clickInit(evt) {
     evt.stopPropagation();
     if ($(this).is('.disabled')) return;
-    Data.loadDefaults();
+    Data.loadDefaults(updateCount);
     $(EL.btnInit).disable();
     $(EL.btnLoad, EL.btnSave).enable();
   }
@@ -268,6 +232,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
     evt.stopPropagation();
     if ($(this).is('.disabled')) return;
     Data.saveGests();
+    clearCanvas();
     $(EL.btnSave).disable();
   }
 
@@ -314,6 +279,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   function init(canvas) {
     API.Gest = Gest = Gesture.new();
     API.Rend = Rend = Renderer.new(canvas);
+    API.Data = Data = Database.new(Gest, `${NOM}-gest`);
     Dom.fillOptions();
 
     $.reify(EL);
@@ -362,6 +328,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   }
 
   U.apiExpose(API, arguments, {
+    Data: null,
     Gest: null,
     Rend: null,
     init,
