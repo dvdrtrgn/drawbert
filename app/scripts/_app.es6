@@ -61,11 +61,7 @@ define(['jquery', 'lodash', 'util', 'lib/locstow', 'dom', 'gesture', 'renderer',
   }
 
   function clearCanvas() {
-    const $win = $(Rend.canvas.ownerDocument.defaultView);
-    $win[0].scrollTo(0, 0); // just in case page is scrolled
-    Rend.size($win.width(), $win.height() - 60).defaults().fillAll();
-
-    drawText('Canvas cleared');
+    Rend.clear();
     updateCount();
     $(EL.btnClear).disable();
   }

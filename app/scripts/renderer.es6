@@ -64,6 +64,16 @@ define(['jquery', 'util', 'lib/box',
       off.reset();
       return api;
     };
+    const clear = function () {
+      const $win = $(api.canvas.ownerDocument.defaultView);
+      api.size($win.width(), $win.height() - 60).defaults().fillAll();
+
+      if (API.dbug) { // in case page is scrolled
+        const off = $(api.canvas).offset();
+        $win[0].scrollTo(off.left, off.top);
+      }
+      api.setMessage('Canvas cleared', 'darkgray');
+    };
     const connectPoints = function (from, to) {
       api.beginPath();
       api.moveTo(from.X, from.Y);
@@ -111,6 +121,7 @@ define(['jquery', 'util', 'lib/box',
       return api;
     };
     const setMessage = function (str, bkgr) {
+      if (!API.dbug) return api;
       api.fillStyle = bkgr;
       api.fillRect(0, box.h - 20, box.w, box.h);
       api.fillStyle = 'black';
@@ -157,6 +168,7 @@ define(['jquery', 'util', 'lib/box',
     U.expando(api, cfg, {
       box,
       off,
+      clear,
       connectPoints,
       defaults,
       drawCirc,
