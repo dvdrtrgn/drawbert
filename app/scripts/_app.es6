@@ -83,15 +83,17 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
 
   function nameGesture(name) {
     if (U.undef(name)) {
-      return alert('Unknown gesture chosen.');
+      throw 'Unknown gesture chosen.';
     }
     name = name.toString();
+
     if (Gest.enough && name.length > 0) {
-      if (API.dbug) C.log(NOM, 'nameGesture', name, Gest);
       let idx = Gest.saveAs(name);
-      drawText(`“${name}” added. Number of “${name}s” defined: ${idx}.`);
-      resetGesture();
+
+      if (API.dbug) C.log(NOM, 'nameGesture', [name, idx], Gest);
+      return `“${name}” added. Number of “${name}s” defined: ${idx}.`;
     }
+    return false;
   }
 
   function previewData(result) {
@@ -213,8 +215,11 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   }
 
   function clickAssign(evt) {
-    let name = evt.target.dataset.name;
-    nameGesture(name);
+    let name = nameGesture(evt.target.dataset.name);
+    if (name) {
+      drawText(name);
+      resetGesture();
+    }
     closeTrainer();
     $(EL.btnLoad, EL.btnSave).enable();
   }
