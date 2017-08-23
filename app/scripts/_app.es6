@@ -90,7 +90,9 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
     if (Gest.enough && name.length > 0) {
       let idx = Gest.saveAs(name);
 
-      if (API.dbug) C.log(NOM, 'nameGesture', [name, idx], Gest);
+      if (API.dbug) {
+        C.log(NOM, 'nameGesture', [name, idx], Gest);
+      }
       return `“${name}” added. Number of “${name}s” defined: ${idx}.`;
     }
     return false;
@@ -99,14 +101,12 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function previewData(result) {
     let matches = Gest.reader.findCloud(result.name);
 
-    if (result.score > 0.1) {
-      // overlay drawn with segment colors
+    if (result.score > 0.1) { // overlay drawn with segment colors
       Rend.drawGest(Gest, {
         cycle: 1,
         opacity: 0.5,
       });
-      if (result.score) matches.map(
-        // show guessed template
+      if (result.score) matches.map( // show guessed template
         obj => Rend.drawCloud(obj.points, {
           color: 'gray',
           opacity: 0.2,
@@ -114,10 +114,12 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
       );
     }
 
-    if (API.dbug > 1) C.log(NOM, 'previewData: pix/pct', {
-      pix: Gest.exportDrawn,
-      pct: Gest.exportPercent,
-    });
+    if (API.dbug > 1) {
+      C.log(NOM, 'previewData: pix/pct', {
+        pix: Gest.exportDrawn,
+        pct: Gest.exportPercent,
+      });
+    }
   }
 
   function tryRecognize() {
@@ -126,7 +128,10 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
     if (Gest.enough) {
       result = Gest.guess;
       drawText(`Guess: “${result.name}” @ ${U.percent(result.score)}% confidence.`);
-      if (API.dbug) previewData(result);
+
+      if (API.dbug) {
+        previewData(result);
+      }
       if (result.score > 0.1) {
         result.gesture = Gest;
         $.publish('recog.' + result.name, result);
@@ -149,9 +154,10 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function lineStart(x, y) {
     Down = true;
     [x, y] = tweakXY(x, y);
-    raiseCanvas();
 
+    raiseCanvas();
     clearCanvas();
+
     if (Gest.stroke) {
       Rend.drawGest(Gest); // redraw current strokes
     }
@@ -174,10 +180,17 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
     Down = false;
     [x, y] = tweakXY(x, y);
     lowerCanvas();
+
     Gest.addPoint(x, y);
-    let pointString = Gest.endStroke();
     Rend.fillRect(x - 4, y - 4, 8, 8);
-    if (API.dbug > 1) C.log(NOM, 'lineEnd', [`Stroke #${Gest.stroke} recorded`, pointString]);
+
+    if (API.dbug > 1) {
+      C.log(NOM, 'lineEnd', [
+        `Stroke #${Gest.stroke} recorded`,
+        Gest.endStroke(), // returned point-string
+      ]);
+    }
+
     tryRecognize();
     $(EL.btnClear).enable();
   }
@@ -196,6 +209,7 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function clickInit(evt) {
     evt.stopPropagation();
     if ($(this).is('.disabled')) return;
+
     Data.loadDefaults(updateCount);
     $(EL.btnInit).disable();
     $(EL.btnLoad, EL.btnSave).enable();
@@ -227,6 +241,7 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function clickLoad(evt) {
     evt.stopPropagation();
     if ($(this).is('.disabled')) return;
+
     Data.loadGests();
     clearCanvas();
     $(EL.btnInit).enable();
@@ -236,6 +251,7 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function clickSave(evt) {
     evt.stopPropagation();
     if ($(this).is('.disabled')) return;
+
     Data.saveGests();
     clearCanvas();
     $(EL.btnSave).disable();
@@ -269,6 +285,7 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   function upEvent(evt) {
     evt = Dom.normTouch(evt);
     let out = (evt.type === 'mouseout' && evt.toElement);
+
     if (out && out.localName !== 'html') return;
     if (Down) {
       lineEnd(evt.clientX, evt.clientY);
