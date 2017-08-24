@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //lib/box.es6
 /*globals
@@ -12,7 +13,10 @@ define(['util'], function (U) {
   const W = window;
   const C = W.console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 1,
   };
 

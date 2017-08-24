@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //reader.es6
 /*globals
@@ -27,7 +28,10 @@ define(['lodash', 'util', 'lib/pdollar',
   const W = window;
   const C = W.console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 0,
   };
   const makePoint = (arr) => new PDollar.Point(...arr);

@@ -1,3 +1,5 @@
+window.mysrc = () => document.currentScript.src.replace(location.origin, '');
+
 require.config({
   baseUrl: 'scripts',
   paths: {

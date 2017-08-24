@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //lib/util.es6
 /*globals
@@ -26,7 +27,11 @@ define(['jquery', 'lodash'], function ($, _) {
     expando(api, etc);
     [...args].forEach(function (e) {
       var nom = e['__'];
-      nom = typeof nom === 'string' ? nom : 'anon';
+      if (nom) {
+        nom = (typeof nom === 'string') ? nom : nom.NOM;
+      } else {
+        nom = 'anon';
+      }
       if (e === $) nom = 'jquery';
       if (e === _) nom = 'lodash';
       imports[nom] = e;
@@ -57,7 +62,10 @@ define(['jquery', 'lodash'], function ($, _) {
   }
 
   return {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     allkeys,
     apiExpose,
     checkCollision,

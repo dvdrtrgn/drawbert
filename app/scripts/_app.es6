@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //_app.es6
 /*globals
@@ -14,7 +15,10 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   const W = window;
   const C = W.console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 1,
   };
   const EL = {
@@ -349,20 +353,22 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
     API.init = () => true; // only used once
   }
 
+  function testdraw(arg) {
+    if (U.undef(arg)) {
+      Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
+    } else if (typeof arg === 'number') {
+      Rend.drawCloud(Gest.reader.clouds[arg].points);
+    } else if (typeof arg === 'string') {
+      playStroke(arg);
+    }
+  }
+
   U.apiExpose(API, arguments, {
     Data: null,
     Gest: null,
     Rend: null,
     init,
-    testdraw: function (arg) {
-      if (U.undef(arg)) {
-        Gest.reader.clouds.map(obj => Rend.drawCloud(obj.points));
-      } else if (typeof arg === 'number') {
-        Rend.drawCloud(Gest.reader.clouds[arg].points);
-      } else if (typeof arg === 'string') {
-        playStroke(arg);
-      }
-    },
+    testdraw,
   });
   return API;
 });

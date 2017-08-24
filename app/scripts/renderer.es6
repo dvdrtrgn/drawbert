@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //renderer.es6
 /*globals
@@ -15,7 +16,10 @@ define(['jquery', 'util', 'lib/box',
   const W = window;
   const C = W.console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 1,
   };
   const D = {

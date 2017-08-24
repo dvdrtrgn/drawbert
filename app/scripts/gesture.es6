@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //gesture.es6
 /*globals
@@ -12,7 +13,10 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
   const W = window;
   const C = W.console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 0,
   };
   const deQuo = (str) => str.replace(/(-?\d+,-?\d+,)/g, `$1 `);

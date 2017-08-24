@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //dom.es6
 /*globals
@@ -11,7 +12,10 @@ define(['jquery', 'util'], function ($, U) {
   const W = window;
   const C = console;
   const API = {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     dbug: 1,
   };
 

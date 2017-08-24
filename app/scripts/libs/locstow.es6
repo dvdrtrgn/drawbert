@@ -1,3 +1,4 @@
+let SRC = window.mysrc();
 ///
 //lib/locstow.es6
 /*globals
@@ -94,7 +95,10 @@ define([], function () {
   let M = (new Array(1023).fill(K).join(', '));
 
   return {
-    __: NOM,
+    __: {
+      NOM,
+      SRC,
+    },
     new: construct,
     load: loadDataFrom,
     save: saveDataIn,
