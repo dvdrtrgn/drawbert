@@ -13,7 +13,7 @@ define(['jquery', 'util',
   const W = window;
   const C = W.console;
   const API = {
-    __: {
+    '': {
       NOM,
       SRC,
     },

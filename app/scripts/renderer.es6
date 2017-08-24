@@ -16,7 +16,7 @@ define(['jquery', 'util', 'lib/box',
   const W = window;
   const C = W.console;
   const API = {
-    __: {
+    '': {
       NOM,
       SRC,
     },

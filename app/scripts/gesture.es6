@@ -13,7 +13,7 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
   const W = window;
   const C = W.console;
   const API = {
-    __: {
+    '': {
       NOM,
       SRC,
     },

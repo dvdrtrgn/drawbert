@@ -26,7 +26,7 @@ define(['jquery', 'lodash'], function ($, _) {
     var imports = Object.create(null);
     expando(api, etc);
     [...args].forEach(function (e) {
-      var nom = e['__'];
+      var nom = e[''];
       if (nom) {
         nom = (typeof nom === 'string') ? nom : nom.NOM;
       } else {
@@ -36,7 +36,7 @@ define(['jquery', 'lodash'], function ($, _) {
       if (e === _) nom = 'lodash';
       imports[nom] = e;
     });
-    api[''] = imports;
+    api['__'] = imports;
   }
 
   function checkCollision(o1, o2) {
@@ -62,7 +62,7 @@ define(['jquery', 'lodash'], function ($, _) {
   }
 
   return {
-    __: {
+    '': {
       NOM,
       SRC,
     },

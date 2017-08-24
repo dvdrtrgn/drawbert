@@ -95,7 +95,7 @@ define([], function () {
   let M = (new Array(1023).fill(K).join(', '));
 
   return {
-    __: {
+    '': {
       NOM,
       SRC,
     },
