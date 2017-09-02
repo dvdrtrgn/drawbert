@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //lib/locstow.es6
 /*globals
@@ -96,8 +95,7 @@ define([], function () {
 
   return {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     new: construct,
     load: loadDataFrom,

@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //_app.es6
 /*globals
@@ -16,8 +15,7 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
   const C = W.console;
   const API = {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     dbug: 1,
   };

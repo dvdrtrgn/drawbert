@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //trigger.es6
 /*globals
@@ -14,8 +13,7 @@ define(['jquery', 'util',
   const C = W.console;
   const API = {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     dbug: 0,
   };
@@ -84,7 +82,7 @@ define(['jquery', 'util',
   }
 
   function blatherOn(ele) {
-    while(!ele.overflowing()) ele.append(lorem);
+    while (!ele.overflowing()) ele.append(lorem);
   }
 
   function makeParagraph(evt, result) {

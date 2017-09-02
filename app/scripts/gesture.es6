@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //gesture.es6
 /*globals
@@ -14,8 +13,7 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
   const C = W.console;
   const API = {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     dbug: 0,
   };

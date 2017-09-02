@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //reader.es6
 /*globals
@@ -29,8 +28,7 @@ define(['lodash', 'util', 'lib/pdollar',
   const C = W.console;
   const API = {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     dbug: 0,
   };

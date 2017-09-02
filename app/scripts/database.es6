@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //database.es6
 /*globals
@@ -14,8 +13,7 @@ define(['jquery', 'util', 'lib/locstow',
   const C = W.console;
   const API = {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     dbug: 1,
   };

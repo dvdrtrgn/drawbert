@@ -1,4 +1,3 @@
-let SRC = window.mysrc();
 ///
 //lib/util.es6
 /*globals
@@ -36,7 +35,7 @@ define(['jquery', 'lodash'], function ($, _) {
       if (e === _) nom = 'lodash';
       imports[nom] = e;
     });
-    api['__'] = imports;
+    api[''].imports = imports;
   }
 
   function checkCollision(o1, o2) {
@@ -63,8 +62,7 @@ define(['jquery', 'lodash'], function ($, _) {
 
   return {
     '': {
-      NOM,
-      SRC,
+      NOM, closure: function () {},
     },
     allkeys,
     apiExpose,
