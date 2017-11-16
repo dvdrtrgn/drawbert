@@ -18,8 +18,8 @@ require.config({
   },
 });
 
-require(['jquery', 'util', '_app',
-], function ($, U, App) {
+require(['jquery', 'util', '_app', 'model/_main',
+], function ($, U, App, Model) {
   var W = window;
   var C = console;
 
@@ -30,6 +30,7 @@ require(['jquery', 'util', '_app',
   });
 
   // expose for testing
+  W.mod = Model;
   U.expando(W.drt, App);
   C.log('drt_main', W.drt);
 });
