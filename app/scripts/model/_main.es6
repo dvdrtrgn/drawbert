@@ -8,7 +8,25 @@ define(['./element', './style'], function (Element, Style) {
     Grouping: {
       ids: [], // Array of object ids [#2, #3,...]
     },
+    make: function (type) {
+      var I = {
+        I: this,
+        ids: [],
+      };
+      var E = I.E = new Element(type);
+      var S = I.S = new Style(E.style);
 
+      E.addStyle(S);
+
+      I.add = function () {
+        var mod = Object.make.apply(arguments);
+        I.ids.push(mod);
+        E.ele.append(mod.E.ele);
+        return mod;
+      };
+
+      return I;
+    },
   };
 
   return Object;
