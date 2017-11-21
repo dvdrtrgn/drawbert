@@ -48,7 +48,7 @@ define([], function () {
       reverse: false, // swap fg/bg
       // Shape
       borderWidth: 1,
-      corner: 10.0,
+      corner: 1.0,
       width: 100.0,
       height: 100.0,
       // Font
@@ -57,7 +57,24 @@ define([], function () {
       // Position
       x: 100.0,
       y: 100.0,
-      z: 100,
+      z: 1000,
+      dumpCss: function () {
+        return {
+          backgroundColor: this.get('background'),
+          border: this.get('borderWidth') + 'px solid ' + this.get('borderColor'),
+          borderRadius: this.get('corner'),
+          color: this.get('foreground'),
+          fontSize: this.get('para'),
+          height: this.get('height'),
+          left: this.get('x'),
+          opacity: '0.5',
+          position: 'absolute',
+          textAlign: 'center',
+          top: this.get('y'),
+          width: this.get('width'),
+          zIndex: this.get('z'),
+        };
+      },
     };
 
     Object.assign(this, defs, config);
