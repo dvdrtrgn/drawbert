@@ -43,7 +43,10 @@ define(['jquery', 'util', 'lib/locstow',
       },
       loadDefaults: function (cb) {
         Gest.reader.clear();
-        require([DF.data], function (...arr) {
+        fetch('scripts/' + DF.data + '.js')
+        .then((resp) => resp.text())
+        .then(function (raw) {
+          var arr = [eval(raw)];
           arr.map(Gest.reader.processData);
           cb && cb();
         });
