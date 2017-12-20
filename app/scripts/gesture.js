@@ -1,4 +1,3 @@
-///
 //gesture.es6
 /*globals
 
@@ -6,11 +5,14 @@
   IDEA: abstract gesture from pdollar
 
 */
-define(['util', 'lib/box', 'lib/pdollar', 'reader',
-], function (U, Box, PDollar, Reader) {
+import {W, C} from './_globs.js';
+import U from './libs/util.js';
+import Box from './libs/box.js';
+import PDollar from './libs/pdollar.js';
+import Reader from './reader.js';
+///
+export default (function () {
   const NOM = 'Gesture';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -132,11 +134,14 @@ define(['util', 'lib/box', 'lib/pdollar', 'reader',
     return api;
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    U, Box, PDollar, Reader,
+  }, {
     new: Gesture,
   });
+
   return API;
-});
+}());
 /*
 
 

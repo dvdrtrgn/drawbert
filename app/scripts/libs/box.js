@@ -1,4 +1,3 @@
-///
 //lib/box.es6
 /*globals
 
@@ -7,10 +6,11 @@
   FIXME: sort out the Box vs rect confusion
 
 */
-define(['util'], function (U) {
+import {W, C} from '../_globs.js';
+import U from './util.js';
+///
+export default (function () {
   const NOM = 'Box';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -102,12 +102,15 @@ define(['util'], function (U) {
     return rect;
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    U,
+  }, {
     new: Box,
     calc: rect, // XXX: confusing
   });
+
   return API;
-});
+}());
 /*
 
 

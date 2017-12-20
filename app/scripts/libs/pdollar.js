@@ -1,5 +1,5 @@
 // http://depts.washington.edu/madlab/proj/dollar/pdollar.html
-(function () {
+export default (function () {
   const C = console;
   // defaults (globals/constants)
   const DEF = {
@@ -326,4 +326,5 @@
   } else {
     window.PDollar = PDollar;
   }
+  return PDollar;
 }());

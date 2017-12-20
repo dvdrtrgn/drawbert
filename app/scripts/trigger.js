@@ -1,4 +1,3 @@
-///
 //trigger.es6
 /*globals
 
@@ -6,11 +5,11 @@
   IDEA: subscribe to gesture triggers
 
 */
-define(['jquery', 'util',
-], function ($, U) {
+import {W, C, $} from './_globs.js';
+import U from './libs/util.js';
+///
+export default (function () {
   const NOM = 'Trigger';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -94,14 +93,17 @@ define(['jquery', 'util',
     $.publish('print.canvas', 'You drew a paragraph');
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    $, U,
+  }, {
     new: Trigger,
     makeParagraph,
     makeSquare,
     makeStar,
   });
+
   return API;
-});
+}());
 /*
 
 

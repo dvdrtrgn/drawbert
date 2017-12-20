@@ -1,27 +1,8 @@
-window.mysrc = () => document.currentScript.src.replace(location.origin, '');
-
-require.config({
-  baseUrl: 'scripts',
-  paths: {
-    jquery: '../vendors/jquery.min', //'https://goo.gl/1NXWa8?',
-    lodash: '../vendors/lodash.min', //'https://goo.gl/uxQpja?',
-    reqyr: '../vendors/require.min', //'https://goo.gl/8jmmsx?',
-    lib: 'libs',
-    util: 'libs/util',
-    ufnp: 'libs/utils-fn',
-    usup: 'libs/utils-support',
-  },
-  shim: {
-    _app: {
-      // deps: ['init_alphabet', 'init_gestures'],
-    },
-  },
-});
-
-require(['jquery', 'util', '_app', 'model/_main',
-], function ($, U, App, Model) {
-  var W = window;
-  var C = console;
+/*eslint indent:off, */
+import {W, C, $} from './_globs.js';
+import U from './libs/util.js';
+import App from './app.js';
+import Model from './model/_main.js';
 
   W.drt = {};
 
@@ -33,7 +14,6 @@ require(['jquery', 'util', '_app', 'model/_main',
   W.mod = Model;
   U.expando(W.drt, App);
   C.log('drt_main', W.drt);
-});
 
 /*
 

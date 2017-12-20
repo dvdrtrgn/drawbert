@@ -1,4 +1,6 @@
-define(['jquery'], function ($) {
+import {$} from '../_globs.js';
+
+export default (function () {
   const WIN = window;
   const CON = WIN.console;
   const NOM = 'Element';
@@ -53,7 +55,7 @@ define(['jquery'], function ($) {
     },
   };
 
-  function Element(type) {
+  function API(type) {
     type = (type in Types) ? type : 'default';
 
     var api = this;
@@ -63,5 +65,5 @@ define(['jquery'], function ($) {
     return api;
   }
 
-  return Element;
-});
+  return API;
+}());

@@ -1,4 +1,3 @@
-///
 //lib/util.es6
 /*globals
 
@@ -6,7 +5,9 @@
   IDEA: base for util functions
 
 */
-define(['jquery', 'lodash'], function ($, _) {
+import {$, _} from '../_globs.js';
+///
+export default (function () {
   const NOM = 'Util';
   const rand = (lo, hi) => Math.floor((hi - lo + 1) * Math.random()) + lo;
   const round = (n, d) => Math.round(n * (d = Math.pow(10, d))) / d;
@@ -24,7 +25,7 @@ define(['jquery', 'lodash'], function ($, _) {
   function apiExpose(api, args, etc) {
     var imports = Object.create(null);
     expando(api, etc);
-    [...args].forEach(function (e) {
+    Object.values(args).forEach(function (e) {
       var nom = e[''];
       if (nom) {
         nom = (typeof nom === 'string') ? nom : nom.NOM;
@@ -76,4 +77,4 @@ define(['jquery', 'lodash'], function ($, _) {
     round,
     undef,
   };
-});
+}());

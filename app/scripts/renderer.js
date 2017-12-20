@@ -1,4 +1,3 @@
-///
 //renderer.es6
 /*globals
 
@@ -9,11 +8,12 @@
     recognize:    defer to pdollar.Recognizer method
 
 */
-define(['jquery', 'util', 'lib/box',
-], function ($, U, Box) {
+import {W, C, $} from './_globs.js';
+import U from './libs/util.js';
+import Box from './libs/box.js';
+///
+export default (function () {
   const NOM = 'Renderer';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -188,11 +188,14 @@ define(['jquery', 'util', 'lib/box',
     return api;
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    $, U, Box,
+  }, {
     new: Renderer,
   });
+
   return API;
-});
+}());
 /*
 
 

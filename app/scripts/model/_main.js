@@ -1,5 +1,8 @@
-define(['./element', './style'], function (Element, Style) {
-  var Object = {
+import Element from './element.js';
+import Style from './style.js';
+
+export default (function () {
+  var API = {
     // Box with associated styles
     Element: Element,
     // anything controlled by CSS
@@ -19,7 +22,7 @@ define(['./element', './style'], function (Element, Style) {
       E.addStyle(S);
 
       I.add = function () {
-        var mod = Object.make.apply(arguments);
+        var mod = API.make.apply(arguments);
         I.ids.push(mod);
         E.ele.append(mod.E.ele);
         return mod;
@@ -29,11 +32,8 @@ define(['./element', './style'], function (Element, Style) {
     },
   };
 
-  return Object;
-
-});
-
-
+  return API;
+}());
 /*
 
   Sketching (Brainstorming from scratch, out of the head)

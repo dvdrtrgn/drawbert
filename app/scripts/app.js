@@ -1,4 +1,3 @@
-///
 //_app.es6
 /*globals
 
@@ -8,11 +7,16 @@
   FIXME: singleton
 
  */
-define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 'trigger',
-], function ($, _, U, Database, Dom, Gesture, Renderer, Trigger) {
+import {W, C, $, _} from './_globs.js';
+import U from './libs/util.js';
+import Database from './database.js';
+import Dom from './dom.js';
+import Gesture from './gesture.js';
+import Renderer from './renderer.js';
+import Trigger from './trigger.js';
+///
+export default (function () {
   const NOM = 'Dbrt';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -361,15 +365,18 @@ define(['jquery', 'lodash', 'util', 'database', 'dom', 'gesture', 'renderer', 't
     }
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    $, _, U, Database, Dom, Gesture, Renderer, Trigger,
+  }, {
     Data: null,
     Gest: null,
     Rend: null,
     init,
     testdraw,
   });
+
   return API;
-});
+}());
 /*
 
 

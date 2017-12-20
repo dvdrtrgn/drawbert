@@ -1,4 +1,3 @@
-///
 //dom.es6
 /*globals
 
@@ -6,10 +5,11 @@
   IDEA: manage elements
 
 */
-define(['jquery', 'util'], function ($, U) {
+import {W, C, $} from './_globs.js';
+import U from './libs/util.js';
+///
+export default (function () {
   const NOM = 'Dom';
-  const W = window;
-  const C = console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -181,7 +181,9 @@ define(['jquery', 'util'], function ($, U) {
 
   //window.DOM = API; // BUG: do not do this
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    $, U,
+  }, {
     hideOverlay,
     bindNameSpacer,
     makeNameSpacer,
@@ -191,8 +193,9 @@ define(['jquery', 'util'], function ($, U) {
     lower,
     fillOptions,
   });
+
   return API;
-});
+}());
 /*
 
 

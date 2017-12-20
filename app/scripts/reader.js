@@ -1,4 +1,3 @@
-///
 //reader.es6
 /*globals
 
@@ -21,11 +20,12 @@
     recognize:    defer to Recognizer.recognize method
 
 */
-define(['lodash', 'util', 'lib/pdollar',
-], function (_, U, PDollar) {
+import {W, C, _} from './_globs.js';
+import U from './libs/util.js';
+import PDollar from './libs/pdollar.js';
+///
+export default (function () {
   const NOM = 'Reader';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -150,7 +150,9 @@ define(['lodash', 'util', 'lib/pdollar',
     return api;
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    _, U, PDollar,
+  }, {
     new: Reader,
     convert: points2strokes,
     joinTwos,
@@ -158,8 +160,9 @@ define(['lodash', 'util', 'lib/pdollar',
     toBase64,
     fromBase64,
   });
+
   return API;
-});
+}());
 /*
 
 

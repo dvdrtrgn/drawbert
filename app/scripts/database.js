@@ -1,4 +1,3 @@
-///
 //database.es6
 /*globals
 
@@ -6,11 +5,13 @@
   IDEA: couple localstorage to gesture data
 
 */
-define(['jquery', 'util', 'lib/locstow',
-], function ($, U, LS) {
+/*eslint indent:off, */
+import {W, C, $} from './_globs.js';
+import U from './libs/util.js';
+import LS from './libs/locstow.js';
+///
+export default (function () {
   const NOM = 'Database';
-  const W = window;
-  const C = W.console;
   const API = {
     '': {
       NOM, closure: function () {},
@@ -73,12 +74,15 @@ define(['jquery', 'util', 'lib/locstow',
     return api;
   }
 
-  U.apiExpose(API, arguments, {
+  U.apiExpose(API, {
+    $, U, LS,
+  }, {
     DF,
     new: make,
   });
+
   return API;
-});
+}());
 /*
 
 

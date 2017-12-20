@@ -1,8 +1,6 @@
-define([], function () {
-
-  const Colors = ['white', 'black', 'gray'];
-
-  function Style(config) {
+/*eslint indent:off, */
+export default function API(config) {
+    const Colors = ['white', 'black', 'gray'];
 
     function setter(key, val) {
       var org = this[key];
@@ -78,7 +76,4 @@ define([], function () {
     };
 
     Object.assign(this, defs, config);
-  }
-
-  return Style;
-});
+}

@@ -1,4 +1,3 @@
-///
 //lib/locstow.es6
 /*globals
 
@@ -6,10 +5,10 @@
   IDEA: construct localstorage porters
 
 */
-define([], function () {
+import {W, C} from '../_globs.js';
+///
+export default (function () {
   const NOM = 'Locstow';
-  const W = window;
-  const C = W.console;
   const LS = W.localStorage;
 
   const logerr = (e) => C.error(NOM, e);
@@ -107,5 +106,4 @@ define([], function () {
     unicodecharacters,
     utf8bytes,
   };
-
-});
+}());
