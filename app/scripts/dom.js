@@ -1,5 +1,5 @@
-//dom.es6
-/*globals
+//dom.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: manage elements

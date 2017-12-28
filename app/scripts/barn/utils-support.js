@@ -1,6 +1,6 @@
 ///
-//lib/utils-support.es6
-/*globals
+//lib/utils-support.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: extend util with `supports` paradigm

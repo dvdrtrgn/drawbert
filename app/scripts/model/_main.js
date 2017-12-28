@@ -1,3 +1,9 @@
+//model/_main.js
+/*
+
+  CHANGED: 2017-12-28
+
+*/
 import Element from './element.js';
 import Style from './style.js';
 

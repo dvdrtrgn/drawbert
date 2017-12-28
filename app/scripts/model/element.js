@@ -1,3 +1,9 @@
+//model/element.js
+/*
+
+  CHANGED: 2017-12-28
+
+*/
 import {$} from '../_globs.js';
 
 export default (function () {

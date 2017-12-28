@@ -1,5 +1,5 @@
-//gesture.es6
-/*globals
+//gesture.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: abstract gesture from pdollar

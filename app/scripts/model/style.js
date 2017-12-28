@@ -1,4 +1,10 @@
+//model/style.js
 /*eslint indent:off, */
+/*
+
+  CHANGED: 2017-12-28
+
+*/
 export default function API(config) {
     const Colors = ['white', 'black', 'gray'];
 

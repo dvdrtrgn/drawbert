@@ -1,11 +1,10 @@
-//database.es6
-/*globals
+//database.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: couple localstorage to gesture data
 
 */
-/*eslint indent:off, */
 import {W, C, $} from './_globs.js';
 import U from './libs/util.js';
 import LS from './libs/locstow.js';
@@ -25,7 +24,7 @@ export default (function () {
 
   /**
    * Make an LS/Gesture helper
-   * @param  {Gesture} Gest [from Gesture.es6]
+   * @param  {Gesture} Gest [from Gesture.js]
    * @param  {String}  Key  [a key token for data]
    * @return {Object}       [custom object]
    */
@@ -45,12 +44,12 @@ export default (function () {
       loadDefaults: function (cb) {
         Gest.reader.clear();
         fetch('scripts/' + DF.data + '.js')
-        .then((resp) => resp.text())
-        .then(function (raw) {
-          var arr = [eval(raw)];
-          arr.map(Gest.reader.processData);
-          cb && cb();
-        });
+          .then((resp) => resp.text())
+          .then(function (raw) {
+            var arr = [eval(raw)];
+            arr.map(Gest.reader.processData);
+            cb && cb();
+          });
       },
       saveGests: function (key) {
         key = key || Key;

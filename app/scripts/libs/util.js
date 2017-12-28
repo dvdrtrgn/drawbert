@@ -1,5 +1,5 @@
-//lib/util.es6
-/*globals
+//lib/util.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: base for util functions

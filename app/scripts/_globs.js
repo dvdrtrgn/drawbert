@@ -1,3 +1,9 @@
+//_globs.js
+/*
+
+  CHANGED: 2017-12-28
+
+*/
 const W = window;
 const C = console;
 const $ = W.$;

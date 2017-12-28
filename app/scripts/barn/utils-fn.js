@@ -1,6 +1,6 @@
 ///
-//lib/utils-fn.es6
-/*globals
+//lib/utils-fn.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: extend util with functional helpers

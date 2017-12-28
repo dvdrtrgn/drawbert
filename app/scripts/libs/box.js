@@ -1,5 +1,5 @@
-//lib/box.es6
-/*globals
+//lib/box.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: provide box calculating

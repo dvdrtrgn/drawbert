@@ -1,6 +1,6 @@
 ///
-//lib/utils-inview.es6
-/*globals
+//lib/utils-inview.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: extend util with viewport observer

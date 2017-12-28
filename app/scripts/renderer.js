@@ -1,5 +1,5 @@
-//renderer.es6
-/*globals
+//renderer.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: decorate a Canvas context instance

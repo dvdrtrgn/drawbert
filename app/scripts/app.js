@@ -1,5 +1,5 @@
-//_app.es6
-/*globals
+//app.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: compose this heap

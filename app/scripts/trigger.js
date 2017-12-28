@@ -1,5 +1,5 @@
-//trigger.es6
-/*globals
+//trigger.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: subscribe to gesture triggers

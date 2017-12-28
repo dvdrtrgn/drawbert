@@ -1,5 +1,5 @@
-//lib/reader.es6
-/*globals
+//lib/reader.js
+/*
 
   CHANGED: 2017-08-01
   IDEA: decorate a PDollar Recognizer instance
