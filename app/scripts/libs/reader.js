@@ -1,4 +1,4 @@
-//reader.es6
+//lib/reader.es6
 /*globals
 
   CHANGED: 2017-08-01
@@ -20,9 +20,9 @@
     recognize:    defer to Recognizer.recognize method
 
 */
-import {W, C, _} from './_globs.js';
-import U from './libs/util.js';
-import PDollar from './libs/pdollar.js';
+import {W, C, _} from '../_globs.js';
+import U from './util.js';
+import PDollar from './pdollar.js';
 ///
 export default (function () {
   const NOM = 'Reader';

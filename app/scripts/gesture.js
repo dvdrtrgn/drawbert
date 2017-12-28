@@ -9,7 +9,7 @@ import {W, C} from './_globs.js';
 import U from './libs/util.js';
 import Box from './libs/box.js';
 import PDollar from './libs/pdollar.js';
-import Reader from './reader.js';
+import Reader from './libs/reader.js';
 ///
 export default (function () {
   const NOM = 'Gesture';
