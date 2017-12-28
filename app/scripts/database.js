@@ -5,9 +5,7 @@
   IDEA: couple localstorage to gesture data
 
 */
-import {W, C, $} from './_globs.js';
-import U from './libs/util.js';
-import LS from './libs/locstow.js';
+import {W, C, U, LS, $} from './_globs.js';
 ///
 export default (function () {
   const NOM = 'Database';

@@ -5,8 +5,7 @@
   CHANGED: 2017-12-28
 
 */
-import {W, C, $} from './_globs.js';
-import U from './libs/util.js';
+import {W, C, U, $} from './_globs.js';
 import App from './app.js';
 import Model from './model/_main.js';
 

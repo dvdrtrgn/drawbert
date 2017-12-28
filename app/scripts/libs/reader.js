@@ -20,8 +20,7 @@
     recognize:    defer to Recognizer.recognize method
 
 */
-import {W, C, _} from '../_globs.js';
-import U from './util.js';
+import {W, C, U, _} from '../_globs.js';
 import PDollar from './pdollar.js';
 ///
 export default (function () {

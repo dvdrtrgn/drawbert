@@ -5,9 +5,10 @@
   IDEA: construct localstorage porters
 
 */
-import {W, C} from '../_globs.js';
 ///
 export default (function () {
+  const W = window;
+  const C = console;
   const NOM = 'Locstow';
   const LS = W.localStorage;
 

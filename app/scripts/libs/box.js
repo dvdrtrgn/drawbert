@@ -6,8 +6,7 @@
   FIXME: sort out the Box vs rect confusion
 
 */
-import {W, C} from '../_globs.js';
-import U from './util.js';
+import {W, C, U} from '../_globs.js';
 ///
 export default (function () {
   const NOM = 'Box';

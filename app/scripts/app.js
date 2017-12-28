@@ -7,8 +7,7 @@
   FIXME: singleton
 
  */
-import {W, C, $, _} from './_globs.js';
-import U from './libs/util.js';
+import {W, C, U, $, _} from './_globs.js';
 import Database from './database.js';
 import Dom from './dom.js';
 import Gesture from './gesture.js';

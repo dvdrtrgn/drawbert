@@ -5,8 +5,7 @@
   IDEA: subscribe to gesture triggers
 
 */
-import {W, C, $} from './_globs.js';
-import U from './libs/util.js';
+import {W, C, U, $} from './_globs.js';
 ///
 export default (function () {
   const NOM = 'Trigger';
